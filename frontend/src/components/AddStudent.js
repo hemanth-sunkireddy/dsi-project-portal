@@ -1,17 +1,17 @@
 import React from 'react';
 import './styles.css';
 
-const AddVolunteer = () => {
+const AddStudent = () => {
   return (
     <div className="form-container">
       <div className="form-box">
-        <h1 className="form-heading">Add New Volunteer</h1>
+        <h1 className="form-heading">Add New Student</h1>
         <form>
           <div className="form-group">
-            <label>Volunteer ID</label>
+            <label>Student ID</label>
             <div className="input-icon-group">
               <span className="icon">👤</span>
-              <input type="text" placeholder="Enter Volunteer ID" />
+              <input type="text" placeholder="Enter Student ID" />
             </div>
           </div>
           
@@ -48,7 +48,7 @@ const AddVolunteer = () => {
             <label>Phone Number</label>
             <div className="input-icon-group">
               <span className="icon">📞</span>
-              <input type="text" placeholder='Enter Phone Number' />
+              <input type="tel" placeholder="Enter Phone Number" />
             </div>
           </div>
 
@@ -56,7 +56,7 @@ const AddVolunteer = () => {
             <label>Address</label>
             <div className="input-icon-group">
               <span className="icon">🏠</span>
-              <input type="tel" placeholder="Enter Address" />
+              <input type="text" placeholder="Enter Address" />
             </div>
           </div>
 
@@ -75,4 +75,4 @@ const AddVolunteer = () => {
   );
 };
 
-export default AddVolunteer;
+export default AddStudent;
