@@ -1,73 +1,77 @@
 import React from 'react';
 import './styles.css';
 
-const ScheduleCampForm = () => {
+const AddDoctor = () => {
   return (
     <div className="form-container">
       <div className="form-box">
-        <h1 className="form-heading">Schedule New Camp</h1>
+        <h1 className="form-heading">Add New Doctor</h1>
         <form>
-          <div className="form-group">
-            <label>School Name</label>
+        <div className="form-group">
+            <label>Doctor ID</label>
             <div className="input-icon-group">
-              <span className="icon">👥</span>
-              <input type="text" placeholder="Enter school name" />
-            </div>
-          </div>
-          
-          <div className="form-group">
-            <label>Location</label>
-            <div className="input-icon-group">
-              <span className="icon">📍</span>
-              <input type="text" placeholder="Enter location" />
+              <span className="icon">👨‍⚕️</span>
+              <input type="text" placeholder="Enter Doctor ID" />
             </div>
           </div>
 
           <div className="form-group">
-            <label>Date and Time</label>
+            <label>Name</label>
             <div className="input-icon-group">
-              <span className="icon">📅</span>
-              <input type="datetime-local" />
+              <span className="icon">✏️</span>
+              <input type="text" placeholder="Enter Name" />
             </div>
           </div>
 
           <div className="form-group">
-            <label>Volunteer</label>
+            <label>Qualifications</label>
             <div className="input-icon-group">
-              <span className="icon">🧑‍🤝‍🧑</span>
-              <input type="text" placeholder='Enter Volunteer Name'/>
+              <span className="icon">🎓</span>
+              <input type="text" placeholder="Enter Qualifications" />
             </div>
           </div>
 
           <div className="form-group">
-            <label>Doctor</label>
-            <div className="input-icon-group">
-              <span className="icon">👩‍⚕️</span>
-              <input type="text" placeholder='Enter Doctor Name'/>
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label>Contact</label>
+            <label>Gender</label>
             <div className="input-icon-group">
               <span className="icon">👤</span>
-              <input type="tel" placeholder="Enter contact number" />
+              <select>
+                <option>Select Gender</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
             </div>
           </div>
 
           <div className="form-group">
-            <label>Further Details</label>
+            <label>Phone Number</label>
             <div className="input-icon-group">
-              <span className="icon">ℹ️</span>
-              <textarea placeholder="Enter further details"></textarea>
+              <span className="icon">📞</span>
+              <input type="tel" placeholder="Enter Phone Number" />
             </div>
           </div>
 
-          <button type="submit" className="submit-button">Schedule</button>
+          <div className="form-group">
+            <label>Address</label>
+            <div className="input-icon-group">
+              <span className="icon">🏠</span>
+              <input type="text" placeholder="Enter Address" />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Past Experiences</label>
+            <div className="input-icon-group">
+              <span className="icon">🔖</span>
+              <textarea placeholder="Enter Past Experiences"></textarea>
+            </div>
+          </div>
+          <button type="submit" className="submit-button">Add</button>
         </form>
       </div>
     </div>
   );
 };
 
-export default ScheduleCampForm;
+export default AddDoctor;
