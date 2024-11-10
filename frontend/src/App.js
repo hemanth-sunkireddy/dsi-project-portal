@@ -1,14 +1,3 @@
-
-// // function App() {
-// //   return (
-// //     <div>
-// //      <p> Hello</p>
-// //     </div>
-// //   );
-// // }
-
-// // export default App;
-
 // import React, { useState } from 'react';
 // import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 // import Register from './components/Register';
@@ -17,6 +6,8 @@
 // import AddStudent from './components/AddStudent';
 // import AddVolunteer from './components/AddVolunteer';
 // import ScheduleCamp from './components/ScheduleCamp';
+// import './components/auth.css';
+
 
 // function App() {
 //   const [role, setRole] = useState(null);
@@ -28,6 +19,7 @@
 //         <Route path="/register" element={<Register />} />
 //         <Route path="/login" element={<Login setRole={setRole} />} />
 //         <Route path="/dashboard" element={
+          
 //           role === 'Doctor' ? <AddDoctor /> :
 //           role === 'NGO Worker' ? <AddStudent /> :
 //           role === 'Volunteer' ? <AddVolunteer /> :
@@ -41,7 +33,6 @@
 
 // export default App;
 
-// frontend/src/App.js
 
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
@@ -52,6 +43,7 @@ import AddStudent from './components/AddStudent';
 import AddVolunteer from './components/AddVolunteer';
 import ScheduleCamp from './components/ScheduleCamp';
 import './components/auth.css';
+import Logout from './components/Logout';
 
 function App() {
   const [role, setRole] = useState(null);
@@ -63,11 +55,14 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login setRole={setRole} />} />
         <Route path="/dashboard" element={
-          role === 'Doctor' ? <AddDoctor /> :
-          role === 'NGO Worker' ? <AddStudent /> :
-          role === 'Volunteer' ? <AddVolunteer /> :
-          role === 'Therapist' ? <ScheduleCamp /> :
-          <Navigate to="/login" />
+          <>
+            <Logout /> {/* Add the logout button here */}
+            {role === 'Doctor' ? <AddDoctor /> :
+            role === 'NGO Worker' ? <AddStudent /> :
+            role === 'Volunteer' ? <AddVolunteer /> :
+            role === 'Therapist' ? <ScheduleCamp /> :
+            <Navigate to="/login" />}
+          </>
         } />
       </Routes>
     </Router>
