@@ -112,15 +112,15 @@ const AddDoctor = () => {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Doctor ID</label>
-            <input type="text" name="doctorId" placeholder="Enter Doctor ID" onChange={handleChange} required />
+            <input type="text" name="doctorId" placeholder="🆔 Enter Doctor ID" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Name</label>
-            <input type="text" name="name" placeholder="Enter Name" onChange={handleChange} required />
+            <input type="text" name="name" placeholder="✏️ Enter Name" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Qualifications</label>
-            <input type="text" name="qualifications" placeholder="Enter Qualifications" onChange={handleChange} required />
+            <input type="text" name="qualifications" placeholder="🎓 Enter Qualifications" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Gender</label>
@@ -133,15 +133,15 @@ const AddDoctor = () => {
           </div>
           <div className="form-group">
             <label>Phone Number</label>
-            <input type="tel" name="phoneNumber" placeholder="Enter Phone Number" onChange={handleChange} required />
+            <input type="tel" name="phoneNumber" placeholder="📞 Enter Phone Number" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Address</label>
-            <input type="text" name="address" placeholder="Enter Address" onChange={handleChange} required />
+            <input type="text" name="address" placeholder="🏠 Enter Address" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Past Experiences</label>
-            <textarea name="pastExperiences" placeholder="Enter Past Experiences" onChange={handleChange} />
+            <textarea name="pastExperiences" placeholder="🔖 Enter Past Experiences" onChange={handleChange} />
           </div>
           <button type="submit" className="submit-button">Add</button>
         </form>

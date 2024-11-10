@@ -113,15 +113,15 @@ const AddStudent = () => {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Student ID</label>
-            <input type="text" name="studentId" placeholder="Enter Student ID" onChange={handleChange} required />
+            <input type="text" name="studentId" placeholder="👤 Enter Student ID" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Name</label>
-            <input type="text" name="name" placeholder="Enter Name" onChange={handleChange} required />
+            <input type="text" name="name" placeholder="✏️ Enter Name" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Date and Time</label>
-            <input type="datetime-local" name="dateTime" onChange={handleChange} required />
+            <input type="datetime-local" name="dateTime" placeholder="📅" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Gender</label>
@@ -134,15 +134,15 @@ const AddStudent = () => {
           </div>
           <div className="form-group">
             <label>Phone Number</label>
-            <input type="tel" name="phoneNumber" placeholder="Enter Phone Number" onChange={handleChange} required />
+            <input type="tel" name="phoneNumber" placeholder="📞 Enter Phone Number" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Address</label>
-            <input type="text" name="address" placeholder="Enter Address" onChange={handleChange} required />
+            <input type="text" name="address" placeholder="🏠 Enter Address" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Past History</label>
-            <textarea name="pastHistory" placeholder="Enter Past History" onChange={handleChange} />
+            <textarea name="pastHistory" placeholder="📂 Enter Past History" onChange={handleChange} />
           </div>
           <button type="submit" className="submit-button">Add</button>
         </form>
