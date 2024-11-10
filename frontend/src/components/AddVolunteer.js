@@ -113,11 +113,12 @@ const AddVolunteer = () => {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Volunteer ID</label>
-            <input type="text" name="volunteerId" placeholder="Enter Volunteer ID" onChange={handleChange} required />
+           
+            <input type="text" name="volunteerId" placeholder="👤 Enter Volunteer ID" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Name</label>
-            <input type="text" name="name" placeholder="Enter Name" onChange={handleChange} required />
+            <input type="text" name="name" placeholder="✏️ Enter Name" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Date and Time</label>
@@ -134,15 +135,15 @@ const AddVolunteer = () => {
           </div>
           <div className="form-group">
             <label>Phone Number</label>
-            <input type="tel" name="phoneNumber" placeholder="Enter Phone Number" onChange={handleChange} required />
+            <input type="tel" name="phoneNumber" placeholder="📞 Enter Phone Number" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Address</label>
-            <input type="text" name="address" placeholder="Enter Address" onChange={handleChange} required />
+            <input type="text" name="address" placeholder="🏠 Enter Address" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Past History</label>
-            <textarea name="pastHistory" placeholder="Enter Past History" onChange={handleChange} />
+            <textarea name="pastHistory" placeholder="📂 Enter Past History" onChange={handleChange} />
           </div>
           <button type="submit" className="submit-button">Add</button>
         </form>

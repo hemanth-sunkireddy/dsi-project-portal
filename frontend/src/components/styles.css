@@ -28,7 +28,7 @@
   
   .form-group {
     margin-bottom: 16px;
-    width: 550px;
+    width: 1000px;
   }
   
   .form-group label {
@@ -37,7 +37,19 @@
     color: #5c52cc;
     margin-bottom: 4px;
   }
+  .form-group input {
+     
+      width: 550px;
+  }
+  .form-group select {
+     
+    width: 555px;
+}
+.form-group textarea {
+     
+  width: 550px;
   
+}
   .input-icon-group {
     position: relative;
   }
