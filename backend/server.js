@@ -26,6 +26,9 @@ connectDB();
 const app = express();
 app.use(cors()); // Enable CORS
 app.use(express.json());
+app.get('/', (req, res) => {
+  res.send('Backend running');
+});
 
 app.use('/api/auth', authRoutes);
 
