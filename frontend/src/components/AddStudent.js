@@ -1,73 +1,149 @@
-import React from 'react';
+// import React from 'react';
+// import './styles.css';
+
+// const AddStudent = () => {
+//   return (
+//     <div className="form-container">
+//       <div className="form-box">
+//         <h1 className="form-heading">Add New Student</h1>
+//         <form>
+//           <div className="form-group">
+//             <label>Student ID</label>
+//             <div className="input-icon-group">
+//               <span className="icon">👤</span>
+//               <input type="text" placeholder="Enter Student ID" />
+//             </div>
+//           </div>
+          
+//           <div className="form-group">
+//             <label>Name</label>
+//             <div className="input-icon-group">
+//               <span className="icon">✏️</span>
+//               <input type="text" placeholder="Enter Name" />
+//             </div>
+//           </div>
+
+//           <div className="form-group">
+//             <label>Date and Time</label>
+//             <div className="input-icon-group">
+//               <span className="icon">📅</span>
+//               <input type="datetime-local" />
+//             </div>
+//           </div>
+
+//           <div className="form-group">
+//             <label>Gender</label>
+//             <div className="input-icon-group">
+//               <span className="icon">👤</span>
+//               <select>
+//                 <option>Select Gender</option>
+//                 <option>Male</option>
+//                 <option>Female</option>
+//                 <option>Other</option>
+//               </select>
+//             </div>
+//           </div>
+
+//           <div className="form-group">
+//             <label>Phone Number</label>
+//             <div className="input-icon-group">
+//               <span className="icon">📞</span>
+//               <input type="tel" placeholder="Enter Phone Number" />
+//             </div>
+//           </div>
+
+//           <div className="form-group">
+//             <label>Address</label>
+//             <div className="input-icon-group">
+//               <span className="icon">🏠</span>
+//               <input type="text" placeholder="Enter Address" />
+//             </div>
+//           </div>
+
+//           <div className="form-group">
+//             <label>Past History</label>
+//             <div className="input-icon-group">
+//               <span className="icon">📂</span>
+//               <textarea placeholder="Enter Past History"></textarea>
+//             </div>
+//           </div>
+
+//           <button type="submit" className="submit-button">Add</button>
+//         </form>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AddStudent;
+
+import React, { useState } from 'react';
+import axios from 'axios';
 import './styles.css';
 
 const AddStudent = () => {
+  const [student, setStudent] = useState({
+    studentId: '',
+    name: '',
+    dateTime: '',
+    gender: '',
+    phoneNumber: '',
+    address: '',
+    pastHistory: '',
+  });
+
+  const handleChange = (e) => {
+    setStudent({ ...student, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post('/api/auth/addStudent', student);
+      alert('Student added successfully');
+    } catch (error) {
+      alert('Error adding student');
+    }
+  };
+
   return (
     <div className="form-container">
       <div className="form-box">
         <h1 className="form-heading">Add New Student</h1>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Student ID</label>
-            <div className="input-icon-group">
-              <span className="icon">👤</span>
-              <input type="text" placeholder="Enter Student ID" />
-            </div>
+            <input type="text" name="studentId" placeholder="Enter Student ID" onChange={handleChange} required />
           </div>
-          
           <div className="form-group">
             <label>Name</label>
-            <div className="input-icon-group">
-              <span className="icon">✏️</span>
-              <input type="text" placeholder="Enter Name" />
-            </div>
+            <input type="text" name="name" placeholder="Enter Name" onChange={handleChange} required />
           </div>
-
           <div className="form-group">
             <label>Date and Time</label>
-            <div className="input-icon-group">
-              <span className="icon">📅</span>
-              <input type="datetime-local" />
-            </div>
+            <input type="datetime-local" name="dateTime" onChange={handleChange} required />
           </div>
-
           <div className="form-group">
             <label>Gender</label>
-            <div className="input-icon-group">
-              <span className="icon">👤</span>
-              <select>
-                <option>Select Gender</option>
-                <option>Male</option>
-                <option>Female</option>
-                <option>Other</option>
-              </select>
-            </div>
+            <select name="gender" onChange={handleChange} required>
+              <option>Select Gender</option>
+              <option>Male</option>
+              <option>Female</option>
+              <option>Other</option>
+            </select>
           </div>
-
           <div className="form-group">
             <label>Phone Number</label>
-            <div className="input-icon-group">
-              <span className="icon">📞</span>
-              <input type="tel" placeholder="Enter Phone Number" />
-            </div>
+            <input type="tel" name="phoneNumber" placeholder="Enter Phone Number" onChange={handleChange} required />
           </div>
-
           <div className="form-group">
             <label>Address</label>
-            <div className="input-icon-group">
-              <span className="icon">🏠</span>
-              <input type="text" placeholder="Enter Address" />
-            </div>
+            <input type="text" name="address" placeholder="Enter Address" onChange={handleChange} required />
           </div>
-
           <div className="form-group">
             <label>Past History</label>
-            <div className="input-icon-group">
-              <span className="icon">📂</span>
-              <textarea placeholder="Enter Past History"></textarea>
-            </div>
+            <textarea name="pastHistory" placeholder="Enter Past History" onChange={handleChange} />
           </div>
-
           <button type="submit" className="submit-button">Add</button>
         </form>
       </div>
