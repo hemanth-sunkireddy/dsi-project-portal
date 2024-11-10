@@ -108,11 +108,11 @@ const ScheduleCamp = () => {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>School Name</label>
-            <input type="text" name="schoolName" placeholder="Enter school name" onChange={handleChange} required />
+            <input type="text" name="schoolName" placeholder="👥 Enter school name" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Location</label>
-            <input type="text" name="location" placeholder="Enter location" onChange={handleChange} required />
+            <input type="text" name="location" placeholder="📍 Enter location" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Date and Time</label>
@@ -120,19 +120,19 @@ const ScheduleCamp = () => {
           </div>
           <div className="form-group">
             <label>Volunteer</label>
-            <input type="text" name="volunteer" placeholder="Enter Volunteer Name" onChange={handleChange} required />
+            <input type="text" name="volunteer" placeholder="🧑‍🤝‍🧑 Enter Volunteer Name" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Doctor</label>
-            <input type="text" name="doctor" placeholder="Enter Doctor Name" onChange={handleChange} required />
+            <input type="text" name="doctor" placeholder="👩‍⚕️ Enter Doctor Name" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Contact</label>
-            <input type="tel" name="contact" placeholder="Enter contact number" onChange={handleChange} required />
+            <input type="tel" name="contact" placeholder="👤 Enter contact number" onChange={handleChange} required />
           </div>
           <div className="form-group">
             <label>Further Details</label>
-            <textarea name="furtherDetails" placeholder="Enter further details" onChange={handleChange} />
+            <textarea name="furtherDetails" placeholder="✏️ Enter further details" onChange={handleChange} />
           </div>
           <button type="submit" className="submit-button">Schedule</button>
         </form>
