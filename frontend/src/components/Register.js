@@ -57,13 +57,14 @@ const Register = () => {
 const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/auth/register', formData);
+      await axios.post('/api/auth/register', formData); // No need to specify http://localhost:5000
       alert('Registered successfully');
     } catch (error) {
       console.error('Registration error:', error.response ? error.response.data : error.message);
       alert('Error registering');
     }
   };
+  
   
 
   return (
