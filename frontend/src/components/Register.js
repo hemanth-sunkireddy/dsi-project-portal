@@ -38,6 +38,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import apiRoutes from '../apiRoutes';
 
 const Register = () => {
   const [formData, setFormData] = useState({ name: '', email: '', password: '', role: 'Doctor' });
@@ -57,11 +58,11 @@ const Register = () => {
 const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('/api/auth/register', formData);
+      await axios.post(apiRoutes.registerAPI, formData);
       alert('Registered successfully');
     } catch (error) {
       console.error('Registration error:', error.response ? error.response.data : error.message);
-      alert('Error registering');
+      alert('Error registering' + error);
     }
   };
   
