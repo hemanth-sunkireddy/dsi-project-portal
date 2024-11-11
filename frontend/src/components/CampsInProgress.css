@@ -1,0 +1,42 @@
+/* CampsInProgress.css */
+
+.camps-list-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    width: 90%;
+    max-width: 800px;
+  }
+  
+  .camps-list-container h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .camps-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .camps-table th, .camps-table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  .camps-table th {
+    background-color: #4c4cfc;
+    color: #fff;
+  }
+  
+  .camps-table tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  .camps-table tr:hover {
+    background-color: #ddd;
+  }
+  

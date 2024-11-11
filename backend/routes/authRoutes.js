@@ -1,14 +1,16 @@
 const express = require('express');
-const { register, login } = require('../controllers/authController');
+const { register, login, getUserDetails } = require('../controllers/authController');
 const Doctor = require('../models/Doctor');
 const Student = require('../models/Student');
 const Volunteer = require('../models/Volunteer');
 const Camp = require('../models/Camp');
+const auth = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
 router.post('/register', register);
 router.post('/login', login);
+router.get('/user', auth, getUserDetails);
 
 // Add Doctor
 router.post('/addDoctor', async (req, res) => {
