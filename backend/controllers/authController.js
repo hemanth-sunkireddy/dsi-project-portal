@@ -2,6 +2,7 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+
 exports.register = async (req, res) => {
   const { name, email, password, role } = req.body;
   console.log("Received data:", req.body); // Add this line for debugging
@@ -38,3 +39,26 @@ exports.login = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+// exports.getUserDetails = async (req, res) => {
+//   try {
+//     const user = await User.findById(req.user.id); // `req.user` should contain decoded user info
+//     if (!user) return res.status(404).json({ message: 'User not found' });
+//     res.json({ name: user.name });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error fetching user details', error });
+//   }
+// };
+
+exports.getUserDetails = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId); // Fetch by ID
+    if (!user) return res.status(404).json({ message: 'User not found' });
+    res.json({ name: user.name });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user details', error });
+  }
+};
+
+
+
