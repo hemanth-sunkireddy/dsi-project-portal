@@ -15,6 +15,21 @@ const campSchema = new mongoose.Schema({
   doctor: String,
   contact: String,
   furtherDetails: String,
+
+  studentsRegistered: {
+    type: Number,
+    default: 0, 
+  },
+
+  studentsPositive: {
+    type: Number,
+    default: 0,  
+  },
+
+  studentsScreened: {
+    type: Number,
+    default: 0,  
+  },
 });
 
 module.exports = mongoose.model('Camp', campSchema);
