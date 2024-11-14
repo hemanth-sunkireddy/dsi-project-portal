@@ -30,6 +30,10 @@ const campSchema = new mongoose.Schema({
     type: Number,
     default: 0,  
   },
+  status: {
+    type: String,
+    default: "upcoming",  
+  },
 });
 
 module.exports = mongoose.model('Camp', campSchema);

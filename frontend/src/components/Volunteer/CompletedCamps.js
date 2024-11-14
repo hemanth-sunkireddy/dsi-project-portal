@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const CompletedCamps = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const user_name = localStorage.getItem('name');
   const [filteredCamps, setFilteredCamps] = useState([]);
   const { camps } = location.state || { camps: [] };
+  console.log({camps});
 
   // Display only that volunteer camps
   const filterCamps = () => {
@@ -13,6 +15,11 @@ const CompletedCamps = () => {
       (camp) => camp.volunteer === user_name || camp.doctor === user_name
     );
     setFilteredCamps(filtered);
+  };
+
+  const handleRowClick = (campID) => {
+    localStorage.setItem('camp-id', campID);
+    navigate(`/camp-details`);
   };
 
   useEffect(() => {
@@ -38,7 +45,7 @@ const CompletedCamps = () => {
           </thead>
           <tbody>
             {filteredCamps.map((camp) => (
-              <tr key={camp.campID}>
+              <tr key={camp.campID} onClick={() => handleRowClick(camp.campID)}>
                 <td>{camp.campID}</td>
                 <td>{camp.schoolName}</td>
                 <td>{camp.location}</td>

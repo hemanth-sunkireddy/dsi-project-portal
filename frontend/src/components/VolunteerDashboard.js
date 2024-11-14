@@ -78,58 +78,44 @@ const tileClassName = ({ date, view }) => {
 
   return (
     <div className="dashboard-container">
-    <header className="dashboard-header">
+      <header className="dashboard-header">
         <h1>Dashboard - Volunteer</h1>
         <div className="header-right">
-            <span>Hi there, {username}</span>
-            <button onClick={() => navigate('/profile')} className="profile-button">Profile</button>
-            <button onClick={() => navigate('/login')} className="logout-button">Logout</button>
+          <span>Hi there, {username}</span>
+          <button onClick={() => navigate('/profile')} className="profile-button">Profile</button>
+          <button onClick={() => navigate('/login')} className="logout-button">Logout</button>
         </div>
-    </header>
+      </header>
 
-    <div className="dashboard-content">
-        {/* Top Section: Only Dashboard Cards */}
-      <div className="top-section">
+      <div className="dashboard-content">
         <div className="dashboard-cards">
-            <div className="dashboard-card" onClick={() => navigate('/camps-in-progress', { state: { camps: ongoingCamps } })}>
-                <h2>Camps In Progress</h2>
-                <p>List of Camps scheduled for today.</p>
-                <button>View</button>
-            </div>
-            <div className="dashboard-card" onClick={() => navigate('/completed-camps', { state: { camps: completedCamps } })}>
-                <h2>Completed Camps</h2>
-                <p>List of Camps completed in the past.</p>
-                <button>View</button>
-            </div>
-            <div className="dashboard-card" onClick={() => navigate('/upcoming-camps', { state: { camps: upcomingCamps } })}>
-                <h2>Upcoming Camps</h2>
-                <p>List of Camps scheduled for future dates.</p>
-                <button>View</button>
-            </div>
-        </div>
-       </div>
-        {/* Bottom Section: Flex container for Analytics and Calendar */}
-        <div className="bottom-section">
-          <div className="adjust">
-           
-            <div className="calendar-section">
-                
-          
-                <h2>Calendar</h2>
-                <Calendar
-                    onChange={setDate}
-                    value={date}
-                    tileClassName={tileClassName}
-                    onClickDay={openPopup}
-                />
-            </div>
+          <div className="dashboard-card" onClick={() => navigate('/camps-in-progress', { state: { camps: ongoingCamps } })}>
+            <h2>Camps In Progress</h2>
+            <p>List of Camps scheduled for today.</p>
+            <button>View</button>
+          </div>
+          <div className="dashboard-card" onClick={() => navigate('/completed-camps', { state: { camps: completedCamps } })}>
+            <h2>Completed Camps</h2>
+            <p>List of Camps completed in the past.</p>
+            <button>View</button>
+          </div>
+          <div className="dashboard-card" onClick={() => navigate('/upcoming-camps', { state: { camps: upcomingCamps } })}>
+            <h2>Upcoming Camps</h2>
+            <p>List of Camps scheduled for future dates.</p>
+            <button>View</button>
           </div>
         </div>
-</div>  
 
-
-
-
+        <div className="calendar-container">
+          <h2>Calendar</h2>
+          <Calendar
+            onChange={setDate}
+            value={date}
+            tileClassName={tileClassName}
+            onClickDay={openPopup}
+          />
+        </div>
+      </div>
 
       {showPopup && (
         <div className="popup-overlay">
@@ -172,3 +158,4 @@ const tileClassName = ({ date, view }) => {
 };
 
 export default VolunteerDashboard;
+
