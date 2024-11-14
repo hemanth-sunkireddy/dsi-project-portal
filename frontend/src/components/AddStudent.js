@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './styles.css';
 
 const AddStudent = () => {
+  const [Volunteer, setVolunteer] = useState('');
   const [student, setStudent] = useState({
     studentId: '',
     name: '',
@@ -10,6 +11,7 @@ const AddStudent = () => {
     gender: '',
     phoneNumber: '',
     address: '',
+    volunteer: '',
     pastHistory: '',
   });
 
@@ -26,6 +28,16 @@ const AddStudent = () => {
       alert('Error adding student');
     }
   };
+
+  useEffect(() => {
+    const volunteerName = localStorage.getItem('name');
+    console.log(volunteerName);
+    setVolunteer(volunteerName);
+    setStudent((prevStudent) => ({
+      ...prevStudent,
+      volunteer: volunteerName,
+    }));
+  }, []);
 
   return (
     <div className="form-container">

@@ -7,6 +7,7 @@ const CampDetails = () => {
   const [camps, setCamps] = useState([]);
   const campID = localStorage.getItem('camp-id');
   const [filteredCamps, setFilteredCamps] = useState([]);
+  
 
   const fetchCamps = async () => {
     try {
@@ -21,6 +22,7 @@ const CampDetails = () => {
   const filterCamps = () => {
     const filtered = camps.filter((camp) => camp.campID === campID);
     setFilteredCamps(filtered);
+    localStorage.setItem('volunteer', filtered.volunteer);
   };
 
   useEffect(() => {
