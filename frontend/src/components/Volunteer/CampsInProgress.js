@@ -1,7 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const CampsInProgress = () => {
+  const navigate = useNavigate();
   const location = useLocation();
   const user_name = localStorage.getItem('name');
   const [filteredCamps, setFilteredCamps] = useState([]);
@@ -21,6 +22,11 @@ const CampsInProgress = () => {
     }
   }, [camps]);
 
+  const handleRowClick = (campID) => {
+    localStorage.setItem('camp-id', campID);
+    navigate(`/camp-details`);
+  };
+
   return (
     <div className="camps-list-container">
       <h2>Camps In Progress</h2>
@@ -37,7 +43,7 @@ const CampsInProgress = () => {
           </thead>
           <tbody>
             {filteredCamps.map((camp) => (
-              <tr key={camp.campID}>
+              <tr key={camp.campID} onClick={() => handleRowClick(camp.campID)}>
                 <td>{camp.campID}</td>
                 <td>{camp.schoolName}</td>
                 <td>{camp.location}</td>

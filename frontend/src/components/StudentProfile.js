@@ -64,7 +64,7 @@ const StudentProfile = () => {
           ))}
         </div>
       ) : (
-        <p>Camp Not Found</p>
+        <p>Student Not Found</p>
       )}
 
       <div className="button-container">
