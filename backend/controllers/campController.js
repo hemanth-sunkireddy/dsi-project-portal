@@ -11,6 +11,9 @@ exports.scheduleCamp = async (req, res) => {
     if (req.body.studentsScreened === undefined) {
       req.body.studentsScreened = 0;
     }
+    if (req.body.status === undefined) {
+      req.body.status = "upcoming";
+    }
     const newCamp = new Camp(req.body);
     await newCamp.save();
     res.status(201).json({ message: 'Camp scheduled successfully' , camp: newCamp});
