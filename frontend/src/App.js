@@ -13,7 +13,10 @@ import CampsInProgress from './components/Volunteer/CampsInProgress';
 import CampDetails from './components/Volunteer/CampDetails';
 import ViewStudents from './components/Volunteer/ViewStudents';
 import Logout from './components/Logout';
+import ConductScreening from './components/ConductScreening';
 import StudentProfile from './components/StudentProfile';
+import StaffCompletedCamps from './components/Staff/CompletedCamps';
+import StaffUpcomingCamps from './components/Staff/UpcomingCamps';
 import './components/auth.css';
 
 function App() {
@@ -39,6 +42,9 @@ function App() {
         <Route path="/login" element={<Login setRole={setRole} />} />
         <Route path="/patients-list" element={<ViewStudents />} />
         <Route path="/student-profile" element={<StudentProfile />} />
+        <Route path="/conduct-screening" element={<ConductScreening />} />
+        <Route path="/completed-camps-staff" element={<StaffCompletedCamps />} />
+        <Route path="/upcoming-camps-staff" element={<StaffUpcomingCamps />} />
         {/* Conditional Routing Based on Role */}
         <Route path="/dashboard" element={
           role === 'Doctor' ? <AddDoctor /> :
