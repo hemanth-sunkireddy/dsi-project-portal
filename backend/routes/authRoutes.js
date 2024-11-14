@@ -27,10 +27,14 @@ router.post('/addDoctor', async (req, res) => {
 router.post('/addStudent', async (req, res) => {
   try {
     const student = new Student(req.body);
+    if(student.status == undefined){
+      student.status = "registered";
+    }
     await student.save();
     res.status(201).json({ message: 'Student added successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Error adding student', error });
+    console.error(error);
+    res.status(500).json({ error });
   }
 });
 
@@ -63,6 +67,16 @@ router.get('/camps', async (req, res) => {
     res.json(camps);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch camps', error });
+  }
+});
+
+// Fetch all users
+router.get('/students', async (req, res) => { 
+  try {
+    const students = await Student.find(); 
+    res.status(200).json(students);
+  } catch (error) {
+    res.json({ message: 'Failed to fetch Students', error });
   }
 });
 

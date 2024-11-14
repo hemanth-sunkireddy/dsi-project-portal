@@ -13,6 +13,7 @@ import CampsInProgress from './components/Volunteer/CampsInProgress';
 import CampDetails from './components/Volunteer/CampDetails';
 import ViewStudents from './components/Volunteer/ViewStudents';
 import Logout from './components/Logout';
+import StudentProfile from './components/StudentProfile';
 import './components/auth.css';
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
         <Route path="/camp-details" element={<CampDetails />} />
         <Route path="/login" element={<Login setRole={setRole} />} />
         <Route path="/patients-list" element={<ViewStudents />} />
+        <Route path="/student-profile" element={<StudentProfile />} />
         {/* Conditional Routing Based on Role */}
         <Route path="/dashboard" element={
           role === 'Doctor' ? <AddDoctor /> :

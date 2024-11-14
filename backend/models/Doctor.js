@@ -1,17 +1,3 @@
-// const mongoose = require('mongoose');
-
-// const doctorSchema = new mongoose.Schema({
-//   doctorId: String,
-//   name: String,
-//   qualifications: String,
-//   gender: String,
-//   phoneNumber: String,
-//   address: String,
-//   pastExperiences: String,
-// });
-
-// module.exports = mongoose.model('Doctor', doctorSchema);
-
 const mongoose = require('mongoose');
 
 const doctorSchema = new mongoose.Schema({

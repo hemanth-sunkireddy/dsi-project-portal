@@ -1,17 +1,3 @@
-// const mongoose = require('mongoose');
-
-// const studentSchema = new mongoose.Schema({
-//   studentId: String,
-//   name: String,
-//   dateTime: Date,
-//   gender: String,
-//   phoneNumber: String,
-//   address: String,
-//   pastHistory: String,
-// });
-
-// module.exports = mongoose.model('Student', studentSchema);
-
 const mongoose = require('mongoose');
 
 const studentSchema = new mongoose.Schema({
@@ -22,6 +8,8 @@ const studentSchema = new mongoose.Schema({
   phoneNumber: String,
   address: String,
   pastHistory: String,
+  status: String,
+  volunteer: String
 });
 
 module.exports = mongoose.model('Student', studentSchema);
