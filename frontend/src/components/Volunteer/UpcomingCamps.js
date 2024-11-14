@@ -15,6 +15,7 @@ const UpcomingCamps = () => {
     setFilteredCamps(filtered);
   };
 
+  
   useEffect(() => {
     if (camps.length > 0) {
       filterCamps();
@@ -23,7 +24,7 @@ const UpcomingCamps = () => {
 
    return (
     <div className="camps-list-container">
-      <h2>Camps In Progress</h2>
+      <h2>Upcoming Camps</h2>
       {filteredCamps.length > 0 ? (
         <table className="camps-table">
           <thead>
