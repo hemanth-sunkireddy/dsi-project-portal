@@ -17,6 +17,9 @@ import ConductScreening from './components/ConductScreening';
 import StudentProfile from './components/StudentProfile';
 import StaffCompletedCamps from './components/Staff/CompletedCamps';
 import StaffUpcomingCamps from './components/Staff/UpcomingCamps';
+import ProfilePage from './components/ProfilePage';
+import SuportPage from './components/HelpDeskPage'
+import EditProfile from './components/EditProfile'
 import './components/auth.css';
 
 function App() {
@@ -45,6 +48,10 @@ function App() {
         <Route path="/conduct-screening" element={<ConductScreening />} />
         <Route path="/completed-camps-staff" element={<StaffCompletedCamps />} />
         <Route path="/upcoming-camps-staff" element={<StaffUpcomingCamps />} />
+        <Route path="/support" element={<SuportPage />} />
+        <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/editprofile" element={<EditProfile />} />
+        {/* Conditional Routing Based on Role */}
         {/* Conditional Routing Based on Role */}
         <Route path="/dashboard" element={
           role === 'Doctor' ? <AddDoctor /> :
