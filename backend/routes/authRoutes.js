@@ -5,7 +5,7 @@ const Student = require('../models/Student');
 const Volunteer = require('../models/Volunteer');
 const Camp = require('../models/Camp');
 const auth = require('../middleware/authMiddleware');
-
+const User = require('../models/User')
 const router = express.Router();
 
 router.post('/register', register);
@@ -79,5 +79,32 @@ router.get('/students', async (req, res) => {
     res.json({ message: 'Failed to fetch Students', error });
   }
 });
+router.get('/profiledata/:name', async (req, res) => {
+  const { name } = req.params;
+  console.log(name)
+  const document = await User.findOne({ name });
+  console.log(document)
+  res.json({ document });
+});
+router.put('/updateprofile/:name', async (req, res) => {
+  try {
+    const { name } = req.params;
+    const updates = req.body;
+    
+    const result = await User.findOneAndUpdate(
+      { name: name },
+      { $set: updates },
+      { new: true }
+    );
 
+    if (!result) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    res.json({ success: true, message: 'Profile updated successfully', user: result });
+  } catch (error) {
+    console.error('Error updating profile:', error);
+    res.status(500).json({ success: false, message: 'Error updating profile' });
+  }
+});
 module.exports = router;

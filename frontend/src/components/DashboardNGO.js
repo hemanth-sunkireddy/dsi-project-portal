@@ -76,6 +76,8 @@ const DashboardNGO = () => {
     <div className="dashboard-container">
       <header className="dashboard-header">
         <h1>Dashboard - NGO Staff</h1>
+        <button onClick={() => navigate('/profile')} >Profile</button>
+        <button onClick={() => navigate('/support')}>Support</button>
         <button onClick={handleLogout} className="logout-button">Logout</button>
       </header>
 

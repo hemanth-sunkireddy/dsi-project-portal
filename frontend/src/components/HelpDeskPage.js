@@ -6,10 +6,13 @@ const HelpDeskPage = () => {
     <div className="help-desk">
       <header className="header">
         <h1>Help Desk and Support</h1>
+        <a href="/dashboard" className='nav-link'>Home</a>
+        <a href="/" className='nav-link'>Logout</a>
         <div className="search-bar">
           <input type="text" placeholder="Search" />
           <button>🔍</button>
         </div>
+
       </header>
       <div className="content">
         <div className="overview">
