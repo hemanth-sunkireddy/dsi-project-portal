@@ -7,6 +7,8 @@ const Camp = require('../models/Camp');
 const auth = require('../middleware/authMiddleware');
 const User = require('../models/User')
 const router = express.Router();
+const { Screening } = require('../models/Screening');
+const { addScreening, updateScreening } = require('../controllers/screeningcontroller'); // Adjust the path
 
 router.post('/register', register);
 router.post('/login', login);
@@ -116,4 +118,9 @@ router.put('/updateprofile/:name', async (req, res) => {
     res.status(500).json({ success: false, message: 'Error updating profile' });
   }
 });
+
+router.post('/addScreening', addScreening);
+
+// Route to update a screening
+router.put('/updateScreening/:id', updateScreening);
 module.exports = router;
