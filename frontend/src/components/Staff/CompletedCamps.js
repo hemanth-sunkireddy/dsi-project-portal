@@ -29,7 +29,7 @@ const StaffCompletedCamps = () => {
         boxSizing: 'border-box',
         textAlign: 'center'
       }}>
-        <h2>Completed Camps</h2>
+        <h2 style={{color: 'black'}}>Completed Camps</h2>
         {camps.length > 0 ? (
           <table className="camps-table" style={{
             color: 'black',

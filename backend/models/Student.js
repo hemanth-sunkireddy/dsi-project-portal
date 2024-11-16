@@ -9,7 +9,8 @@ const studentSchema = new mongoose.Schema({
   address: String,
   pastHistory: String,
   status: String,
-  volunteer: String
+  volunteer: String,
+  campId: String,
 });
 
 module.exports = mongoose.model('Student', studentSchema);

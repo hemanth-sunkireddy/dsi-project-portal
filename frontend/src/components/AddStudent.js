@@ -26,7 +26,6 @@ const AddStudent = () => {
     try {
       await axios.post('/api/auth/addStudent', student);
       navigate('/patients-list');
-      
     } catch (error) {
       alert('Error adding student');
     }
@@ -34,11 +33,13 @@ const AddStudent = () => {
 
   useEffect(() => {
     const volunteerName = localStorage.getItem('name');
+    const campID = localStorage.getItem('camp-id'); 
     console.log(volunteerName);
     setVolunteer(volunteerName);
     setStudent((prevStudent) => ({
       ...prevStudent,
       volunteer: volunteerName,
+      campId: campID,
     }));
   }, []);
 

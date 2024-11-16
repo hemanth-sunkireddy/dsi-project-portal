@@ -30,6 +30,15 @@ router.post('/addStudent', async (req, res) => {
     if(student.status == undefined){
       student.status = "registered";
     }
+    const campId_request = student.campId;
+    const camp = await Camp.findOne({ campID: campId_request });
+    if (!camp) {
+      // If the camp is not found, send an error response
+      return res.status(404).json({ message: 'Camp not found' });
+    }
+
+    camp.studentsRegistered += 1;
+    await camp.save();
     await student.save();
     res.status(201).json({ message: 'Student added successfully' });
   } catch (error) {
