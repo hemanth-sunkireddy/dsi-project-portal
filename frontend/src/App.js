@@ -14,7 +14,7 @@ import CampDetails from './components/Volunteer/CampDetails';
 import ViewStudents from './components/Volunteer/ViewStudents';
 import Logout from './components/Logout';
 import CampDetailsStaff from './components/Staff/CampDetails';
-import ConductScreening from './components/ConductScreening';
+import ConductScreening from './components/ChatWindow';
 import StudentProfile from './components/StudentProfile';
 import StaffCompletedCamps from './components/Staff/CompletedCamps';
 import StaffUpcomingCamps from './components/Staff/UpcomingCamps';
