@@ -84,7 +84,6 @@ const CampDetails = () => {
         <div style={styles.innerBox}>
           {/* Camp Information */}
           <div style={styles.section}>
-            <h3 style={styles.subSectionTitle}>Camp Information</h3>
             <div style={styles.grid}>
               <div style={styles.gridItem}>
                 <strong>Camp ID:</strong> {filteredCamps[0]?.campID}

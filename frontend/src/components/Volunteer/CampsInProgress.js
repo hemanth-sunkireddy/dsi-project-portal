@@ -127,7 +127,7 @@ const CampsInProgress = () => {
         <h2 style={{ color: 'black', marginBottom: '20px' }}>Camps In Progress</h2>
 
         {/* Search and Filters */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', width: '30%', marginLeft: '50px' }}>
           <input
             type="text"
             placeholder="Search by camp ID"
@@ -175,14 +175,15 @@ const CampsInProgress = () => {
         {/* Table */}
         <table
           style={{
-            width: '100%',
+            width: '80%',
             borderCollapse: 'collapse',
             marginBottom: '20px',
             textAlign: 'center',
+            justifySelf: 'center'
           }}
         >
-          <thead>
-            <tr style={{ backgroundColor: '#e9ecef', color: 'black' }}>
+          <thead style={{backgroundColor: '#50ac54'}}>
+            <tr style={{ color: 'black', height: 30 }}>
               <th>Camp ID</th>
               <th>School Name</th>
               <th>Location</th>
@@ -198,6 +199,7 @@ const CampsInProgress = () => {
                 style={{
                   backgroundColor: index % 2 === 0 ? '#f9f9fc' : '#f4f4ff',
                   color: 'black',
+                  padding: 25
                 }}
               >
                 <td>{camp.campID}</td>
