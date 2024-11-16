@@ -67,7 +67,7 @@ function App() {
       </Routes>
 
       {/* Logout Button for Convenience */}
-      {role && <Logout setRole={setRole} />} {/* Only show Logout if a role is set */}
+      {/* {role && <Logout setRole={setRole} />} Only show Logout if a role is set */}
     </Router>
   );
 }

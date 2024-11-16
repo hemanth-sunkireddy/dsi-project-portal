@@ -9,33 +9,28 @@ const VolunteerDashboard = () => {
   const navigate = useNavigate();
   const [date, setDate] = useState(new Date());
   const [camps, setCamps] = useState([]);
-  const [username, setUsername] = useState('');
   const [selectedDateCamps, setSelectedDateCamps] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const today = new Date();
+  const userName = localStorage.getItem('name');
 
   useEffect(() => {
     fetchCamps();
-    fetchUserDetails();
   }, []);
 
   const fetchCamps = async () => {
     try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found');
+        return;
+      }
       const response = await axios.get('/api/auth/camps');
-      setCamps(response.data);
+      const volunteerCamps = response.data.filter(camp => camp.volunteer === userName);
+      setCamps(volunteerCamps);
+      console.log(volunteerCamps);
     } catch (error) {
       console.error('Error fetching camps:', error);
-    }
-  };
-
-  const fetchUserDetails = async () => {
-    try {
-      const response = await axios.get('/api/auth/user', {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      });
-      setUsername(response.data.name);
-    } catch (error) {
-      console.error('Error fetching user details:', error);
     }
   };
 
@@ -54,34 +49,34 @@ const VolunteerDashboard = () => {
     setSelectedDateCamps([]);
   };
 
-//   const tileClassName = ({ date, view }) => {
-//     if (view === 'month') {
-//       const hasCampOnDate = camps.some(camp => new Date(camp.dateTime).toDateString() === date.toDateString());
-//       if (hasCampOnDate) {
-//         return 'highlighted-date';
-//       }
-//     }
-//     return null;
-//   };
-const tileClassName = ({ date, view }) => {
+  //   const tileClassName = ({ date, view }) => {
+  //     if (view === 'month') {
+  //       const hasCampOnDate = camps.some(camp => new Date(camp.dateTime).toDateString() === date.toDateString());
+  //       if (hasCampOnDate) {
+  //         return 'highlighted-date';
+  //       }
+  //     }
+  //     return null;
+  //   };
+  const tileClassName = ({ date, view }) => {
     if (view === 'month') {
       const isOngoingOrUpcomingCamp = camps.some(camp => {
         const campDate = new Date(camp.dateTime);
         return campDate.toDateString() === date.toDateString() && campDate >= today;
       });
-      
+
       return isOngoingOrUpcomingCamp ? 'highlighted-date' : null;
     }
     return null;
   };
-  
+
 
   return (
-    <div className="dashboard-container">
+    <div>
       <header className="dashboard-header">
         <h1>Dashboard - Volunteer</h1>
         <div className="header-right">
-          <span>Hi there, {username}</span>
+          <span style={{color: 'black'}}>Hi there, {userName}</span>
           <button onClick={() => navigate('/profile')} className="profile-button">Profile</button>
           <button onClick={() => navigate('/login')} className="logout-button">Logout</button>
         </div>
@@ -91,17 +86,17 @@ const tileClassName = ({ date, view }) => {
         <div className="dashboard-cards">
           <div className="dashboard-card" onClick={() => navigate('/camps-in-progress', { state: { camps: ongoingCamps } })}>
             <h2>Camps In Progress</h2>
-            <p>List of Camps scheduled for today.</p>
+            <p style={{color: 'black'}}>List of Camps scheduled for today.</p>
             <button>View</button>
           </div>
           <div className="dashboard-card" onClick={() => navigate('/completed-camps', { state: { camps: completedCamps } })}>
             <h2>Completed Camps</h2>
-            <p>List of Camps completed in the past.</p>
+            <p style={{color: 'black'}}>List of Camps completed in the past.</p>
             <button>View</button>
           </div>
           <div className="dashboard-card" onClick={() => navigate('/upcoming-camps', { state: { camps: upcomingCamps } })}>
             <h2>Upcoming Camps</h2>
-            <p>List of Camps scheduled for future dates.</p>
+            <p style={{color: 'black'}}>List of Camps scheduled for future dates.</p>
             <button>View</button>
           </div>
         </div>
@@ -118,18 +113,17 @@ const tileClassName = ({ date, view }) => {
       </div>
 
       {showPopup && (
-        <div className="popup-overlay">
-          <div className="popup-content">
+        <div class="popup-overlay">
+          <div class="popup-content">
             <h3>Camps Scheduled for {date.toDateString()}</h3>
             {selectedDateCamps.length > 0 ? (
-              <table className="camps-table">
+              <table className="camps-table" style={{color: 'black'}}>
                 <thead>
                   <tr>
                     <th>Camp ID</th>
                     <th>School Name</th>
                     <th>Location</th>
                     <th>Date</th>
-                    <th>Volunteer</th>
                     <th>Doctor</th>
                   </tr>
                 </thead>
@@ -140,7 +134,6 @@ const tileClassName = ({ date, view }) => {
                       <td>{camp.schoolName}</td>
                       <td>{camp.location}</td>
                       <td>{new Date(camp.dateTime).toLocaleDateString()}</td>
-                      <td>{camp.volunteer}</td>
                       <td>{camp.doctor}</td>
                     </tr>
                   ))}
