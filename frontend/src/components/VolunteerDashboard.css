@@ -86,13 +86,14 @@
 
 }
 h2 {
-  margin-left: 5px;
+  margin-left: 0px;
+  color:#333333;
 }
 .react-calendar {
   width: 100%;
   max-width: 400px;
   align-items: center;
-  margin-left: 500px;
+  margin-left: 550px;
   background-color: #fff;
   border: 1px solid #dcdcdc;
   border-radius: 8px;
