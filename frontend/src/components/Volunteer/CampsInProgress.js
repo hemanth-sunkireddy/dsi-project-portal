@@ -70,7 +70,7 @@ const CampsInProgress = () => {
         </div>
         <div
           style={{ marginBottom: '20px', cursor: 'pointer' }}
-          onClick={() => navigate('/home')}
+          onClick={() => navigate('/dashboard')}
         >
           <i className="fa fa-home" style={{ marginRight: '10px' }}></i> Home
         </div>
@@ -113,7 +113,7 @@ const CampsInProgress = () => {
           }}
         >
           <div>
-            <img src="logo.png" alt="Company Logo" style={{ height: '40px' }} />
+            <img src="./Choice_Foundation.png" alt="Company Logo" style={{ height: '40px' }} />
           </div>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <i
@@ -141,7 +141,7 @@ const CampsInProgress = () => {
               marginRight: '10px',
             }}
           />
-          <button
+          {/* <button
             style={{
               backgroundColor: '#007bff',
               color: 'white',
@@ -153,9 +153,9 @@ const CampsInProgress = () => {
             onClick={handleFilterSubmit}
           >
             Filters
-          </button>
+          </button> */}
           {/* Dropdown for filters */}
-          <div style={{ position: 'relative', display: 'inline-block', marginLeft: '10px' }}>
+          {/* <div style={{ position: 'relative', display: 'inline-block', marginLeft: '10px' }}>
             <input
               type="date"
               value={filters.startDate}
@@ -169,7 +169,7 @@ const CampsInProgress = () => {
               value={filters.endDate}
               onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
             />
-          </div>
+          </div> */}
         </div>
 
         {/* Table */}

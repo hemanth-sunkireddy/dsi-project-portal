@@ -6,14 +6,36 @@ const CompletedCamps = () => {
   const navigate = useNavigate();
   const user_name = localStorage.getItem('name');
   const [filteredCamps, setFilteredCamps] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filters, setFilters] = useState({
+    startDate: '',
+    endDate: '',
+  });
   const { camps } = location.state || { camps: [] };
-  console.log({ camps });
 
-  // Display only that volunteer camps
+  // Filter camps based on volunteer's involvement, search term, and date range
   const filterCamps = () => {
-    const filtered = camps.filter(
-      (camp) => camp.volunteer === user_name || camp.doctor === user_name
+    let filtered = camps.filter(
+      (camp) =>
+        (camp.volunteer === user_name || camp.doctor === user_name) &&
+        (camp.campID.includes(searchTerm) ||
+          camp.schoolName.toLowerCase().includes(searchTerm.toLowerCase()))
     );
+
+    // If From Date is selected, filter by startDate
+    if (filters.startDate) {
+      filtered = filtered.filter(
+        (camp) => new Date(camp.dateTime) >= new Date(filters.startDate)
+      );
+    }
+
+    // If To Date is selected, filter by endDate
+    if (filters.endDate) {
+      filtered = filtered.filter(
+        (camp) => new Date(camp.dateTime) <= new Date(filters.endDate)
+      );
+    }
+
     setFilteredCamps(filtered);
   };
 
@@ -22,81 +44,231 @@ const CompletedCamps = () => {
     navigate(`/camp-details`);
   };
 
+  const handleClearDates = () => {
+    setFilters({
+      startDate: '',
+      endDate: '',
+    });
+  };
+
   useEffect(() => {
     if (camps.length > 0) {
       filterCamps();
     }
-  }, [camps]);
+  }, [camps, searchTerm, filters]);
 
   return (
-    <div style={{
-      backgroundColor: 'white',
-      minHeight: '100vh',
-      display: 'flex',
-      justifyContent: 'center',
-      paddingLeft: '20px',
-      paddingRight: '20px',
-      paddingTop: '0', // Ensures no space at the top
-      margin: 0 // Ensures no margin is applied
-    }}>
-      <div style={{
-        width: '100%',
-        maxWidth: '800px',
-        padding: '20px',  // Adds space inside the container
-        boxSizing: 'border-box',
-        textAlign: 'center'
-      }}>
-        <h2 style={{ color: 'black' }}>Completed Camps</h2>
-        {filteredCamps.length > 0 ? (
-          <table className="camps-table" style={{
-            color: 'black',
-            width: '100%',
-            borderCollapse: 'collapse',
-            margin: '0 auto' // Centers the table horizontally
-          }}>
-            <thead>
-              <tr>
-                <th>Camp ID</th>
-                <th>School Name</th>
-                <th>Location</th>
-                <th>Date</th>
-                <th>Students Registered</th>
-                <th>+ve Result after screening</th>
-                <th> Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredCamps.map((camp) => (
-                <tr key={camp.campID} onClick={() => handleRowClick(camp.campID)}>
-                  <td>{camp.campID}</td>
-                  <td>{camp.schoolName}</td>
-                  <td>{camp.location}</td>
-                  <td>{new Date(camp.dateTime).toLocaleDateString()}</td>
-                  <td>{camp.studentsRegistered}</td>
-                  <td>{camp.studentsPositive}</td>
-                  <td>
-                    <button
-                      style={{
-                        backgroundColor: '#007bff', // Blue background
-                        color: 'white',
-                        border: 'none',
-                        padding: '10px 30px', // Padding to make the button wider
-                        cursor: 'pointer',
-                        borderRadius: '4px',
-                        whiteSpace: 'nowrap' // Ensures the text stays on a single line
-                      }}
-                      onClick={() => handleRowClick(camp.campID)}
-                    >
-                      Go to Camp
-                    </button>
-                  </td>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#fff' }}>
+      {/* Sidebar */}
+      <div
+        style={{
+          width: '250px',
+          background: 'linear-gradient(to bottom, #9F69B8, #4D8BCC)',
+          color: 'white',
+          display: 'flex',
+          flexDirection: 'column',
+          padding: '20px',
+          boxSizing: 'border-box',
+        }}
+      >
+        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '30px' }}>
+          <i className="fa fa-user-circle" style={{ marginRight: '10px', fontSize: '24px' }}></i>
+          <span style={{ fontWeight: 'bold', fontSize: '20px' }}>Volunteer</span>
+        </div>
+        <div
+          style={{ marginBottom: '20px', cursor: 'pointer' }}
+          onClick={() => navigate('/dashboard')}
+        >
+          <i className="fa fa-home" style={{ marginRight: '10px' }}></i> Home
+        </div>
+        <div
+          style={{ marginBottom: '20px', cursor: 'pointer' }}
+          onClick={() => navigate('/profile')}
+        >
+          <i className="fa fa-user" style={{ marginRight: '10px' }}></i> Profile
+        </div>
+        <div
+          style={{ marginBottom: '20px', cursor: 'pointer' }}
+          onClick={() => navigate('/support')}
+        >
+          <i className="fa fa-question-circle" style={{ marginRight: '10px' }}></i> Support
+        </div>
+        <div
+          style={{
+            marginTop: 'auto',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+          }}
+          onClick={() => {
+            localStorage.clear();
+            navigate('/login');
+          }}
+        >
+          <i className="fa fa-sign-out-alt" style={{ marginRight: '10px' }}></i> Log Out
+        </div>
+      </div>
+
+      {/* Main content */}
+      <div style={{ flex: 1, padding: '20px' }}>
+        <header
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '20px',
+          }}
+        >
+          <div>
+            <img src="./Choice_Foundation.png" alt="Company Logo" style={{ height: '40px' }} />
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <i
+              className="fa fa-user-circle"
+              style={{ fontSize: '30px', marginRight: '10px' }}
+            ></i>
+            <span style={{ color: 'black' }}>{user_name}</span>
+          </div>
+        </header>
+
+        <h2 style={{ color: 'black', marginBottom: '20px' }}>Completed Camps</h2>
+
+        {/* Search Bar and Date Range Filters */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          {/* Search Bar */}
+          <input
+            type="text"
+            placeholder="Search by Camp ID or School Name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              padding: '10px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              width: '100%',
+              maxWidth: '300px',
+            }}
+          />
+
+          {/* From Date Filter */}
+          {/* <div style={{ width: '130px' }}>
+            <input
+              id="toDate"
+              type="date"
+              value={filters.endDate}
+              onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+              style={{
+                padding: '10px',
+                marginLeft: '30px',
+                width: '100%',
+                borderRadius: '4px',
+                border: '1px solid #ccc',
+              }}
+            />
+          </div> */}
+
+          {/* To Date Filter */}
+          {/* <div style={{ width: '130px' }}>
+            <input
+              id="toDate"
+              type="date"
+              value={filters.endDate}
+              onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+              style={{
+                padding: '10px',
+                marginLeft: '60px',
+                width: '100%',
+                borderRadius: '4px',
+                border: '1px solid #ccc',
+              }}
+            />
+          </div> */}
+
+          {/* Clear Dates Button */}
+          {/* <button
+            onClick={handleClearDates}
+            style={{
+              padding: '10px 20px',
+              marginLeft: '100px',
+              backgroundColor: '#dc3545',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+            }}
+          >
+            Clear Dates
+          </button> */}
+        </div>
+
+        {/* Table */}
+        <div style={{ textAlign: 'center' }}>
+          {filteredCamps.length > 0 ? (
+            <table
+              className="camps-table"
+              style={{
+                color: 'black',
+                width: '100%',
+                borderCollapse: 'collapse',
+                marginBottom: '20px',
+                textAlign: 'center',
+              }}
+            >
+              <thead>
+                <tr style={{ backgroundColor: '#e9ecef' }}>
+                  <th>Camp ID</th>
+                  <th>School Name</th>
+                  <th>Location</th>
+                  <th>Date</th>
+                  <th>Students Registered</th>
+                  <th>+ve Result after screening</th>
+                  <th>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
-          <p style={{ color: 'black' }}>No completed camps available.</p>
-        )}
+              </thead>
+              <tbody>
+                {filteredCamps.map((camp) => (
+                  <tr
+                    key={camp.campID}
+                    style={{
+                      backgroundColor: '#f9f9fc',
+                      color: 'black',
+                    }}
+                    onClick={() => handleRowClick(camp.campID)}
+                  >
+                    <td>{camp.campID}</td>
+                    <td>{camp.schoolName}</td>
+                    <td>{camp.location}</td>
+                    <td>{new Date(camp.dateTime).toLocaleDateString()}</td>
+                    <td>{camp.studentsRegistered}</td>
+                    <td>{camp.studentsPositive}</td>
+                    <td>
+                      <button
+                        style={{
+                          backgroundColor: '#007bff',
+                          color: 'white',
+                          border: 'none',
+                          padding: '10px 30px',
+                          cursor: 'pointer',
+                          borderRadius: '4px',
+                        }}
+                        onClick={() => handleRowClick(camp.campID)}
+                      >
+                        Go to Camp
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p style={{ color: 'black' }}>No completed camps available.</p>
+          )}
+        </div>
       </div>
     </div>
   );
