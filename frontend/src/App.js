@@ -13,6 +13,7 @@ import CampsInProgress from './components/Volunteer/CampsInProgress';
 import CampDetails from './components/Volunteer/CampDetails';
 import ViewStudents from './components/Volunteer/ViewStudents';
 import Logout from './components/Logout';
+import CampDetailsStaff from './components/Staff/CampDetails';
 import ConductScreening from './components/ConductScreening';
 import StudentProfile from './components/StudentProfile';
 import StaffCompletedCamps from './components/Staff/CompletedCamps';
@@ -42,6 +43,7 @@ function App() {
         <Route path="/completed-camps" element={<CompletedCamps />} />
         <Route path="/camps-in-progress" element={<CampsInProgress />} />
         <Route path="/camp-details" element={<CampDetails />} />
+        <Route path="/camp-details-staff" element={<CampDetailsStaff />} />
         <Route path="/login" element={<Login setRole={setRole} />} />
         <Route path="/patients-list" element={<ViewStudents />} />
         <Route path="/student-profile" element={<StudentProfile />} />

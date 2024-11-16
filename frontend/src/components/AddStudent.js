@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './styles.css';
+import { useNavigate } from 'react-router-dom';
 
 const AddStudent = () => {
+  const navigate = useNavigate();
   const [Volunteer, setVolunteer] = useState('');
   const [student, setStudent] = useState({
     studentId: '',
@@ -23,7 +25,8 @@ const AddStudent = () => {
     e.preventDefault();
     try {
       await axios.post('/api/auth/addStudent', student);
-      alert('Student added successfully');
+      navigate('/patients-list');
+      
     } catch (error) {
       alert('Error adding student');
     }

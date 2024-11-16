@@ -85,21 +85,21 @@ const DashboardNGO = () => {
         <div className="dashboard-cards">
           <div className="dashboard-card" onClick={() => navigate('/schedule-camp')}>
             <h2>Schedule a Camp</h2>
-            <p>Schedule a new Screening camp</p>
+            <p style={{color: 'black'}}>Schedule a new Screening camp</p>
             <p><strong>Scheduled Today:</strong> {scheduledCampsForSelectedDate}</p>
             <button>Add Camp</button>
           </div>
           
           <div className="dashboard-card">
             <h2>Completed Camps</h2>
-            <p>List of Camps that have been completed successfully.</p>
+            <p style={{color: 'black'}}>List of Camps that have been completed successfully.</p>
             <p><strong>Total:</strong> {completedCamps.length}</p>
             <button onClick={() => navigate('/completed-camps-staff', { state: { camps: completedCamps } })}>View</button>
           </div>
           
           <div className="dashboard-card">
             <h2>Upcoming Camps</h2>
-            <p>List of Camps scheduled for the future.</p>
+            <p style={{color: 'black'}}>List of Camps scheduled for the future.</p>
             <p><strong>Total:</strong> {upcomingCamps.length}</p>
             <button onClick={() => navigate('/upcoming-camps-staff', { state: { camps: upcomingCamps } })}>View</button>
           </div>
