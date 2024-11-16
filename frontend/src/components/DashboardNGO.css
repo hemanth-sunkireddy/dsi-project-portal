@@ -219,6 +219,7 @@
 /* Popup content */
 .popup-content {
   background: white;
+  color: black;
   padding: 20px;
   border-radius: 8px;
   width: 80%;
@@ -257,7 +258,7 @@
   margin-top: 15px;
   padding: 8px 16px;
   background-color: #4CAF50;
-  color: white;
+  color: black;
   border: none;
   border-radius: 4px;
   cursor: pointer;

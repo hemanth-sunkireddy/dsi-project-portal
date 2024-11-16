@@ -58,16 +58,45 @@ router.post('/addVolunteer', async (req, res) => {
   }
 });
 
+// // Schedule a new camp
+// router.post('/scheduleCamp', async (req, res) => {
+//   try {
+//     const camp = new Camp(req.body);
+//     await camp.save();
+//     res.status(201).json({ message: 'Camp scheduled successfully' });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error scheduling camp', error });
+//   }
+// });
+
 // Schedule a new camp
 router.post('/scheduleCamp', async (req, res) => {
   try {
-    const camp = new Camp(req.body);
-    await camp.save();
-    res.status(201).json({ message: 'Camp scheduled successfully' });
+    // Find the last created camp by sorting in descending order of _id (or another unique field)
+    const lastCamp = await Camp.findOne().sort({ _id: -1 }).exec();
+
+    let nextCampNumber = 1; // Default to 1 if no camps exist
+    if (lastCamp && lastCamp.campID) {
+      const lastCampNumber = parseInt(lastCamp.campID.split('-')[1]); // Extract the number from 'Camp-X'
+      if (!isNaN(lastCampNumber)) {
+        nextCampNumber = lastCampNumber + 1;
+      }
+    }
+
+    // Create the new camp with the incremented Camp ID
+    const newCamp = new Camp({
+      ...req.body, // Spread the request body to include all other camp data
+      campID: `Camp-${nextCampNumber}` // Auto-generate Camp ID
+    });
+
+    await newCamp.save();
+    res.status(201).json({ message: 'Camp scheduled successfully', camp: newCamp });
   } catch (error) {
+    console.error('Error scheduling camp:', error);
     res.status(500).json({ message: 'Error scheduling camp', error });
   }
 });
+
 
 // Fetch all camps
 router.get('/camps', async (req, res) => {
