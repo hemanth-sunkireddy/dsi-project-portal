@@ -74,8 +74,20 @@ const CompletedMeetings = () => {
     <div className="dashboard-container">
       {/* Sidebar */}
       <div className="sidebar">
-        <div className="sidebar-header">
-          <span className="sidebar-title">Doctor</span>
+      <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          marginBottom: '30px' 
+        }}>
+          <i className="fa fa-user-circle" style={{ 
+            marginRight: '10px', 
+            fontSize: '24px' 
+          }}></i>
+          <span style={{ 
+            fontWeight: 'bold', 
+            fontSize: '20px' 
+          }}>Doctor</span>
         </div>
         
         <div className="sidebar-menu">

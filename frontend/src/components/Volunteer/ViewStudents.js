@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 const ViewStudents = () => {
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
-  const volunteerName = localStorage.getItem('name');
+  // const volunteerName = localStorage.getItem('name');
+  const  SelectedCamp = localStorage.getItem('camp-id');
   const [filteredStudents, setFilteredStudents] = useState([]);
 
   // Fetching students from the server
@@ -20,7 +21,7 @@ const ViewStudents = () => {
 
   // Display only the students associated with the selected volunteer
   const filterStudents = () => {
-    const filtered = students.filter((student) => student.volunteer === volunteerName);
+    const filtered = students.filter((student) => student.campId === SelectedCamp);
     setFilteredStudents(filtered);
     console.log(filtered);
   };
@@ -160,7 +161,7 @@ const ViewStudents = () => {
             </tbody>
         </table>        
         ) : (
-          <p>No students found for this volunteer.</p>
+          <p>No students Registered yet</p>
         )}
       </div>
     </div>

@@ -6,6 +6,7 @@ const Volunteer = require('../models/Volunteer');
 const Camp = require('../models/Camp');
 const auth = require('../middleware/authMiddleware');
 const User = require('../models/User')
+const Meeting = require('../models/Meeting')
 const router = express.Router();
 
 router.post('/register', register);
@@ -97,6 +98,15 @@ router.get('/camps', async (req, res) => {
   }
 });
 
+router.get('/meetings', async (req, res) => {
+  try {
+    const meetings = await Meeting.find();
+    res.json(meetings);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch camps', error });
+  }
+});
+
 // Fetch all users
 router.get('/students', async (req, res) => { 
   try {
@@ -134,4 +144,48 @@ router.put('/updateprofile/:name', async (req, res) => {
     res.status(500).json({ success: false, message: 'Error updating profile' });
   }
 });
+
+router.post('/scheduleMeeting', async (req, res) => {
+  const { campID, status,meetingDate,meetingTime,doctor } = req.body;
+  try {
+    const camp = await Camp.findOne({ campID: campID });
+    if (!camp) {
+      return res.status(404).send({ message: 'Camp not found' });
+    }
+
+    camp.status = status;
+
+    await camp.save(); 
+    const lastMeeting = await Meeting.findOne().sort({ _id: -1 }).exec();
+
+    let nextMeetNumber = 1; // Default to 1 if no meetings exist
+
+    // If there's a last meeting and it has a valid meetid
+    if (lastMeeting && lastMeeting.meetid) {
+      const lastMeetNumber = parseInt(lastMeeting.meetid.split('-')[1]); // Extract the number from 'Meeting-X'
+      if (!isNaN(lastMeetNumber)) {
+        nextMeetNumber = lastMeetNumber + 1; // Increment the last meeting number
+      }
+    }
+
+    const newMeetid = `Meeting-${nextMeetNumber}`;
+    const dateTimeString = `${meetingDate}T${meetingTime}:00`; 
+    const dateTime = new Date(dateTimeString);
+    const meeting = new Meeting({
+      meetID: newMeetid,
+      dateTime: dateTime,
+      campID: campID,
+      doctor: doctor,
+      status: "scheduled",
+    });
+
+    await meeting.save();
+
+    res.status(200).send({ message: 'Camp updated successfully', camp });
+  } catch (error) {
+    console.error('Error updating camp:', error);
+    res.status(500).send({ message: error });
+  }
+});
+
 module.exports = router;

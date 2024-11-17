@@ -1,54 +1,78 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const CompletedMeetings = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const user_name = localStorage.getItem('name');
-  const [filteredCamps, setFilteredCamps] = useState([]);
+  const [filteredMeetings, setFilteredMeetings] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Number of items per page
-  const { camps } = location.state || { camps: [] };
+  const [filters, setFilters] = useState({
+    startDate: '',
+    endDate: '',
+  });
+  const [meetings, setMeetings] = useState([]);
+  const fetchMeetings = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found');
+        return;
+      }
+      const response = await axios.get('/api/auth/meetings');
+      const doctorMeetings = response.data.filter(meeting => meeting.doctor === user_name);
+      setMeetings(doctorMeetings); 
+      console.log(doctorMeetings);
+    } catch (error) {
+      console.error('Error fetching camps:', error);
+    }
+  };
+  
+  // Fetch camps when the component mounts
+  useEffect(() => {
+    fetchMeetings();
+  }, [user_name]);
 
-  const [filters, setFilters] = useState({ startDate: '', endDate: '' });
-
-  // Filter camps based on the user and search term
-  const filterCamps = () => {
-    const filtered = camps.filter(
-      (camp) =>
-        camp.volunteer === user_name &&
-        (!searchTerm || camp.campID.includes(searchTerm))
+  const filterMeetings = () => {
+    let filtered = meetings.filter(
+      (meeting) =>
+        (meeting.doctor === user_name ) && (meeting.status === "completed")
     );
-    setFilteredCamps(filtered);
+
+    // Filter by startDate if selected
+    if (filters.startDate) {
+      filtered = filtered.filter(
+        (meeting) => new Date(meeting.dateTime) >= new Date(filters.startDate)
+      );
+    }
+
+    // Filter by endDate if selected
+    if (filters.endDate) {
+      filtered = filtered.filter(
+        (meeting) => new Date(meeting.dateTime) <= new Date(filters.endDate)
+      );
+    }
+
+    setFilteredMeetings(filtered);
+  };
+
+  const handleRowClick = (meetingID) => {
+    localStorage.setItem('meeting-id', meetingID);
+    navigate(`/meeting-details`);
+  };
+
+  const handleClearDates = () => {
+    setFilters({
+      startDate: '',
+      endDate: '',
+    });
   };
 
   useEffect(() => {
-    if (camps.length > 0) {
-      filterCamps();
+    if (meetings.length > 0) {
+      filterMeetings();
     }
-  }, [camps, searchTerm]);
-
-  const handleRowClick = (campID) => {
-    localStorage.setItem('camp-id', campID);
-    navigate(`/camp-details`);
-  };
-
-  const handleFilterSubmit = () => {
-    // Implement date filtering logic based on filters.startDate and filters.endDate
-    console.log('Filters applied:', filters);
-  };
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const paginatedCamps = filteredCamps.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const totalPages = Math.ceil(filteredCamps.length / itemsPerPage);
+  }, [meetings, filters]);
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#fff' }}>
@@ -64,9 +88,20 @@ const CompletedMeetings = () => {
           boxSizing: 'border-box',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '30px' }}>
-          <i className="fa fa-user-circle" style={{ marginRight: '10px', fontSize: '24px' }}></i>
-          <span style={{ fontWeight: 'bold', fontSize: '20px' }}>Doctor</span>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          marginBottom: '30px' 
+        }}>
+          <i className="fa fa-user-circle" style={{ 
+            marginRight: '10px', 
+            fontSize: '24px' 
+          }}></i>
+          <span style={{ 
+            fontWeight: 'bold', 
+            fontSize: '20px' 
+          }}>Doctor</span>
         </div>
         <div
           style={{ marginBottom: '20px', cursor: 'pointer' }}
@@ -126,126 +161,115 @@ const CompletedMeetings = () => {
 
         <h2 style={{ color: 'black', marginBottom: '20px' }}>Completed Meetings</h2>
 
-        {/* Search and Filters */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', width: '30%', marginLeft: '50px' }}>
+        {/* Search Bar and Date Range Filters */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          {/* Search Bar */}
           <input
             type="text"
-            placeholder="Search by camp ID"
+            placeholder="Search by Meeting ID or Topic"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{
               padding: '10px',
               border: '1px solid #ccc',
               borderRadius: '4px',
-              flex: 1,
-              marginRight: '10px',
+              width: '100%',
+              maxWidth: '300px',
             }}
           />
-          {/* <button
-            style={{
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              padding: '10px 20px',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-            onClick={handleFilterSubmit}
-          >
-            Filters
-          </button> */}
-          {/* Dropdown for filters */}
-          {/* <div style={{ position: 'relative', display: 'inline-block', marginLeft: '10px' }}>
+
+          {/* Date Filters
+          <div style={{ marginLeft: '20px', display: 'flex', gap: '20px' }}>
             <input
               type="date"
               value={filters.startDate}
-              onChange={(e) =>
-                setFilters({ ...filters, startDate: e.target.value })
-              }
-              style={{ marginRight: '10px' }}
+              onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+              style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
             />
             <input
               type="date"
               value={filters.endDate}
               onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+              style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
             />
-          </div> */}
-        </div>
-
-        {/* Table */}
-        <table
-          style={{
-            width: '80%',
-            borderCollapse: 'collapse',
-            marginBottom: '20px',
-            textAlign: 'center',
-            justifySelf: 'center'
-          }}
-        >
-          <thead style={{backgroundColor: '#50ac54'}}>
-            <tr style={{ color: 'black', height: 30 }}>
-              <th>Camp ID</th>
-              <th>School Name</th>
-              <th>Location</th>
-              <th>Students Registered</th>
-              <th>Students Screened</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedCamps.map((camp, index) => (
-              <tr
-                key={camp.campID}
-                style={{
-                  backgroundColor: index % 2 === 0 ? '#f9f9fc' : '#f4f4ff',
-                  color: 'black',
-                  padding: 25
-                }}
-              >
-                <td>{camp.campID}</td>
-                <td>{camp.schoolName}</td>
-                <td>{camp.location}</td>
-                <td>{camp.studentsRegistered}</td>
-                <td>{camp.studentsScreened}</td>
-                <td>
-                  <button
-                    style={{
-                      backgroundColor: '#007bff',
-                      color: 'white',
-                      border: 'none',
-                      padding: '10px',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => handleRowClick(camp.campID)}
-                  >
-                    Go to Camp
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        {/* Pagination */}
-        <div style={{ textAlign: 'center' }}>
-          {Array.from({ length: totalPages }, (_, index) => (
             <button
-              key={index}
-              onClick={() => handlePageChange(index + 1)}
+              onClick={handleClearDates}
               style={{
-                margin: '0 5px',
-                padding: '5px 10px',
-                backgroundColor: currentPage === index + 1 ? '#007bff' : '#f0f0f0',
-                color: currentPage === index + 1 ? 'white' : 'black',
+                padding: '10px 20px',
+                backgroundColor: '#dc3545',
+                color: 'white',
                 border: 'none',
                 borderRadius: '4px',
                 cursor: 'pointer',
               }}
             >
-              {index + 1}
+              Clear Dates
             </button>
-          ))}
+          </div> */}
+        </div>
+
+        {/* Table */}
+        <div style={{ textAlign: 'center' }}>
+          {filteredMeetings.length > 0 ? (
+            <table
+              className="meetings-table"
+              style={{
+                color: 'black',
+                width: '100%',
+                borderCollapse: 'collapse',
+                marginTop: '20px',
+              }}
+            >
+              <thead>
+                <tr style={{ backgroundColor: '#e9ecef' }}>
+                  <th>Meeting ID</th>
+                  <th>Camp Id</th>
+                  <th>DatetTime</th>
+                  <th>Students Diagnosed +ve</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredMeetings.map((meeting) => (
+                  <tr
+                    key={meeting.meetingID}
+                    style={{
+                      backgroundColor: '#f9f9fc',
+                      color: 'black',
+                    }}
+                    onClick={() => handleRowClick(meeting.meetingID)}
+                  >
+                    <td>{meeting.meetID}</td>
+                    <td>{meeting.campID}</td>
+                    <td>{new Date(meeting.dateTime).toLocaleDateString()}</td>
+                    <td>{"to be implemented"}</td>
+                    <td>
+                      <button
+                        style={{
+                          backgroundColor: '#007bff',
+                          color: 'white',
+                          border: 'none',
+                          padding: '10px 30px',
+                          cursor: 'pointer',
+                          borderRadius: '4px',
+                        }}
+                        onClick={() => handleRowClick(meeting.meetingID)}
+                      >
+                        View Details
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p style={{ color: 'black' }}>No completed meetings available.</p>
+          )}
         </div>
       </div>
     </div>

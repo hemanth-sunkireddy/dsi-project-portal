@@ -1,57 +1,85 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 const UnscheduledMeetings = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const user_name = localStorage.getItem('name');
-  const [filteredCamps, setFilteredCamps] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; // Number of items per page
-  const { camps } = location.state || { camps: [] };
-
-  const [filters, setFilters] = useState({ startDate: '', endDate: '' });
-
-  // Filter camps based on the user and search term
-  const filterCamps = () => {
-    const filtered = camps.filter(
-      (camp) =>
-        camp.volunteer === user_name &&
-        (!searchTerm || camp.campID.includes(searchTerm))
-    );
-    setFilteredCamps(filtered);
-  };
-
-  useEffect(() => {
-    if (camps.length > 0) {
-      filterCamps();
+  const [unscheduledCamps, setUnscheduledCamps] = useState([]);
+  const [selectedCampID, setSelectedCampID] = useState(null);
+  const [meetingDate, setMeetingDate] = useState('');
+  const [meetingTime, setMeetingTime] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [camps, setCamps] = useState([]);
+  const role = localStorage.getItem('role');
+ 
+  const fetchCamps = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found');
+        return;
+      }
+      const response = await axios.get('/api/auth/camps');
+      const volunteerCamps = response.data.filter(camp => camp.doctor === user_name);
+      setCamps(volunteerCamps); // Update the state with fetched camps
+      console.log(volunteerCamps);
+    } catch (error) {
+      console.error('Error fetching camps:', error);
     }
-  }, [camps, searchTerm]);
+  };
+  
+  // Fetch camps when the component mounts
+  useEffect(() => {
+    fetchCamps();
+  }, [user_name]);
+  
+  // Update `unscheduledCamps` whenever `camps` changes
+  useEffect(() => {
+    console.log('yam', camps.length);
+    const filtered = camps.filter((camp) => camp.status === 'completed' && camp.doctor === user_name);
+    setUnscheduledCamps(filtered);
+  }, [camps]); 
+  
 
-  const handleRowClick = (campID) => {
-    localStorage.setItem('camp-id', campID);
-    navigate(`/camp-details`);
+  const handleScheduleClick = (camp) => {
+    console.log(camp.campID);
+    setSelectedCampID(camp.campID);
+    setIsModalOpen(true);
   };
 
-  const handleFilterSubmit = () => {
-    // Implement date filtering logic based on filters.startDate and filters.endDate
-    console.log('Filters applied:', filters);
+  const handleScheduleMeeting = async () => {
+    if (!meetingDate || !meetingTime) {
+      alert('Please select both date and time.');
+      return;
+    }
+  
+    try {
+      const data = {
+        campID: selectedCampID,
+        status: 'meeting_scheduled',
+        meetingDate,
+        meetingTime,
+        doctor: user_name,
+      };
+      await axios.post('/api/auth/scheduleMeeting', data);
+      const updatedCamps = unscheduledCamps.map((camp) =>
+        camp.campID === selectedCampID
+          ? { ...camp, status: 'meeting_scheduled' }
+          : camp
+      );
+  
+      setUnscheduledCamps(updatedCamps.filter((camp) => camp.status === 'completed'));
+      setIsModalOpen(false);
+  
+      alert(`Meeting scheduled for Camp ID ${selectedCampID} on ${meetingDate} at ${meetingTime}`);
+    } catch (error) {
+      console.error('Error scheduling meeting:', error);
+      alert('Error scheduling the meeting. Please try again.');
+    }
   };
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
-
-  const paginatedCamps = filteredCamps.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const totalPages = Math.ceil(filteredCamps.length / itemsPerPage);
 
   return (
-    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#fff' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
       {/* Sidebar */}
       <div
         style={{
@@ -64,9 +92,20 @@ const UnscheduledMeetings = () => {
           boxSizing: 'border-box',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '30px' }}>
-          <i className="fa fa-user-circle" style={{ marginRight: '10px', fontSize: '24px' }}></i>
-          <span style={{ fontWeight: 'bold', fontSize: '20px' }}>Doctor</span>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          marginBottom: '30px' 
+        }}>
+          <i className="fa fa-user-circle" style={{ 
+            marginRight: '10px', 
+            fontSize: '24px' 
+          }}></i>
+          <span style={{ 
+            fontWeight: 'bold', 
+            fontSize: '20px' 
+          }}>{role}</span>
         </div>
         <div
           style={{ marginBottom: '20px', cursor: 'pointer' }}
@@ -126,127 +165,120 @@ const UnscheduledMeetings = () => {
 
         <h2 style={{ color: 'black', marginBottom: '20px' }}>Unscheduled Meetings</h2>
 
-        {/* Search and Filters */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', width: '30%', marginLeft: '50px' }}>
-          <input
-            type="text"
-            placeholder="Search by camp ID"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              padding: '10px',
-              border: '1px solid #ccc',
-              borderRadius: '4px',
-              flex: 1,
-              marginRight: '10px',
-            }}
-          />
-          {/* <button
-            style={{
-              backgroundColor: '#007bff',
-              color: 'white',
-              border: 'none',
-              padding: '10px 20px',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-            onClick={handleFilterSubmit}
-          >
-            Filters
-          </button> */}
-          {/* Dropdown for filters */}
-          {/* <div style={{ position: 'relative', display: 'inline-block', marginLeft: '10px' }}>
-            <input
-              type="date"
-              value={filters.startDate}
-              onChange={(e) =>
-                setFilters({ ...filters, startDate: e.target.value })
-              }
-              style={{ marginRight: '10px' }}
-            />
-            <input
-              type="date"
-              value={filters.endDate}
-              onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-            />
-          </div> */}
-        </div>
-
         {/* Table */}
-        <table
-          style={{
-            width: '80%',
-            borderCollapse: 'collapse',
-            marginBottom: '20px',
-            textAlign: 'center',
-            justifySelf: 'center'
-          }}
-        >
-          <thead style={{backgroundColor: '#50ac54'}}>
-            <tr style={{ color: 'black', height: 30 }}>
-              <th>Camp ID</th>
-              <th>School Name</th>
-              <th>Location</th>
-              <th>Students Registered</th>
-              <th>Students Screened</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedCamps.map((camp, index) => (
-              <tr
-                key={camp.campID}
-                style={{
-                  backgroundColor: index % 2 === 0 ? '#f9f9fc' : '#f4f4ff',
-                  color: 'black',
-                  padding: 25
-                }}
-              >
-                <td>{camp.campID}</td>
-                <td>{camp.schoolName}</td>
-                <td>{camp.location}</td>
-                <td>{camp.studentsRegistered}</td>
-                <td>{camp.studentsScreened}</td>
-                <td>
-                  <button
-                    style={{
-                      backgroundColor: '#007bff',
-                      color: 'white',
-                      border: 'none',
-                      padding: '10px',
-                      borderRadius: '4px',
-                      cursor: 'pointer',
-                    }}
-                    onClick={() => handleRowClick(camp.campID)}
-                  >
-                    Go to Camp
-                  </button>
-                </td>
+        {unscheduledCamps.length > 0 ? (
+          <table
+            style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              margin: '20px 0',
+              backgroundColor: '#fff',
+            }}
+          >
+            <thead>
+              <tr style={{ backgroundColor: '#e9ecef' }}>
+                <th>Camp ID</th>
+                <th>School Name</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {unscheduledCamps.map((camp) => (
+                <tr key={camp.campID} style={{ textAlign: 'center' }}>
+                  <td>{camp.campID}</td>
+                  <td>{camp.schoolName}</td>
+                  <td>{camp.location}</td>
+                  <td>{camp.status}</td>
+                  <td>
+                    <button
+                      style={{
+                        backgroundColor: '#4D8BCC',
+                        color: 'white',
+                        border: 'none',
+                        padding: '5px 10px',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => handleScheduleClick(camp)}
+                    >
+                      Schedule Meeting
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>No completed camps available for scheduling.</p>
+        )}
 
-        {/* Pagination */}
-        <div style={{ textAlign: 'center' }}>
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index}
-              onClick={() => handlePageChange(index + 1)}
+        {/* Modal */}
+        {isModalOpen && (
+          <div
+            style={{
+              position: 'fixed',
+              top: '0',
+              left: '0',
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <div
               style={{
-                margin: '0 5px',
-                padding: '5px 10px',
-                backgroundColor: currentPage === index + 1 ? '#007bff' : '#f0f0f0',
-                color: currentPage === index + 1 ? 'white' : 'black',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
+                backgroundColor: '#fff',
+                padding: '20px',
+                borderRadius: '5px',
+                textAlign: 'center',
+                width: '300px',
               }}
             >
-              {index + 1}
-            </button>
-          ))}
-        </div>
+              <h3>Schedule Meeting</h3>
+              {/* <p>{`Camp: ${selectedCamp.schoolName}`}</p> */}
+              <input
+                type="date"
+                value={meetingDate}
+                onChange={(e) => setMeetingDate(e.target.value)}
+                style={{ display: 'block', margin: '10px auto', width: '80%' }}
+              />
+              <input
+                type="time"
+                value={meetingTime}
+                onChange={(e) => setMeetingTime(e.target.value)}
+                style={{ display: 'block', margin: '10px auto', width: '80%' }}
+              />
+              <button
+                style={{
+                  backgroundColor: '#4D8BCC',
+                  color: 'white',
+                  border: 'none',
+                  padding: '5px 10px',
+                  cursor: 'pointer',
+                  margin: '10px',
+                }}
+                onClick={handleScheduleMeeting}
+              >
+                Schedule
+              </button>
+              <button
+                style={{
+                  backgroundColor: '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  padding: '5px 10px',
+                  cursor: 'pointer',
+                }}
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
