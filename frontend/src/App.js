@@ -28,6 +28,7 @@ import CompletedMeetings from './components/Doctor/CompletedMeetings';
 import ScheduledMeetings from './components/Doctor/ScheduledMeetings';
 import UnscheduledMeetings from './components/Doctor/UnscheduledMeetings';
 import AllPatients from './components/Therapist/CompletedCamps';
+import LandingPage from './components/LandingPage';
 function App() {
   const [role, setRole] = useState(() => localStorage.getItem('role') || null);
 
@@ -42,11 +43,12 @@ function App() {
   return (
     <Router>
       <Routes>
+      <Route path="/landing-page" element={<LandingPage/>} />
       <Route path="/all-patients" element={<AllPatients/>} />
         <Route path="/completed-meetings" element={<CompletedMeetings/>} />
         <Route path="/scheduled-meetings" element={<ScheduledMeetings/>} />
         <Route path="/unscheduled-meetings" element={<UnscheduledMeetings/>} />
-        <Route path="/" element={<Navigate to="/login" />} />
+        <Route path="/" element={<Navigate to="/landing-page" />} />
         <Route path="/register" element={<Register />} />
         <Route path="/upcoming-camps" element={<UpcomingCamps />} />
         <Route path="/completed-camps" element={<CompletedCamps />} />
@@ -76,11 +78,7 @@ function App() {
         <Route path="/add-student" element={<AddStudent />} />
         <Route path="/schedule-camp" element={<ScheduleCamp />} />
       </Routes>
-
-      {/* Logout Button for Convenience */}
-      {/* {role && <Logout setRole={setRole} />} Only show Logout if a role is set */}
     </Router>
   );
 }
-
 export default App;
