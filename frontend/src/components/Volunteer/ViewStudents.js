@@ -114,10 +114,10 @@ const ViewStudents = () => {
               <th>School Name</th>
               <th>Status</th>
               <th>Phone</th>
-              <th>Action</th> {/* Added column for Action */}
+              <th>Action</th>
             </tr>
-          </thead>
-          <tbody>
+            </thead>
+            <tbody>
             {filteredStudents.map((student) => (
               <tr
                 key={student.studentId}
@@ -126,8 +126,12 @@ const ViewStudents = () => {
                   backgroundColor: '#f9f9f9',
                   transition: 'background-color 0.3s',
                 }}
-                onMouseEnter={(e) => (e.target.style.backgroundColor = '#e6f7ff')}
-                onMouseLeave={(e) => (e.target.style.backgroundColor = '#f9f9f9')}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = '#e6f7ff';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = '#f9f9f9';
+                }}
               >
                 <td>{student.studentId}</td>
                 <td>{student.name}</td>
@@ -153,7 +157,7 @@ const ViewStudents = () => {
                 </td>
               </tr>
             ))}
-          </tbody>
+            </tbody>
         </table>        
         ) : (
           <p>No students found for this volunteer.</p>
