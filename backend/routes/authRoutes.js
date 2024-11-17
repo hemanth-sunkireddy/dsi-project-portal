@@ -58,17 +58,6 @@ router.post('/addVolunteer', async (req, res) => {
   }
 });
 
-// // Schedule a new camp
-// router.post('/scheduleCamp', async (req, res) => {
-//   try {
-//     const camp = new Camp(req.body);
-//     await camp.save();
-//     res.status(201).json({ message: 'Camp scheduled successfully' });
-//   } catch (error) {
-//     res.status(500).json({ message: 'Error scheduling camp', error });
-//   }
-// });
-
 // Schedule a new camp
 router.post('/scheduleCamp', async (req, res) => {
   try {

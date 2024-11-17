@@ -6,6 +6,8 @@ import AddDoctor from './components/AddDoctor';
 import AddStudent from './components/AddStudent';
 import ScheduleCamp from './components/ScheduleCamp';
 import DashboardNGO from './components/DashboardNGO';
+import DoctorDashboard from './components/DoctorDashboard';
+import TherapistDashboard from './components/TherapistDashboard'
 import VolunteerDashboard from './components/VolunteerDashboard'; // Import Volunteer Dashboard
 import UpcomingCamps from './components/Volunteer/UpcomingCamps';
 import CompletedCamps from './components/Volunteer/CompletedCamps';
@@ -22,7 +24,10 @@ import ProfilePage from './components/ProfilePage';
 import SuportPage from './components/HelpDeskPage'
 import EditProfile from './components/EditProfile'
 import './components/auth.css';
-
+import CompletedMeetings from './components/Doctor/CompletedMeetings';
+import ScheduledMeetings from './components/Doctor/ScheduledMeetings';
+import UnscheduledMeetings from './components/Doctor/UnscheduledMeetings';
+import AllPatients from './components/Therapist/CompletedCamps';
 function App() {
   const [role, setRole] = useState(() => localStorage.getItem('role') || null);
 
@@ -37,6 +42,10 @@ function App() {
   return (
     <Router>
       <Routes>
+      <Route path="/all-patients" element={<AllPatients/>} />
+        <Route path="/completed-meetings" element={<CompletedMeetings/>} />
+        <Route path="/scheduled-meetings" element={<ScheduledMeetings/>} />
+        <Route path="/unscheduled-meetings" element={<UnscheduledMeetings/>} />
         <Route path="/" element={<Navigate to="/login" />} />
         <Route path="/register" element={<Register />} />
         <Route path="/upcoming-camps" element={<UpcomingCamps />} />
@@ -56,11 +65,11 @@ function App() {
         {/* Conditional Routing Based on Role */}
         {/* Conditional Routing Based on Role */}
         <Route path="/dashboard" element={
-          role === 'Doctor' ? <AddDoctor /> :
-          role === 'NGO Worker' ? <DashboardNGO /> :
-          role === 'Volunteer' ? <VolunteerDashboard /> : // Render Volunteer Dashboard for Volunteers
-          role === 'Therapist' ? <ScheduleCamp /> :
-          <Navigate to="/login" />
+          role === 'Doctor' ? <DoctorDashboard /> :
+            role === 'NGO Worker' ? <DashboardNGO /> :
+              role === 'Volunteer' ? <VolunteerDashboard /> : // Render Volunteer Dashboard for Volunteers
+                role === 'Therapist' ? <TherapistDashboard /> :
+                  <Navigate to="/login" />
         } />
 
         {/* Additional Routes */}
