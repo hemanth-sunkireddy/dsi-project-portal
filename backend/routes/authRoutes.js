@@ -9,6 +9,8 @@ const User = require('../models/User')
 const router = express.Router();
 const { Screening } = require('../models/Screening');
 const { addScreening, updateScreening } = require('../controllers/screeningcontroller'); // Adjust the path
+const { ChatbotInteraction, ChatbotSettings } = require('../models/Chatbot');
+const { addInitialPreset, getSettingsByTestId, createChatbotInteraction, updateChatbotInteraction } = require('../controllers/Chatbotcontroller'); // Adjust the path
 
 router.post('/register', register);
 router.post('/login', login);
@@ -123,4 +125,10 @@ router.post('/addScreening', addScreening);
 
 // Route to update a screening
 router.put('/updateScreening/:id', updateScreening);
+
+// Route to add the initial chatbot preset
+router.post('/addInitialPreset', addInitialPreset);
+router.get('/chatbotSettings/:testId', getSettingsByTestId);
+router.post('/createChatbotInteraction', createChatbotInteraction);
+router.put('/updateChatbotInteraction/:id', updateChatbotInteraction);
 module.exports = router;
