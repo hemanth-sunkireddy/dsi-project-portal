@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const MeetingDetailsScheduled = () => {
+const MeetingDetails = () => {
   const navigate = useNavigate();
   const [meetings, setMeetings] = useState([]);
   const [camps, setCamps] = useState([]);
@@ -37,7 +37,7 @@ const MeetingDetailsScheduled = () => {
     setMeetingStatus(newStatus); // Update local state (this will trigger a re-render)
 
     try {
-      const response = await axios.post('/api/auth/updateMeetingStatus', {
+      const response = await axios.post('/api/auth/update_meeting_status', {
         meetID: meetID,
         status: newStatus, // Send the updated status
       });
@@ -97,16 +97,20 @@ const MeetingDetailsScheduled = () => {
         <div style={styles.header}>
           <h2 style={styles.sectionTitle}>Meeting Information</h2>
           <div style={styles.headerButtons}>
-            {/* <div style={styles.dropdownContainer}>
-              <select
-                value={meetStatus}
-                onChange={handleMeetingStatusChange}
-                style={styles.dropdown}
-              >
-                <option value="inprogress" style={{fontWeight: 'bolder'}}>In Progress</option>
-                <option value="completed">Completed</option>
-              </select>
-            </div> */}
+            {meetStatus === "in_progress" && (
+              <div style={styles.dropdownContainer}>
+                <select
+                  value={meetStatus}
+                  onChange={handleMeetingStatusChange}
+                  style={styles.dropdown}
+                >
+                  <option value="in_progress" style={{ fontWeight: 'bolder' }}>
+                    In Progress
+                  </option>
+                  <option value="completed">Completed</option>
+                </select>
+              </div>
+            )}
             <button style={styles.button} onClick={handleViewStudentsClick}>
               View Students
             </button>
@@ -149,14 +153,14 @@ const MeetingDetailsScheduled = () => {
             <div style={styles.statisticsGrid}>
               <div style={styles.gridItem}>
                 <strong>Total Students To be Examined:</strong>{' '}
-                {filteredCamps[0]?.studentsScreenedPositive || 'N/A'}
+                {filteredCamps[0]?.studentsScreenedPositive }
               </div>
               <div style={styles.gridItem}>
                 <strong>Total Students Examined:</strong>{' '}
-                {filteredMeetings[0]?.studentsExamined || 'N/A'}
+                {filteredCamps[0]?.studentsFollowedUp }
               </div>
               <div style={styles.gridItem}>
-                <strong>Students Diagnosed Positive:</strong> {filteredCamps[0]?.studentsDiagnosedPositive || 'N/A'}
+                <strong>Students Diagnosed Positive:</strong> {filteredCamps[0]?.studentsDiagnosedPositive }
               </div>
             </div>
           </div>
@@ -306,4 +310,4 @@ const styles = {
   },
 };
 
-export default MeetingDetailsScheduled;
+export default MeetingDetails;

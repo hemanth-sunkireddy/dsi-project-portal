@@ -5,6 +5,7 @@ import axios from 'axios';
 const CompletedMeetings = () => {
   const navigate = useNavigate();
   const user_name = localStorage.getItem('name');
+  const [camps, setCamps] = useState([]);
   const [filteredMeetings, setFilteredMeetings] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
@@ -22,6 +23,8 @@ const CompletedMeetings = () => {
       const response = await axios.get('/api/auth/meetings');
       const doctorMeetings = response.data.filter(meeting => meeting.doctor === user_name);
       setMeetings(doctorMeetings); 
+      const response2 = await axios.get('/api/auth/camps');
+      setCamps(response2.data); 
       console.log(doctorMeetings);
     } catch (error) {
       console.error('Error fetching camps:', error);
@@ -57,7 +60,7 @@ const CompletedMeetings = () => {
 
   const handleRowClick = (meetingID) => {
     localStorage.setItem('meet-id', meetingID);
-    navigate(`/meeting-details-scheduled`);
+    navigate(`/meeting-details`);
   };
 
   const handleClearDates = () => {
@@ -234,36 +237,41 @@ const CompletedMeetings = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredMeetings.map((meeting) => (
-                  <tr
-                    key={meeting.meetID}
-                    style={{
-                      backgroundColor: '#f9f9fc',
-                      color: 'black',
-                    }}
-                    onClick={() => handleRowClick(meeting.meetID)}
-                  >
-                    <td>{meeting.meetID}</td>
-                    <td>{meeting.campID}</td>
-                    <td>{new Date(meeting.dateTime).toLocaleDateString()}</td>
-                    <td>{"to be implemented"}</td>
-                    <td>
-                      <button
-                        style={{
-                          backgroundColor: '#007bff',
-                          color: 'white',
-                          border: 'none',
-                          padding: '10px 30px',
-                          cursor: 'pointer',
-                          borderRadius: '4px',
-                        }}
-                        onClick={() => handleRowClick(meeting.meetID)}
-                      >
-                        View Details
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {filteredMeetings.map((meeting) => {
+                  // Find the camp corresponding to the current meeting's campID
+                  const camp = camps.find((c) => c.campID === meeting.campID);
+
+                  return (
+                    <tr
+                      key={meeting.meetID}
+                      style={{
+                        backgroundColor: '#f9f9fc',
+                        color: 'black',
+                      }}
+                      onClick={() => handleRowClick(meeting.meetID)}
+                    >
+                      <td>{meeting.meetID}</td>
+                      <td>{meeting.campID}</td>
+                      <td>{new Date(meeting.dateTime).toLocaleDateString()}</td>
+                      <td>{camp ? camp.studentsScreenedPositive : 'N/A'}</td>
+                      <td>
+                        <button
+                          style={{
+                            backgroundColor: '#007bff',
+                            color: 'white',
+                            border: 'none',
+                            padding: '10px 30px',
+                            cursor: 'pointer',
+                            borderRadius: '4px',
+                          }}
+                          onClick={() => handleRowClick(meeting.meetID)}
+                        >
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           ) : (

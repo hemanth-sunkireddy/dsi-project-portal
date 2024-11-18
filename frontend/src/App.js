@@ -25,7 +25,7 @@ import SuportPage from './components/HelpDeskPage'
 import EditProfile from './components/EditProfile'
 import CampDetailsCompleted from './components/Volunteer/CampDetailsCompleted';
 import CampDetailsUpComing from './components/Volunteer/CampDetailsUpcoming';
-import MeetingDetailsScheduled from './components/Doctor/MeetingDetailsScheduled';
+import MeetingDetails from './components/Doctor/MeetingDetails';
 import './components/auth.css';
 import CompletedMeetings from './components/Doctor/CompletedMeetings';
 import ScheduledMeetings from './components/Doctor/ScheduledMeetings';
@@ -63,7 +63,7 @@ function App() {
         <Route path="/camp-details" element={<CampDetails />} />
         <Route path="/camp-details-completed" element={<CampDetailsCompleted />} />
         <Route path="/camp-details-upcoming" element={<CampDetailsUpComing />} />
-        <Route path="/meeting-details-scheduled" element={<MeetingDetailsScheduled />} />
+        <Route path="/meeting-details" element={<MeetingDetails />} />
         <Route path="/camp-details-staff" element={<CampDetailsStaff />} />
         <Route path="/login" element={<Login setRole={setRole} />} />
         <Route path="/patients-list" element={<ViewStudents />} />

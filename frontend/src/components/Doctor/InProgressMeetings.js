@@ -4,6 +4,7 @@ import axios from 'axios';
 const Meetings_inprogress = () => {
   const navigate = useNavigate();
   const user_name = localStorage.getItem('name');
+  const [camps, setCamps] = useState([]);
   const [filteredMeetings, setFilteredMeetings] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
@@ -46,6 +47,8 @@ const Meetings_inprogress = () => {
         }
       }
       setMeetings(filteredMeetings); 
+      const response2 = await axios.get('/api/auth/camps');
+      setCamps(response2.data);
     } catch (error) {
       console.error('Error fetching meetings:', error);
     }
@@ -86,7 +89,7 @@ const Meetings_inprogress = () => {
   };
 
   const handleRowClick = (meetingID) => {
-    localStorage.setItem('meeting-id', meetingID);
+    localStorage.setItem('meet-id', meetingID);
     navigate(`/meeting-details`);
   };
 
@@ -261,41 +264,48 @@ const Meetings_inprogress = () => {
                   <th>Meeting ID</th>
                   <th>Camp Id</th>
                   <th>DateTime</th>
-                  <th>Students Diagnosed +ve</th>
+                  <th>Total Students to be examined</th>
+                  <th>Total Students Examined</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredMeetings.map((meeting) => (
-                  <tr
-                    key={meeting.meetingID}
-                    style={{
-                      backgroundColor: '#f9f9fc',
-                      color: 'black',
-                    }}
-                    onClick={() => handleRowClick(meeting.meetingID)}
-                  >
-                    <td>{meeting.meetID}</td>
-                    <td>{meeting.campID}</td>
-                    <td>{new Date(meeting.dateTime).toLocaleDateString()}</td>
-                    <td>{"to be implemented"}</td>
-                    <td>
-                      <button
-                        style={{
-                          backgroundColor: '#007bff',
-                          color: 'white',
-                          border: 'none',
-                          padding: '10px 30px',
-                          cursor: 'pointer',
-                          borderRadius: '4px',
-                        }}
-                        onClick={() => handleRowClick(meeting.meetingID)}
-                      >
-                        View Details
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+              {filteredMeetings.map((meeting) => {
+                  // Find the camp corresponding to the current meeting's campID
+                  const camp = camps.find((c) => c.campID === meeting.campID);
+
+                  return (
+                    <tr
+                      key={meeting.meetID}
+                      style={{
+                        backgroundColor: '#f9f9fc',
+                        color: 'black',
+                      }}
+                      onClick={() => handleRowClick(meeting.meetID)}
+                    >
+                      <td>{meeting.meetID}</td>
+                      <td>{meeting.campID}</td>
+                      <td>{new Date(meeting.dateTime).toLocaleDateString()}</td>
+                      <td>{camp ? camp.studentsScreenedPositive : 'N/A'}</td>
+                      <td>{camp ? camp.studentsFollowedUp : 'N/A'}</td>
+                      <td>
+                        <button
+                          style={{
+                            backgroundColor: '#007bff',
+                            color: 'white',
+                            border: 'none',
+                            padding: '10px 30px',
+                            cursor: 'pointer',
+                            borderRadius: '4px',
+                          }}
+                          onClick={() => handleRowClick(meeting.meetID)}
+                        >
+                          View Details
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           ) : (
