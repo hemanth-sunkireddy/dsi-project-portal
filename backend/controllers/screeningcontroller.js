@@ -55,19 +55,24 @@ const Camp = require('../models/Camp');
 const addScreening = async (req, res) => {
   try {
     console.log(req.body);
-    const { doctor, volunteer, student, camp, report } = req.body;
+    const { doctorId, doctorName, volunteerId, volunteerName, studentId, campId, report, diagnosis } = req.body;
 
-    if (!volunteer || !student || !camp) {
-      return res.status(400).json({ message: 'Volunteer, Student, and Camp are required.' });
+    // Validate required fields
+    if (!volunteerId || !studentId || !campId) {
+      return res.status(400).json({ message: 'Volunteer ID, Student ID, and Camp ID are required.' });
     }
 
-    // Directly create a new screening without checking for existence
+    // Create a new screening
     const newScreening = new Screening({
-      doctor,
-      volunteer,
-      student,
-      camp,
+      doctorId,
+      doctorName,
+      volunteerId,
+      volunteerName,
+      studentId,
+      campId,
       report,
+      diagnosis,
+      date: new Date(), // Automatically set the current date
     });
 
     const savedScreening = await newScreening.save();
@@ -77,6 +82,7 @@ const addScreening = async (req, res) => {
     res.status(500).json({ message: 'Server error. Please try again later.' });
   }
 };
+
 
 // Function to update an existing screening
 const updateScreening = async (req, res) => {

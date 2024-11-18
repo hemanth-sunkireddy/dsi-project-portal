@@ -81,7 +81,13 @@
 const mongoose = require('mongoose');
 
 const screeningSchema = new mongoose.Schema({
-    screeningId: { type: String, required: true, unique: true },
+  screeningId: {
+    type: String,
+    unique: true,
+    required: true,
+    default: () => Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    // This generates a random string like "a1b2c3d4e5f6"
+  },
     studentId: String,
     campId: String,
     volunteerId: String,

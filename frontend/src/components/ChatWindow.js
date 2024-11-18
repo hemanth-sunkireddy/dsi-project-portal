@@ -68,6 +68,8 @@ const ChatWindow = () => {
   const studentId = localStorage.getItem('student-id');
   const volunteerId = localStorage.getItem('name');
   const campId = localStorage.getItem('camp-id');
+  const doctorId = localStorage.getItem('doctor-id');
+  const volunteerName = localStorage.getItem('volunteer');
 
   // Fetch only chatbot settings on component mount
   useEffect(() => {
@@ -301,10 +303,14 @@ const ChatWindow = () => {
   
       // First, create the screening
       const screeningResponse = await axios.post('/api/auth/addScreening', {
-        student: studentId,
-        volunteer: volunteerId,
-        camp: campId,
-        report, // Add the report object here
+        studentId: studentId,
+        campId: campId,
+        volunteerId: volunteerId,
+        volunteerName: volunteerId,
+        doctorId: doctorId,
+        Date: new Date().toISOString(),
+        doctorFeedback: "",
+        report: report, // Add the report object here
       });
   
       // Handle successful screening creation
