@@ -233,4 +233,25 @@ router.post('/updateCampStatus', async (req, res) => {
   }
 });
 
+router.post('/updateCampInProgress', async (req, res) => {
+  try {
+    const reqCamp = new Camp(req.body);
+   
+    const campId_request = reqCamp.campID;
+    const campStatus = reqCamp.status;
+    const camp = await Camp.findOne({ campID: campId_request });
+    if (!camp) {
+      // If the camp is not found, send an error response
+      return res.status(404).json({ message: 'Camp not found' });
+    }
+
+    camp.status = "inprogress";
+    await camp.save();
+    res.status(201).json({ message: 'Camp Status Updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error });
+  }
+});
+
 module.exports = router;

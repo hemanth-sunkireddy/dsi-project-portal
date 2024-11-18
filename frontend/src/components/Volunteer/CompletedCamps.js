@@ -17,31 +17,32 @@ const CompletedCamps = () => {
   const filterCamps = () => {
     let filtered = camps.filter(
       (camp) =>
-        (camp.volunteer === user_name || camp.doctor === user_name) &&
+        (camp.volunteer === user_name || camp.doctor === user_name) && 
+        camp.status === "completed" || camp.status === "meeting_scheduled" || camp.status === "followup_completed" && // Ensure the camp is completed
         (camp.campID.includes(searchTerm) ||
           camp.schoolName.toLowerCase().includes(searchTerm.toLowerCase()))
     );
-
+  
     // If From Date is selected, filter by startDate
     if (filters.startDate) {
       filtered = filtered.filter(
         (camp) => new Date(camp.dateTime) >= new Date(filters.startDate)
       );
     }
-
+  
     // If To Date is selected, filter by endDate
     if (filters.endDate) {
       filtered = filtered.filter(
         (camp) => new Date(camp.dateTime) <= new Date(filters.endDate)
       );
     }
-
+  
     setFilteredCamps(filtered);
   };
 
   const handleRowClick = (campID) => {
     localStorage.setItem('camp-id', campID);
-    navigate(`/camp-details`);
+    navigate(`/camp-details-completed`);
   };
 
   const handleClearDates = () => {

@@ -29,14 +29,11 @@ const VolunteerDashboard = () => {
       const volunteerCamps = response.data.filter(camp => camp.volunteer === userName);
       setCamps(volunteerCamps);
       console.log(volunteerCamps);
+      console.log(volunteerCamps);
     } catch (error) {
       console.error('Error fetching camps:', error);
     }
   };
-
-  const upcomingCamps = camps.filter(camp => new Date(camp.dateTime) > today);
-  const completedCamps = camps.filter(camp => new Date(camp.dateTime) < today && new Date(camp.dateTime).toDateString() !== today.toDateString());
-  const ongoingCamps = camps.filter(camp => new Date(camp.dateTime).toDateString() === today.toDateString());
 
   const openPopup = (selectedDate) => {
     const campsForDate = camps.filter(camp => new Date(camp.dateTime).toDateString() === selectedDate.toDateString());
@@ -48,16 +45,6 @@ const VolunteerDashboard = () => {
     setShowPopup(false);
     setSelectedDateCamps([]);
   };
-
-  //   const tileClassName = ({ date, view }) => {
-  //     if (view === 'month') {
-  //       const hasCampOnDate = camps.some(camp => new Date(camp.dateTime).toDateString() === date.toDateString());
-  //       if (hasCampOnDate) {
-  //         return 'highlighted-date';
-  //       }
-  //     }
-  //     return null;
-  //   };
   const tileClassName = ({ date, view }) => {
     if (view === 'month') {
       const isOngoingOrUpcomingCamp = camps.some(camp => {
@@ -84,17 +71,17 @@ const VolunteerDashboard = () => {
 
       <div className="dashboard-content">
         <div className="dashboard-cards">
-          <div className="dashboard-card" onClick={() => navigate('/camps-in-progress', { state: { camps: ongoingCamps } })}>
+          <div className="dashboard-card" onClick={() => navigate('/camps-in-progress', { state: { camps: camps } })}>
             <h2>Camps In Progress</h2>
             <p style={{color: 'black'}}>List of Camps scheduled for today.</p>
             <button>View</button>
           </div>
-          <div className="dashboard-card" onClick={() => navigate('/completed-camps', { state: { camps: completedCamps } })}>
+          <div className="dashboard-card" onClick={() => navigate('/completed-camps', { state: { camps: camps } })}>
             <h2>Completed Camps</h2>
             <p style={{color: 'black'}}>List of Camps completed in the past.</p>
             <button>View</button>
           </div>
-          <div className="dashboard-card" onClick={() => navigate('/upcoming-camps', { state: { camps: upcomingCamps } })}>
+          <div className="dashboard-card" onClick={() => navigate('/upcoming-camps', { state: { camps: camps } })}>
             <h2>Upcoming Camps</h2>
             <p style={{color: 'black'}}>List of Camps scheduled for future dates.</p>
             <button>View</button>

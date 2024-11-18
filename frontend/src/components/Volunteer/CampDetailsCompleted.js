@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const CampDetails = () => {
+const CampDetailsCompleted = () => {
   const navigate = useNavigate();
   const [camps, setCamps] = useState([]);
   const [campStatus, setCampStatus] = useState('');
@@ -90,16 +90,6 @@ const CampDetails = () => {
         <div style={styles.header}>
           <h2 style={styles.sectionTitle}>Camp Information</h2>
           <div style={styles.headerButtons}>
-            <div style={styles.dropdownContainer}>
-              <select
-                value={campStatus}
-                onChange={handleCampStatusChange}
-                style={styles.dropdown}
-              >
-                <option value="inprogress" style={{fontWeight: 'bolder'}}>In Progress</option>
-                <option value="completed">Completed</option>
-              </select>
-            </div>
             <button style={styles.button} onClick={handleViewStudentsClick}>
               View Students
             </button>
@@ -305,4 +295,4 @@ const styles = {
   },
 };
 
-export default CampDetails;
+export default CampDetailsCompleted;
