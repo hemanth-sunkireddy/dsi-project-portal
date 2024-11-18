@@ -3,12 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import { PieChart, Pie, Cell } from 'recharts';
 import 'react-calendar/dist/Calendar.css';
-// import './VolunteerDashboard.css';
 import { Bell, Home, User, HelpCircle, LogOut } from 'lucide-react';
 import axios from 'axios';
-import icon from './doctor_icon.png'
-import logo from './Choice_logo.png'
-import pic from './pic.png'
+
 const CompletedMeetings = () => {
   const navigate = useNavigate();
   const [date, setDate] = useState(new Date());

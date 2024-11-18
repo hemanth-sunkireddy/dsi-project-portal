@@ -5,7 +5,6 @@ import 'react-calendar/dist/Calendar.css';
 import './DashboardNGO.css';
 import axios from 'axios';
 import { Pie } from 'react-chartjs-2';
-import Chart from 'chart.js/auto';
 
 const DashboardNGO = () => {
   const navigate = useNavigate();
