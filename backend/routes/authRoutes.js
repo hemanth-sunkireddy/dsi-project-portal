@@ -44,7 +44,7 @@ router.post('/addStudent', async (req, res) => {
 
     camp.studentsRegistered += 1;
     await camp.save();
-    await student.save();
+    await student.save(); 
     res.status(201).json({ message: 'Student added successfully' });
   } catch (error) {
     console.error(error);
@@ -185,12 +185,13 @@ router.post('/scheduleMeeting', async (req, res) => {
 
     await camp.save();
     const lastMeeting = await Meeting.findOne().sort({ _id: -1 }).exec();
+    console.log(lastMeeting,"yess");
 
     let nextMeetNumber = 1; // Default to 1 if no meetings exist
 
     // If there's a last meeting and it has a valid meetid
-    if (lastMeeting && lastMeeting.meetid) {
-      const lastMeetNumber = parseInt(lastMeeting.meetid.split('-')[1]); // Extract the number from 'Meeting-X'
+    if (lastMeeting && lastMeeting.meetID) {
+      const lastMeetNumber = parseInt(lastMeeting.meetID.split('-')[1]); // Extract the number from 'Meeting-X'
       if (!isNaN(lastMeetNumber)) {
         nextMeetNumber = lastMeetNumber + 1; // Increment the last meeting number
       }
@@ -255,6 +256,25 @@ router.post('/updateCampInProgress', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error });
+  }
+});
+
+router.post('/update_meeting_status', async (req, res) => {
+  const { meetID, status } = req.body;
+  try {
+    const meet = await Meeting.findOne({ meetID: meetID });
+    if (!meet) {
+      return res.status(404).send({ message: 'Meeting not found' });
+    }
+
+    meet.status = status;
+
+    await meet.save(); 
+
+    res.status(200).send({ message: 'Status updated successfully', meet });
+  } catch (error) {
+    console.error('Error updating Status:', error);
+    res.status(500).send({ message: error });
   }
 });
 

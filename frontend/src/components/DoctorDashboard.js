@@ -222,7 +222,7 @@ const CompletedMeetings = () => {
               <button style={{fontSize:'20px',fontWeight:'bold'}}>View</button>
             </div>
 
-            <div className="dashboard-card" onClick={() => navigate('/unscheduled-meetings', { state: { camps: upcomingCamps } })}>
+            <div className="dashboard-card" onClick={() => navigate('/in-progress-meetings', { state: { camps: upcomingCamps } })}>
             {/* <h2>Unscheduled Meetings</h2> */}
               <h2 style={{fontSize:'30px'}}>Unscheduled Meetings</h2>
               <p style={{fontSize:'23px'}}>List of camps pending scheduling for the doctor's visit to diagnose patients</p>

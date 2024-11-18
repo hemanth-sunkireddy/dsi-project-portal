@@ -28,9 +28,10 @@ import CampDetailsUpComing from './components/Volunteer/CampDetailsUpcoming';
 import './components/auth.css';
 import CompletedMeetings from './components/Doctor/CompletedMeetings';
 import ScheduledMeetings from './components/Doctor/ScheduledMeetings';
-import UnscheduledMeetings from './components/Doctor/UnscheduledMeetings';
+import UnscheduledMeetings from './components/Staff/UnscheduledMeetings';
 import AllPatients from './components/Therapist/CompletedCamps';
 import LandingPage from './components/LandingPage';
+import Meetings_inprogress from './components/Doctor/InProgressMeetings';
 function App() {
   const [role, setRole] = useState(() => localStorage.getItem('role') || null);
 
@@ -50,6 +51,7 @@ function App() {
         <Route path="/completed-meetings" element={<CompletedMeetings/>} />
         <Route path="/scheduled-meetings" element={<ScheduledMeetings/>} />
         <Route path="/unscheduled-meetings" element={<UnscheduledMeetings/>} />
+        <Route path="/in-progress-meetings" element={<Meetings_inprogress/>} />
         <Route path="/" element={<Navigate to="/landing-page" />} />
         <Route path="/register" element={<Register />} />
         <Route path="/upcoming-camps" element={<UpcomingCamps />} />
