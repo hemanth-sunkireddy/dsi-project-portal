@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Calendar from 'react-calendar';
 import { PieChart, Pie, Cell } from 'recharts';
@@ -13,6 +13,12 @@ const CompletedMeetings = () => {
   const [camps, setCamps] = useState([]);
   const [selectedDateCamps, setSelectedDateCamps] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
+  const [formPopup, setFormPopup] = useState(false);
+  const [patientDetails, setPatientDetails] = useState({
+    name: '',
+    age: '',
+    phone: '',
+  });
   const today = new Date();
   const userName = localStorage.getItem('name') || 'Therapist';
 
@@ -43,32 +49,31 @@ const CompletedMeetings = () => {
     { name: '>25', value: 10, color: '#DEB887' }
   ];
 
+  const handleChatbotClick = () => {
+    setFormPopup(true);
+  };
+  
+  const handleFormSubmit = () => {
+    if (patientDetails.name && patientDetails.age && patientDetails.phone) {
+      setFormPopup(false);
+      navigate('/conduct-screening', { state: { camps: completedCamps } });
+    } else {
+      alert('Please fill out all fields.');
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setPatientDetails((prevDetails) => ({
+      ...prevDetails,
+      [name]: value,
+    }));
+  };
+
   const upcomingCamps = camps.filter(camp => new Date(camp.dateTime) > today);
   const completedCamps = camps.filter(camp => new Date(camp.dateTime) < today && new Date(camp.dateTime).toDateString() !== today.toDateString());
   const ongoingCamps = camps.filter(camp => new Date(camp.dateTime).toDateString() === today.toDateString());
 
-  const openPopup = (selectedDate) => {
-    const campsForDate = camps.filter(camp => new Date(camp.dateTime).toDateString() === selectedDate.toDateString());
-    setSelectedDateCamps(campsForDate);
-    setShowPopup(true);
-  };
-
-  const closePopup = () => {
-    setShowPopup(false);
-    setSelectedDateCamps([]);
-  };
-
-  const tileClassName = ({ date, view }) => {
-    if (view === 'month') {
-      const isOngoingOrUpcomingCamp = camps.some(camp => {
-        const campDate = new Date(camp.dateTime);
-        return campDate.toDateString() === date.toDateString() && campDate >= today;
-      });
-
-      return isOngoingOrUpcomingCamp ? 'highlighted-date' : null;
-    }
-    return null;
-  };
 
   return (
     <div className="dashboard-container-1">
@@ -77,7 +82,7 @@ const CompletedMeetings = () => {
         <div className="sidebar-header-1">
           <span className="sidebar-title-1">Therapist</span>
         </div>
-        
+
         <div className="sidebar-menu-1">
           <button onClick={() => navigate('/dashboard')} className="sidebar-item-1">
             <Home className="sidebar-icon-1" />
@@ -95,11 +100,11 @@ const CompletedMeetings = () => {
           </button>
         </div>
 
-        <button 
+        <button
           onClick={() => {
             localStorage.clear();
             navigate('/login');
-          }} 
+          }}
           className="sidebar-item-1 logout-button-1"
         >
           <LogOut className="sidebar-icon-1" />
@@ -132,13 +137,13 @@ const CompletedMeetings = () => {
 
           {/* Cards */}
           <div className="dashboard-cards-1">
-          <div className="dashboard-card" onClick={() => navigate('/all-patients', { state: { camps: ongoingCamps } })}>
+            <div className="dashboard-card" onClick={() => navigate('/all-patients', { state: { camps: ongoingCamps } })}>
               <h2>All Patients</h2>
               <p>List Of Patients that have been examined by the therapist as well as the screening bot</p>
               <button>View</button>
             </div>
 
-            <div className="dashboard-card" onClick={() => navigate('/conduct-screening', { state: { camps: completedCamps } })}>
+            <div className="dashboard-card" onClick={handleChatbotClick}>
               <h2>Screening Chatbot</h2>
               <p>PreScreening tool to examine the patient.</p>
               <button>View</button>
@@ -175,53 +180,60 @@ const CompletedMeetings = () => {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+        {/* Form Popup */}
+        {formPopup && (
+  <div className="popup-overlay">
+    <div className="popup-content">
+      <h3 className="popup-title">Enter Patient Details</h3>
+      <form className="popup-form">
+        <div className="form-group">
+          <label htmlFor="name">Name:</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Enter patient's name"
+            value={patientDetails.name}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="age">Age:</label>
+          <input
+            type="number"
+            id="age"
+            name="age"
+            placeholder="Enter patient's age"
+            value={patientDetails.age}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="phone">Phone:</label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            placeholder="Enter patient's phone number"
+            value={patientDetails.phone}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div className="popup-actions">
+          <button type="button" className="btn-primary" onClick={handleFormSubmit}>
+            Submit
+          </button>
+          <button type="button" className="cancel-button" onClick={() => setFormPopup(false)}>
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+)}
 
-            {/* Calendar */}
-            {/* <div className="calendar-container-1">
-              <Calendar
-                onChange={setDate}
-                value={date}
-                className="custom-calendar-1"
-                tileClassName={tileClassName}
-                onClickDay={openPopup}
-              />
-            </div> */}
-          </div>
-        </div>
-        {showPopup && (
-        <div class="popup-overlay">
-          <div class="popup-content">
-            <h3>Camps Scheduled for {date.toDateString()}</h3>
-            {selectedDateCamps.length > 0 ? (
-              <table className="camps-table-1" style={{color: 'black'}}>
-                <thead>
-                  <tr>
-                    <th>Camp ID</th>
-                    <th>School Name</th>
-                    <th>Location</th>
-                    <th>Date</th>
-                    <th>Doctor</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedDateCamps.map((camp) => (
-                    <tr key={camp.campID}>
-                      <td>{camp.campID}</td>
-                      <td>{camp.schoolName}</td>
-                      <td>{camp.location}</td>
-                      <td>{new Date(camp.dateTime).toLocaleDateString()}</td>
-                      <td>{camp.doctor}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p>No camps scheduled for this date.</p>
-            )}
-            <button onClick={closePopup}>Close</button>
-          </div>
-        </div>
-      )}
       </div>
 
       <style jsx>{`
@@ -495,9 +507,83 @@ const CompletedMeetings = () => {
           font-size: 12px;
           color: #666;
         }
+        
+        .popup-content {
+          background: white;
+          width: 90%;
+          max-width: 400px;
+          border-radius: 12px;
+          padding: 24px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+          animation: fadeIn 0.3s ease;
+        }
+
+        .popup-title {
+          font-size: 20px;
+          font-weight: bold;
+          margin-bottom: 16px;
+          text-align: center;
+          color: #333;
+        }
+
+        .popup-form .form-group {
+          margin-bottom: 16px;
+        }
+
+
+        .popup-form input {
+          width: 500%;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          font-size: 14px;
+        }
+
+        .popup-form input:focus {
+          outline: none;
+          border-color: #60C6F0;
+          box-shadow: 0 0 5px rgba(96, 198, 240, 0.5);
+        }
+
+        .popup-actions {
+          display: flex;
+          justify-content: space-between;
+          gap: 16px;
+        }
+
+        /* Cancel Button Styling */
+        .cancel-button {
+          background-color: #FF4C4C;  /* Red color */
+          color: white;               /* White text */
+          padding: 10px 20px;         /* Padding for spacing */
+          border: none;               /* Remove default border */
+          border-radius: 5px;         /* Rounded corners */
+          cursor: pointer;           /* Change cursor on hover */
+          transition: background-color 0.2s ease;  /* Smooth transition for background color */
+        }
+
+        .cancel-button:hover {
+          background-color: #FF2A2A;  /* Darker red on hover */
+        }
+
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+        
       `}</style>
     </div>
   );
 };
 
 export default CompletedMeetings;
+
