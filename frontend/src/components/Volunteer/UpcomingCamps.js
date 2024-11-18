@@ -17,31 +17,33 @@ const UpcomingCamps = () => {
   const filterCamps = () => {
     let filtered = camps.filter(
       (camp) =>
-        camp.volunteer === user_name &&
+        camp.volunteer === user_name && // Volunteer is assigned to the camp
         (camp.campID.includes(searchTerm) ||
-          camp.schoolName.toLowerCase().includes(searchTerm.toLowerCase()))
+          camp.schoolName.toLowerCase().includes(searchTerm.toLowerCase())) && // Search term filter
+        camp.status === "upcoming" && // Camp status must be 'upcoming'
+        new Date(camp.dateTime) > new Date() // Camp dateTime must be greater than today
     );
-
+  
     // If From Date is selected, filter by startDate
     if (filters.startDate) {
       filtered = filtered.filter(
         (camp) => new Date(camp.dateTime) >= new Date(filters.startDate)
       );
     }
-
+  
     // If To Date is selected, filter by endDate
     if (filters.endDate) {
       filtered = filtered.filter(
         (camp) => new Date(camp.dateTime) <= new Date(filters.endDate)
       );
     }
-
+  
     setFilteredCamps(filtered);
   };
 
   const handleRowClick = (campID) => {
     localStorage.setItem('camp-id', campID);
-    navigate(`/camp-details`);
+    navigate(`/camp-details-upcoming`);
   };
 
   const handleClearDates = () => {

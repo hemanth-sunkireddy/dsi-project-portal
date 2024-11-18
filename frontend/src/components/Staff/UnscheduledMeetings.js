@@ -6,6 +6,7 @@ const UnscheduledMeetings = () => {
   const user_name = localStorage.getItem('name');
   const [unscheduledCamps, setUnscheduledCamps] = useState([]);
   const [selectedCampID, setSelectedCampID] = useState(null);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [meetingDate, setMeetingDate] = useState('');
   const [meetingTime, setMeetingTime] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,8 +21,8 @@ const UnscheduledMeetings = () => {
         return;
       }
       const response = await axios.get('/api/auth/camps');
-      const volunteerCamps = response.data.filter(camp => camp.doctor === user_name);
-      setCamps(volunteerCamps); 
+      const filtered = response.data.filter(camp => camp.status === "completed");
+      setUnscheduledCamps(filtered);
     } catch (error) {
       console.error('Error fetching camps:', error);
     }
@@ -33,14 +34,15 @@ const UnscheduledMeetings = () => {
   }, [user_name]);
   
   // Update `unscheduledCamps` whenever `camps` changes
-  useEffect(() => {
-    const filtered = camps.filter((camp) => camp.status === 'completed' && camp.doctor === user_name);
-    setUnscheduledCamps(filtered);
-  }, [camps]); 
+  // useEffect(() => {
+  //   const filtered = camps.filter((camp) => camp.status === 'completed' && camp.doctor === user_name);
+  //   setUnscheduledCamps(filtered);
+  // }, [camps]); 
   
 
   const handleScheduleClick = (camp) => {
     setSelectedCampID(camp.campID);
+    setSelectedDoctor(camp.doctor);
     setIsModalOpen(true);
   };
 
@@ -56,7 +58,7 @@ const UnscheduledMeetings = () => {
         status: 'meeting_scheduled',
         meetingDate,
         meetingTime,
-        doctor: user_name,
+        doctor: selectedDoctor,
       };
       await axios.post('/api/auth/scheduleMeeting', data);
       const updatedCamps = unscheduledCamps.map((camp) =>
@@ -176,6 +178,7 @@ const UnscheduledMeetings = () => {
               <tr style={{ backgroundColor: '#e9ecef' }}>
                 <th>Camp ID</th>
                 <th>School Name</th>
+                <th>Doctor Assigned</th>
                 <th>Location</th>
                 <th>Status</th>
                 <th>Action</th>
@@ -186,6 +189,7 @@ const UnscheduledMeetings = () => {
                 <tr key={camp.campID} style={{ textAlign: 'center' }}>
                   <td>{camp.campID}</td>
                   <td>{camp.schoolName}</td>
+                  <td>{camp.doctor}</td>
                   <td>{camp.location}</td>
                   <td>{camp.status}</td>
                   <td>
@@ -207,7 +211,7 @@ const UnscheduledMeetings = () => {
             </tbody>
           </table>
         ) : (
-          <p>No completed camps available for scheduling.</p>
+          <p>No Meetings to Schedule</p>
         )}
 
         {/* Modal */}

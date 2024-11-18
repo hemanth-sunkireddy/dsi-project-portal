@@ -289,28 +289,35 @@ const ChatWindow = () => {
 
   const handleGenerateReport = async () => {
     try {
-      // First create the screening
+      // Create the report object
+      const report = {
+        diagnosis: "Screened Negative", // Example diagnosis
+        dateTime: new Date().toISOString(),
+        additionalDetails: responses.map((response, index) => ({
+          question: chatbotSettings.prompts[index]?.promptText,
+          response: response.text,
+        })),
+      };
+  
+      // First, create the screening
       const screeningResponse = await axios.post('/api/auth/addScreening', {
         student: studentId,
         volunteer: volunteerId,
         camp: campId,
+        report, // Add the report object here
       });
-      const screeningId = screeningResponse.data.screening.screeningId;
-
-      // Then create chatbot interaction with all collected responses
-      const interactionResponse = await axios.post('/api/auth/createChatbotInteraction', {
-        screeningId: screeningId,
-        promptId: chatbotSettings._id,
-        status: 'completed',
-        responses: responses  // Using the collected responses
-      });
-
+  
+      // Handle successful screening creation
+      console.log("Screening created:", screeningResponse.data);
+  
       // Navigate back after everything is saved
       navigate(-1);
     } catch (error) {
       console.error('Error generating report:', error);
     }
   };
+  
+  
 
   const toggleSidebar = () => setSidebarOpen(prev => !prev);
 

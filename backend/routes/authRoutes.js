@@ -8,7 +8,7 @@ const auth = require('../middleware/authMiddleware');
 const User = require('../models/User')
 const Meeting = require('../models/Meeting')
 const router = express.Router();
-const { Screening } = require('../models/Screening');
+const Screening = require('../models/Screening');
 const { addScreening, updateScreening } = require('../controllers/screeningcontroller'); // Adjust the path
 const { ChatbotInteraction, ChatbotSettings } = require('../models/Chatbot');
 const { addInitialPreset, getSettingsByTestId, createChatbotInteraction, updateChatbotInteraction } = require('../controllers/Chatbotcontroller'); // Adjust the path
@@ -44,7 +44,7 @@ router.post('/addStudent', async (req, res) => {
 
     camp.studentsRegistered += 1;
     await camp.save();
-    await student.save();
+    await student.save(); 
     res.status(201).json({ message: 'Student added successfully' });
   } catch (error) {
     console.error(error);
@@ -121,6 +121,17 @@ router.get('/students', async (req, res) => {
   }
 });
 
+router.get('/screenings', async (req, res) => { 
+  try {
+    const screenings = await Screening.find(); 
+    res.status(200).json(screenings);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message:  error });
+  }
+  // res.status(200);
+});
+
 router.get('/users', async (req, res) => {
   try {
     const users = await User.find();
@@ -151,25 +162,108 @@ router.get('/profiledata/:name', async (req, res) => {
   console.log(document)
   res.json({ document });
 });
-router.put('/updateprofile/:name', async (req, res) => {
-  try {
-    const { name } = req.params;
-    const updates = req.body;
 
-    const result = await User.findOneAndUpdate(
-      { name: name },
+// Update Profile Data (for Doctors)
+router.put('/updateprofiled/:name', async (req, res) => {
+  const { name } = req.params;
+  const updates = {};
+  console.log("req")
+  console.log(req)
+  if (req.body.name) updates.name = req.body.name;
+  if (req.body.email) updates.email = req.body.email;
+  if (req.body.phoneNumber) {
+    const isValidPhoneNumber = (phoneNumber) => {
+      const phoneRegex = /^[0-9]{10}$/; // Example: 10-digit numeric phone number
+      return phoneRegex.test(phoneNumber);
+    };
+
+    if (!isValidPhoneNumber(req.body.phoneNumber)) {
+      return res.status(400).json({ message: 'Invalid phone number format' });
+    }
+
+    const existingUser = await User.findOne({ phoneNumber: req.body.phoneNumber });
+    if (existingUser && existingUser.name !== name) {
+      return res.status(400).json({ message: 'Phone number already in use' });
+    }
+
+    updates.phoneNumber = req.body.phoneNumber;
+  }
+  if (req.body.gender) updates.gender = req.body.gender;
+  if (req.body.address) updates.address = req.body.address;
+  if (req.body.pastExperiences) updates.pastExperiences = req.body.pastExperiences;
+
+  try {
+    const updatedDoctor = await Doctor.findOneAndUpdate(
+      { name },
       { $set: updates },
       { new: true }
     );
 
-    if (!result) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+    if (updatedDoctor) {
+      res.json({ success: true, message: 'Profile updated successfully', document: updatedDoctor });
+    } else {
+      res.status(404).json({ message: 'Doctor not found' });
     }
-
-    res.json({ success: true, message: 'Profile updated successfully', user: result });
   } catch (error) {
-    console.error('Error updating profile:', error);
-    res.status(500).json({ success: false, message: 'Error updating profile' });
+    res.status(500).json({ message: 'Error updating profile', error });
+  }
+});
+
+// router.put('/updateprofiled/:name', async (req, res) => {
+//   const { name } = req.params;
+//   const updates = {};
+//   console.log(req)
+//   // Add fields to updates only if they are provided
+//   if (req.body.name) updates.name = req.body.name;
+//   if (req.body.email) updates.email = req.body.email;
+//   if (req.body.phoneNumber) updates.phoneNumber = req.body.phoneNumber;
+//   if (req.body.gender) updates.gender = req.body.gender;
+//   if (req.body.address) updates.address = req.body.address;
+//   if (req.body.pastExperiences) updates.pastExperiences = req.body.pastExperiences;
+
+//   try {
+//     const updatedDoctor = await Doctor.findOneAndUpdate(
+//       { name },
+//       { $set: updates },
+//       { new: true } // Return the updated document
+//     );
+
+//     if (updatedDoctor) {
+//       res.json({ success: true, message: 'Profile updated successfully', document: updatedDoctor });
+//     } else {
+//       res.status(404).json({ message: 'Doctor not found' });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error updating profile', error });
+//   }
+// });
+
+// Update Profile Data (for Volunteers)
+router.put('/updateprofilev/:name', async (req, res) => {
+  const { name } = req.params;
+  const updates = {};
+
+  if (req.body.name) updates.name = req.body.name;
+  if (req.body.email) updates.email = req.body.email;
+  if (req.body.phoneNumber) updates.phoneNumber = req.body.phoneNumber;
+  if (req.body.gender) updates.gender = req.body.gender;
+  if (req.body.address) updates.address = req.body.address;
+  if (req.body.pastExperiences) updates.pastExperiences = req.body.pastExperiences;
+
+  try {
+    const updatedVolunteer = await Volunteer.findOneAndUpdate(
+      { name },
+      { $set: updates },
+      { new: true }
+    );
+
+    if (updatedVolunteer) {
+      res.json({ success: true, message: 'Profile updated successfully', document: updatedVolunteer });
+    } else {
+      res.status(404).json({ message: 'Volunteer not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating profile', error });
   }
 });
 
@@ -185,12 +279,13 @@ router.post('/scheduleMeeting', async (req, res) => {
 
     await camp.save();
     const lastMeeting = await Meeting.findOne().sort({ _id: -1 }).exec();
+    console.log(lastMeeting,"yess");
 
     let nextMeetNumber = 1; // Default to 1 if no meetings exist
 
     // If there's a last meeting and it has a valid meetid
-    if (lastMeeting && lastMeeting.meetid) {
-      const lastMeetNumber = parseInt(lastMeeting.meetid.split('-')[1]); // Extract the number from 'Meeting-X'
+    if (lastMeeting && lastMeeting.meetID) {
+      const lastMeetNumber = parseInt(lastMeeting.meetID.split('-')[1]); // Extract the number from 'Meeting-X'
       if (!isNaN(lastMeetNumber)) {
         nextMeetNumber = lastMeetNumber + 1; // Increment the last meeting number
       }
@@ -234,6 +329,46 @@ router.post('/updateCampStatus', async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error });
+  }
+});
+
+router.post('/updateCampInProgress', async (req, res) => {
+  try {
+    const reqCamp = new Camp(req.body);
+   
+    const campId_request = reqCamp.campID;
+    const campStatus = reqCamp.status;
+    const camp = await Camp.findOne({ campID: campId_request });
+    if (!camp) {
+      // If the camp is not found, send an error response
+      return res.status(404).json({ message: 'Camp not found' });
+    }
+
+    camp.status = "inprogress";
+    await camp.save();
+    res.status(201).json({ message: 'Camp Status Updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error });
+  }
+});
+
+router.post('/update_meeting_status', async (req, res) => {
+  const { meetID, status } = req.body;
+  try {
+    const meet = await Meeting.findOne({ meetID: meetID });
+    if (!meet) {
+      return res.status(404).send({ message: 'Meeting not found' });
+    }
+
+    meet.status = status;
+
+    await meet.save(); 
+
+    res.status(200).send({ message: 'Status updated successfully', meet });
+  } catch (error) {
+    console.error('Error updating Status:', error);
+    res.status(500).send({ message: error });
   }
 });
 

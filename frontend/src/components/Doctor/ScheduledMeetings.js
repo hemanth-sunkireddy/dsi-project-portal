@@ -158,7 +158,7 @@ const CompletedMeetings = () => {
           </div>
         </header>
 
-        <h2 style={{ color: 'black', marginBottom: '20px' }}>Completed Meetings</h2>
+        <h2 style={{ color: 'black', marginBottom: '20px' }}>Scheduled Meetings</h2>
 
         {/* Search Bar and Date Range Filters */}
         <div
@@ -267,7 +267,7 @@ const CompletedMeetings = () => {
               </tbody>
             </table>
           ) : (
-            <p style={{ color: 'black' }}>No completed meetings available.</p>
+            <p style={{ color: 'black' }}>No meetings Scheduled</p>
           )}
         </div>
       </div>
