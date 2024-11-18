@@ -4,7 +4,7 @@ const { v4: uuidv4 } = require('uuid'); // Import uuidv4
 
 const campSchema = new mongoose.Schema({
   campID: {
-    type: String,
+    type: String, unique: true,
     default: uuidv4,
     unique: true,
   },

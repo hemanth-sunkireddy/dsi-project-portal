@@ -55,9 +55,9 @@
   }
     
   .analytics-section {
-    flex: 2;
+    
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 20px;
     background-color: #ffffff;
     padding: 20px;
@@ -67,30 +67,64 @@
 
   .analytics-chart {
     display: flex;
+    margin-left: 100px;
     flex-direction: column;
     align-items: center;
     gap: 10px;
     width: 100%;
     max-width: 300px; /* Adjust as needed */
-    margin: 0 auto;
+    margin-top: 10px;
   }
   
     
-  .analytics-section h2 {
+  .analytics-chart h2 {
     color: #5c52cc;
+    size: 100px;
+
   }
-    
+  
   .calendar-container {
-    background-color: #e6e7ee;
+   
     padding: 20px;
+    position: relative;
     border-radius: 8px;
+    margin-left: auto; /* Shifts the calendar to the right */
+    margin-right: 200px; 
     text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: 100px;
+    
+  }
+  .calendar-container h3{
+    color: #5c52cc;
+
+  }
+  .calendar-container p{
+    color: #5c52cc;
+
+  }
+  .react-calendar {
+    width: 100%;
+    max-width: 400px;
+    align-items: center;
+    margin-right: 200xpx;
+    background-color: #fff;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    font-family: Arial, sans-serif;
+    padding: 10px;
+    border: 2px solid yellow;
   }
     
   .react-calendar__tile {
+    background-color: #fff;
+    border: 1px solid #ddd;
     padding: 10px;
+    text-align: center;
+    margin-right:200px ;
+    cursor: pointer;
+    
   }
+
   
 /* .completed-camp { background-color: #f5a623; color: white; }
 .upcoming-camp { background-color: #ffd700; color: black; }
@@ -185,6 +219,7 @@
 /* Popup content */
 .popup-content {
   background: white;
+  color: black;
   padding: 20px;
   border-radius: 8px;
   width: 80%;
@@ -223,7 +258,7 @@
   margin-top: 15px;
   padding: 8px 16px;
   background-color: #4CAF50;
-  color: white;
+  color: black;
   border: none;
   border-radius: 4px;
   cursor: pointer;

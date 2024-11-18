@@ -1,60 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-const StaffUpcomingCamps = () => {
+const AllPatients = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { camps } = location.state || { camps: [] };
 
   // State to store filtered camps and search query
   const [searchQuery, setSearchQuery] = useState('');
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
   const [filteredCamps, setFilteredCamps] = useState(camps);
 
-  // Function to filter camps based on search query and date range
+  // Function to filter camps based on search query (by Camp ID, School Name, or Location)
   const filterCamps = () => {
-    let filtered = camps;
-
-    // Apply search query filter
-    if (searchQuery) {
+    if (!searchQuery) {
+      setFilteredCamps(camps); // If no search query, show all camps
+    } else {
       const lowercasedQuery = searchQuery.toLowerCase();
-      filtered = filtered.filter(
+      const filtered = camps.filter(
         (camp) =>
           camp.campID.toString().toLowerCase().includes(lowercasedQuery) ||
           camp.schoolName.toLowerCase().includes(lowercasedQuery) ||
           camp.location.toLowerCase().includes(lowercasedQuery)
       );
+      setFilteredCamps(filtered);
     }
-
-    // Apply date range filter
-    if (startDate && endDate) {
-      filtered = filtered.filter((camp) => {
-        const campDate = new Date(camp.dateTime);
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        return campDate >= start && campDate <= end;
-      });
-    }
-
-    setFilteredCamps(filtered);
   };
 
-  // Run the filter whenever the search query or date range changes
+  // Run the filter whenever the search query changes
   useEffect(() => {
     filterCamps();
-  }, [searchQuery, startDate, endDate, camps]);
+  }, [searchQuery, camps]);
 
-  // Handle row click for navigating to camp details
   const handleRowClick = (campID) => {
     localStorage.setItem('camp-id', campID);
     navigate(`/camp-details-staff`);
-  };
-
-  // Reset date filters
-  const clearDateFilters = () => {
-    setStartDate('');
-    setEndDate('');
   };
 
   return (
@@ -73,7 +52,7 @@ const StaffUpcomingCamps = () => {
       >
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: '30px' }}>
           <i className="fa fa-user-circle" style={{ marginRight: '10px', fontSize: '24px' }}></i>
-          <span style={{ fontWeight: 'bold', fontSize: '20px' }}>Staff</span>
+          <span style={{ fontWeight: 'bold', fontSize: '20px' }}>Therapist</span>
         </div>
         <div
           style={{ marginBottom: '20px', cursor: 'pointer' }}
@@ -86,6 +65,12 @@ const StaffUpcomingCamps = () => {
           onClick={() => navigate('/profile')}
         >
           <i className="fa fa-user" style={{ marginRight: '10px' }}></i> Profile
+        </div>
+        <div
+          style={{ marginBottom: '20px', cursor: 'pointer' }}
+          onClick={() => navigate('/support')}
+        >
+          <i className="fa fa-question-circle" style={{ marginRight: '10px' }}></i> Support
         </div>
         <div
           style={{
@@ -118,10 +103,10 @@ const StaffUpcomingCamps = () => {
           </div>
         </header>
 
-        <h2 style={{ color: 'black', marginBottom: '20px' }}>Upcoming Camps</h2>
+        <h2 style={{ color: 'black', marginBottom: '20px' }}>All Patients</h2>
 
-        {/* Search Bar and Date Filters */}
-        <div style={{ marginBottom: '20px', display: 'flex', gap: '15px', alignItems: 'center' }}>
+        {/* Search Bar */}
+        <div style={{ marginBottom: '20px' }}>
           <input
             type="text"
             placeholder="Search by Camp ID, School Name, or Location"
@@ -130,49 +115,12 @@ const StaffUpcomingCamps = () => {
             style={{
               padding: '10px',
               width: '100%',
-              maxWidth: '300px',
+              maxWidth: '400px',
               borderRadius: '4px',
               border: '1px solid #ccc',
               fontSize: '16px',
             }}
           />
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            style={{
-              padding: '10px',
-              width: '150px',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-              fontSize: '16px',
-            }}
-          />
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            style={{
-              padding: '10px',
-              width: '150px',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-              fontSize: '16px',
-            }}
-          />
-          <button
-            onClick={clearDateFilters}
-            style={{
-              backgroundColor: '#d9534f', // Red background
-              color: 'white',
-              border: 'none',
-              padding: '10px 20px',
-              cursor: 'pointer',
-              borderRadius: '4px',
-            }}
-          >
-            Clear Dates
-          </button>
         </div>
 
         {/* Table */}
@@ -196,6 +144,9 @@ const StaffUpcomingCamps = () => {
                   <th>Date</th>
                   <th>Volunteer</th>
                   <th>Doctor</th>
+                  <th>Students Registered</th>
+                  <th>+ve Result after screening</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -214,12 +165,30 @@ const StaffUpcomingCamps = () => {
                     <td>{new Date(camp.dateTime).toLocaleDateString()}</td>
                     <td>{camp.volunteer}</td>
                     <td>{camp.doctor}</td>
+                    <td>{camp.studentsRegistered}</td>
+                    <td>{camp.studentsPositive}</td>
+                    <td>
+                      <button
+                        style={{
+                          backgroundColor: '#007bff', // Blue background
+                          color: 'white',
+                          border: 'none',
+                          padding: '10px 30px', // Padding to make the button wider
+                          cursor: 'pointer',
+                          borderRadius: '4px',
+                          whiteSpace: 'nowrap', // Ensures the text stays on a single line
+                        }}
+                        onClick={() => handleRowClick(camp.campID)}
+                      >
+                        Go to Camp
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           ) : (
-            <p style={{ color: 'black' }}>No upcoming camps scheduled.</p>
+            <p style={{ color: 'black' }}>No completed camps available.</p>
           )}
         </div>
       </div>
@@ -227,4 +196,4 @@ const StaffUpcomingCamps = () => {
   );
 };
 
-export default StaffUpcomingCamps;
+export default AllPatients;

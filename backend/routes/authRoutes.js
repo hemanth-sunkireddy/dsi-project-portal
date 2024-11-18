@@ -6,6 +6,7 @@ const Volunteer = require('../models/Volunteer');
 const Camp = require('../models/Camp');
 const auth = require('../middleware/authMiddleware');
 const User = require('../models/User')
+const Meeting = require('../models/Meeting')
 const router = express.Router();
 const { Screening } = require('../models/Screening');
 const { addScreening, updateScreening } = require('../controllers/screeningcontroller'); // Adjust the path
@@ -31,7 +32,7 @@ router.post('/addDoctor', async (req, res) => {
 router.post('/addStudent', async (req, res) => {
   try {
     const student = new Student(req.body);
-    if(student.status == undefined){
+    if (student.status == undefined) {
       student.status = "registered";
     }
     const campId_request = student.campId;
@@ -65,13 +66,31 @@ router.post('/addVolunteer', async (req, res) => {
 // Schedule a new camp
 router.post('/scheduleCamp', async (req, res) => {
   try {
-    const camp = new Camp(req.body);
-    await camp.save();
-    res.status(201).json({ message: 'Camp scheduled successfully' });
+    // Find the last created camp by sorting in descending order of _id (or another unique field)
+    const lastCamp = await Camp.findOne().sort({ _id: -1 }).exec();
+
+    let nextCampNumber = 1; // Default to 1 if no camps exist
+    if (lastCamp && lastCamp.campID) {
+      const lastCampNumber = parseInt(lastCamp.campID.split('-')[1]); // Extract the number from 'Camp-X'
+      if (!isNaN(lastCampNumber)) {
+        nextCampNumber = lastCampNumber + 1;
+      }
+    }
+
+    // Create the new camp with the incremented Camp ID
+    const newCamp = new Camp({
+      ...req.body, // Spread the request body to include all other camp data
+      campID: `Camp-${nextCampNumber}` // Auto-generate Camp ID
+    });
+
+    await newCamp.save();
+    res.status(201).json({ message: 'Camp scheduled successfully', camp: newCamp });
   } catch (error) {
+    console.error('Error scheduling camp:', error);
     res.status(500).json({ message: 'Error scheduling camp', error });
   }
 });
+
 
 // Fetch all camps
 router.get('/camps', async (req, res) => {
@@ -83,14 +102,47 @@ router.get('/camps', async (req, res) => {
   }
 });
 
-// Fetch all users
-router.get('/students', async (req, res) => { 
+router.get('/meetings', async (req, res) => {
   try {
-    const students = await Student.find(); 
+    const meetings = await Meeting.find();
+    res.json(meetings);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch camps', error });
+  }
+});
+
+// Fetch all users
+router.get('/students', async (req, res) => {
+  try {
+    const students = await Student.find();
     res.status(200).json(students);
   } catch (error) {
     res.json({ message: 'Failed to fetch Students', error });
   }
+});
+
+router.get('/users', async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    res.json({ message: 'Failed to fetch Users', error });
+  }
+});
+
+router.get('/profiledatad/:name', async (req, res) => {
+  const { name } = req.params;
+  console.log(name)
+  const document = await Doctor.findOne({ name });
+  console.log(document)
+  res.json({ document });
+});
+router.get('/profiledatav/:name', async (req, res) => {
+  const { name } = req.params;
+  console.log(name)
+  const document = await Volunteer.findOne({ name });
+  console.log(document)
+  res.json({ document });
 });
 router.get('/profiledata/:name', async (req, res) => {
   const { name } = req.params;
@@ -103,7 +155,7 @@ router.put('/updateprofile/:name', async (req, res) => {
   try {
     const { name } = req.params;
     const updates = req.body;
-    
+
     const result = await User.findOneAndUpdate(
       { name: name },
       { $set: updates },
@@ -121,14 +173,68 @@ router.put('/updateprofile/:name', async (req, res) => {
   }
 });
 
-router.post('/addScreening', addScreening);
+router.post('/scheduleMeeting', async (req, res) => {
+  const { campID, status, meetingDate, meetingTime, doctor } = req.body;
+  try {
+    const camp = await Camp.findOne({ campID: campID });
+    if (!camp) {
+      return res.status(404).send({ message: 'Camp not found' });
+    }
 
-// Route to update a screening
-router.put('/updateScreening/:id', updateScreening);
+    camp.status = status;
 
-// Route to add the initial chatbot preset
-router.post('/addInitialPreset', addInitialPreset);
-router.get('/chatbotSettings/:testId', getSettingsByTestId);
-router.post('/createChatbotInteraction', createChatbotInteraction);
-router.put('/updateChatbotInteraction/:id', updateChatbotInteraction);
+    await camp.save();
+    const lastMeeting = await Meeting.findOne().sort({ _id: -1 }).exec();
+
+    let nextMeetNumber = 1; // Default to 1 if no meetings exist
+
+    // If there's a last meeting and it has a valid meetid
+    if (lastMeeting && lastMeeting.meetid) {
+      const lastMeetNumber = parseInt(lastMeeting.meetid.split('-')[1]); // Extract the number from 'Meeting-X'
+      if (!isNaN(lastMeetNumber)) {
+        nextMeetNumber = lastMeetNumber + 1; // Increment the last meeting number
+      }
+    }
+
+    const newMeetid = `Meeting-${nextMeetNumber}`;
+    const dateTimeString = `${meetingDate}T${meetingTime}:00`;
+    const dateTime = new Date(dateTimeString);
+    const meeting = new Meeting({
+      meetID: newMeetid,
+      dateTime: dateTime,
+      campID: campID,
+      doctor: doctor,
+      status: "scheduled",
+    });
+
+    await meeting.save();
+
+    res.status(200).send({ message: 'Camp updated successfully', camp });
+  } catch (error) {
+    console.error('Error updating camp:', error);
+    res.status(500).send({ message: error });
+  }
+});
+
+router.post('/updateCampStatus', async (req, res) => {
+  try {
+    const reqCamp = new Camp(req.body);
+   
+    const campId_request = reqCamp.campID;
+    const campStatus = reqCamp.status;
+    const camp = await Camp.findOne({ campID: campId_request });
+    if (!camp) {
+      // If the camp is not found, send an error response
+      return res.status(404).json({ message: 'Camp not found' });
+    }
+
+    camp.status = campStatus;
+    await camp.save();
+    res.status(201).json({ message: 'Camp Status Updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error });
+  }
+});
+
 module.exports = router;

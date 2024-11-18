@@ -5,9 +5,10 @@ const HelpDeskPage = () => {
   return (
     <div className="help-desk">
       <header className="header">
-        <h1>Help Desk and Support</h1>
-        <a href="/dashboard" className='nav-link'>Home</a>
-        <a href="/" className='nav-link'>Logout</a>
+        <h1  style={{color: 'white'}}>Help Desk and Support</h1>
+        <a href="/dashboard" style={{textDecoration:'none',fontSize:'30px',fontWeight:'bold',color:'white'}}>Home</a>
+        <a href="/profile" style={{textDecoration:'none',fontSize:'30px',fontWeight:'bold',color:'white'}}>Profile</a>
+        <a href="/" style={{textDecoration:'none',fontSize:'30px',fontWeight:'bold',color:'white'}}>Logout</a>
         <div className="search-bar">
           <input type="text" placeholder="Search" />
           <button>🔍</button>
@@ -16,8 +17,8 @@ const HelpDeskPage = () => {
       </header>
       <div className="content">
         <div className="overview">
-          <h2>Overview:</h2>
-          <p>
+          <h2 style={{color: 'black'}}>Overview:</h2>
+          <p style={{color: 'black'}}>
             Each user type (Volunteer, Doctor, NGO Staff) has a dedicated dashboard with different functionalities. On clicking each option, new screens will be displayed (either form-based or list-based). A Support option is available on all screens for assistance.
           </p>
         </div>

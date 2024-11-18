@@ -106,14 +106,16 @@ const DashboardNGO = () => {
         </div>
 
         <div className="analytics-section">
-          <h2>Analytics</h2>
+          
           <div className="analytics-chart">
+            <h2>Analytics</h2> 
             <Pie data={pieData} />
             <p>Distribution of Scheduled, Completed, and Upcoming Camps</p>
           </div>
 
           <div className="calendar-container">
             <h3>Schedule and View Camps</h3>
+            
             <Calendar
               onChange={setDate}
               value={date}
