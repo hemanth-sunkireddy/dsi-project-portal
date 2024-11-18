@@ -1,39 +1,79 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+// import React, { useEffect } from 'react';
 
-const Login = ({ setRole }) => {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const navigate = useNavigate();
+// const Login = () => {
+//   useEffect(() => {
+//     // Load the Phone.Email script dynamically
+//     const script = document.createElement('script');
+//     script.src = "https://www.phone.email/sign_in_button_v1.js";
+//     script.async = true;
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+//     // Append script to the body
+//     document.body.appendChild(script);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post('/api/auth/login', formData);
-      console.log(res.data);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('name', res.data.name);
-      localStorage.setItem('role', res.data.role); // Save role to localStorage
-      setRole(res.data.role); // Set role for the current user
-      navigate(`/dashboard`); 
-    } catch (error) {
-      alert('Error logging in');
-    }
-  };
+//     // Define the listener function
+//     window.phoneEmailListener = function (userObj) {
+//       const user_json_url = userObj.user_json_url;
+//       alert(`Verification Successful! Fetch user info from: ${user_json_url}`);
+//       console.log("User JSON URL:", user_json_url);
+//     };
+
+//     // Cleanup the listener when the component unmounts
+//     return () => {
+//       window.phoneEmailListener = null;
+//       document.body.removeChild(script);
+//     };
+//   }, []);
+
+//   return (
+//     <div className="form-container">
+//       <h2>Login</h2>
+//       <p>
+//         Don't have an account? <a href="/register">Register Here</a>
+//       </p>
+
+//       {/* Render the Phone.Email button */}
+//       <div className="pe_signin_button" data-client-id="11866594304370694508"></div>
+//     </div>
+//   );
+// };
+
+// export default Login;
+
+import React, { useEffect } from 'react';
+
+const Login = () => {
+  useEffect(() => {
+    // Dynamically load the Phone.Email script
+    const script = document.createElement('script');
+    script.src = "https://www.phone.email/sign_in_button_v1.js";
+    script.async = true;
+
+    // Append the script to the body
+    document.body.appendChild(script);
+
+    // Define the listener function for verification
+    window.phoneEmailListener = function (userObj) {
+      const user_json_url = userObj.user_json_url;
+      alert(`Verification Successful! Fetch user info from: ${user_json_url}`);
+      console.log("User JSON URL:", user_json_url);
+    };
+
+    // Cleanup script and listener when component unmounts
+    return () => {
+      window.phoneEmailListener = null;
+      document.body.removeChild(script);
+    };
+  }, []);
 
   return (
     <div className="form-container">
-      <form className="auth-form" onSubmit={handleSubmit}>
-        <h2>Login</h2>
-        <input name="email" type="email" placeholder="Email" onChange={handleChange} required />
-        <input name="password" type="password" placeholder="Password" onChange={handleChange} required />
-        <button type="submit">Login</button>
-        <p>
-          Don't have an account? <Link to="/register">Register</Link>
-        </p>
-      </form>
+      <h2>Login</h2>
+      <p>
+        Don't have an account? <a href="/register">Register Here</a>
+      </p>
+
+      {/* Render the Phone.Email button */}
+      <div className="pe_signin_button" data-client-id="11866594304370694508"></div>
     </div>
   );
 };
