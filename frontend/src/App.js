@@ -64,6 +64,7 @@ function App() {
         <Route path="/support" element={<SuportPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/editprofile" element={<EditProfile />} />
+        <Route path="/adddoctor" element={<AddDoctor />} />
         {/* Conditional Routing Based on Role */}
         {/* Conditional Routing Based on Role */}
         <Route path="/dashboard" element={
