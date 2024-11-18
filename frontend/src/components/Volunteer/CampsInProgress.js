@@ -25,7 +25,11 @@ const CampsInProgress = () => {
 
       return (
         camp.volunteer === user_name &&
-        (!searchTerm || camp.campID.includes(searchTerm)) &&
+        // Search by campID, schoolName, or location
+        (!searchTerm ||
+          camp.campID.includes(searchTerm) ||
+          camp.schoolName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          camp.location.toLowerCase().includes(searchTerm.toLowerCase())) &&
         isWithinDateRange
       );
     });
@@ -149,7 +153,7 @@ const CampsInProgress = () => {
           <div style={{ display: 'flex', flex: 1, alignItems: 'center' }}>
             <input
               type="text"
-              placeholder="Search by camp ID"
+              placeholder="Search by camp ID, school name, or location"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{
@@ -217,7 +221,7 @@ const CampsInProgress = () => {
               }}
             >
               <thead style={{ backgroundColor: '#50ac54' }}>
-                <tr style={{ color: 'black', height: 30 }}>
+                <tr style={{ color: 'white', height: 30 }}>
                   <th>Camp ID</th>
                   <th>School Name</th>
                   <th>Location</th>
@@ -262,7 +266,7 @@ const CampsInProgress = () => {
             </table>
 
             {/* Pagination */}
-            <div style={{ textAlign: 'center' }}>
+            {/* <div style={{ textAlign: 'center' }}>
               {Array.from({ length: totalPages }, (_, index) => (
                 <button
                   key={index}
@@ -280,7 +284,7 @@ const CampsInProgress = () => {
                   {index + 1}
                 </button>
               ))}
-            </div>
+            </div> */}
           </>
         )}
       </div>

@@ -9,6 +9,7 @@ const ViewStudents = () => {
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
   const [searchTerm, setSearchTerm] = useState(''); // Search term state
+  const [statusFilter, setStatusFilter] = useState(''); // Status filter state
 
   // Fetching students from the server
   const fetchStudents = async () => {
@@ -22,7 +23,7 @@ const ViewStudents = () => {
     }
   };
 
-  // Display only the students associated with the selected camp
+  // Display only the students associated with the selected camp and apply the filters
   const filterStudents = () => {
     let filtered = students.filter((student) => student.campId === SelectedCamp);
 
@@ -36,6 +37,11 @@ const ViewStudents = () => {
       );
     }
 
+    // Apply status filter
+    if (statusFilter) {
+      filtered = filtered.filter((student) => student.status === statusFilter);
+    }
+
     setFilteredStudents(filtered);
   };
 
@@ -47,7 +53,7 @@ const ViewStudents = () => {
     if (students.length > 0) {
       filterStudents();
     }
-  }, [students, searchTerm]);
+  }, [students, searchTerm, statusFilter]);
 
   // Handling row click to navigate to student profile
   const handleRowClick = (studentId) => {
@@ -112,8 +118,8 @@ const ViewStudents = () => {
           </button>
         </div>
 
-        {/* Search bar */}
-        <div style={{ margin: '5px 0', display: 'flex', justifyContent: 'center'}}>
+        {/* Search bar and Status Filter */}
+        <div style={{ margin: '5px 0', display: 'flex', justifyContent: 'center', gap: '10px' }}>
           <input
             type="text"
             placeholder="Search by Student ID, School Name, or Phone Number"
@@ -127,6 +133,23 @@ const ViewStudents = () => {
               maxWidth: '300px',
             }}
           />
+          
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            style={{
+              padding: '10px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              width: '200px',
+            }}
+          >
+            <option value="">Select Status</option>
+            <option value="registered">Registered</option>
+            <option value="screened">Screened</option>
+            <option value="follow-up-completed">Follow Up Completed</option>
+            <option value="final-report-generated">Final Report Generated</option>
+          </select>
         </div>
 
         {/* Loading State */}
@@ -193,7 +216,7 @@ const ViewStudents = () => {
             </tbody>
           </table>
         ) : (
-          <p>No students registered yet</p>
+          <p>No students</p>
         )}
       </div>
     </div>

@@ -28,7 +28,7 @@ router.post('/addDoctor', async (req, res) => {
 router.post('/addStudent', async (req, res) => {
   try {
     const student = new Student(req.body);
-    if(student.status == undefined){
+    if (student.status == undefined) {
       student.status = "registered";
     }
     const campId_request = student.campId;
@@ -108,18 +108,18 @@ router.get('/meetings', async (req, res) => {
 });
 
 // Fetch all users
-router.get('/students', async (req, res) => { 
+router.get('/students', async (req, res) => {
   try {
-    const students = await Student.find(); 
+    const students = await Student.find();
     res.status(200).json(students);
   } catch (error) {
     res.json({ message: 'Failed to fetch Students', error });
   }
 });
 
-router.get('/users', async (req, res) => { 
+router.get('/users', async (req, res) => {
   try {
-    const users = await User.find(); 
+    const users = await User.find();
     res.status(200).json(users);
   } catch (error) {
     res.json({ message: 'Failed to fetch Users', error });
@@ -151,7 +151,7 @@ router.put('/updateprofile/:name', async (req, res) => {
   try {
     const { name } = req.params;
     const updates = req.body;
-    
+
     const result = await User.findOneAndUpdate(
       { name: name },
       { $set: updates },
@@ -170,7 +170,7 @@ router.put('/updateprofile/:name', async (req, res) => {
 });
 
 router.post('/scheduleMeeting', async (req, res) => {
-  const { campID, status,meetingDate,meetingTime,doctor } = req.body;
+  const { campID, status, meetingDate, meetingTime, doctor } = req.body;
   try {
     const camp = await Camp.findOne({ campID: campID });
     if (!camp) {
@@ -179,7 +179,7 @@ router.post('/scheduleMeeting', async (req, res) => {
 
     camp.status = status;
 
-    await camp.save(); 
+    await camp.save();
     const lastMeeting = await Meeting.findOne().sort({ _id: -1 }).exec();
 
     let nextMeetNumber = 1; // Default to 1 if no meetings exist
@@ -193,7 +193,7 @@ router.post('/scheduleMeeting', async (req, res) => {
     }
 
     const newMeetid = `Meeting-${nextMeetNumber}`;
-    const dateTimeString = `${meetingDate}T${meetingTime}:00`; 
+    const dateTimeString = `${meetingDate}T${meetingTime}:00`;
     const dateTime = new Date(dateTimeString);
     const meeting = new Meeting({
       meetID: newMeetid,
@@ -209,6 +209,27 @@ router.post('/scheduleMeeting', async (req, res) => {
   } catch (error) {
     console.error('Error updating camp:', error);
     res.status(500).send({ message: error });
+  }
+});
+
+router.post('/updateCampStatus', async (req, res) => {
+  try {
+    const reqCamp = new Camp(req.body);
+   
+    const campId_request = reqCamp.campID;
+    const campStatus = reqCamp.status;
+    const camp = await Camp.findOne({ campID: campId_request });
+    if (!camp) {
+      // If the camp is not found, send an error response
+      return res.status(404).json({ message: 'Camp not found' });
+    }
+
+    camp.status = campStatus;
+    await camp.save();
+    res.status(201).json({ message: 'Camp Status Updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error });
   }
 });
 

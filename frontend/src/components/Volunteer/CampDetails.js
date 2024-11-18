@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const CampDetails = () => {
   const navigate = useNavigate();
   const [camps, setCamps] = useState([]);
+  const [campStatus, setCampStatus] = useState('');
   const campID = localStorage.getItem('camp-id');
   const [filteredCamps, setFilteredCamps] = useState([]);
 
@@ -21,6 +22,25 @@ const CampDetails = () => {
     const filtered = camps.filter((camp) => camp.campID === campID);
     setFilteredCamps(filtered);
     localStorage.setItem('volunteer', filtered[0]?.volunteer);
+    setCampStatus(filtered[0]?.status || ''); // Set initial status
+  };
+
+  const handleCampStatusChange = async (e) => {
+    const newStatus = e.target.value; // Get the updated value from the select input
+    setCampStatus(newStatus); // Update local state (you can remove this if it's not necessary)
+    console.log(newStatus); // Log the updated value (use this instead of campStatus)
+  
+    try {
+      const response = await axios.post('/api/auth/updateCampStatus', {
+        campID: campID,
+        status: newStatus, // Send the updated status
+      });
+      if (response.status === 201) {
+        console.log('Camp status updated successfully');
+      }
+    } catch (error) {
+      console.error('Error updating camp status:', error);
+    }
   };
 
   useEffect(() => {
@@ -71,6 +91,16 @@ const CampDetails = () => {
         <div style={styles.header}>
           <h2 style={styles.sectionTitle}>Camp Information</h2>
           <div style={styles.headerButtons}>
+            <div style={styles.dropdownContainer}>
+              <select
+                value={campStatus}
+                onChange={handleCampStatusChange}
+                style={styles.dropdown}
+              >
+                <option value="In Progress" style={{fontWeight: 'bolder'}}>In Progress</option>
+                <option value="completed">Completed</option>
+              </select>
+            </div>
             <button style={styles.button} onClick={handleViewStudentsClick}>
               View Students
             </button>
@@ -205,6 +235,19 @@ const styles = {
   headerButtons: {
     display: 'flex',
     gap: '10px',
+  },
+  dropdownContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+  },
+  dropdown: {
+    padding: '8px',
+    borderRadius: '10px',
+    border: '1px solid #ccc',
+    fontSize: '14px',
+    backgroundColor: '#007bff',
+    color: 'white',
   },
   button: {
     backgroundColor: '#007bff',
