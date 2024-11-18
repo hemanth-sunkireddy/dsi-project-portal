@@ -12,6 +12,7 @@ const StudentProfile = () => {
     try {
       const response = await axios.get('/api/auth/students');
       setStudents(response.data);
+      // console.log(response.data);
     } catch (error) {
       console.error('Error fetching Students:', error);
     }
@@ -21,7 +22,7 @@ const StudentProfile = () => {
   const filterStudents = () => {
     const filtered = students.filter((student) => student.studentId === studentID);
     setFilteredStudents(filtered);
-    console.log(filtered);
+    console.log(filtered[0]._id);
   };
 
   useEffect(() => {

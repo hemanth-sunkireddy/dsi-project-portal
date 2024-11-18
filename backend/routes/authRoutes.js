@@ -8,6 +8,10 @@ const auth = require('../middleware/authMiddleware');
 const User = require('../models/User')
 const Meeting = require('../models/Meeting')
 const router = express.Router();
+const { Screening } = require('../models/Screening');
+const { addScreening, updateScreening } = require('../controllers/screeningcontroller'); // Adjust the path
+const { ChatbotInteraction, ChatbotSettings } = require('../models/Chatbot');
+const { addInitialPreset, getSettingsByTestId, createChatbotInteraction, updateChatbotInteraction } = require('../controllers/Chatbotcontroller'); // Adjust the path
 
 router.post('/register', register);
 router.post('/login', login);
