@@ -5,14 +5,14 @@ const HelpDeskPage = () => {
   return (
     <div className="help-desk">
       <header className="header">
-        <h1  style={{color: 'black'}}>Help Desk and Support</h1>
-        <a href="/dashboard" className='nav-link'>Home</a>
-        <a href="/" className='nav-link'>Logout</a>
+        <h1  style={{color: 'white'}}>Help Desk and Support</h1>
+        <a href="/dashboard" style={{fontSize:'28px',fontWeight:'bold',textDecoration:'none',color:'white'}}>Home</a>
+        <a href="/profile" style={{fontSize:'28px',fontWeight:'bold',textDecoration:'none',color:'white'}}>Profile</a>
+        <a href="/"style={{fontSize:'28px',fontWeight:'bold',textDecoration:'none',color:'white'}} >Logout</a>
         <div className="search-bar">
           <input type="text" placeholder="Search" />
           <button>🔍</button>
         </div>
-
       </header>
       <div className="content">
         <div className="overview">

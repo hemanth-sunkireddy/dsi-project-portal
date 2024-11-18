@@ -6,7 +6,9 @@ import 'react-calendar/dist/Calendar.css';
 // import './VolunteerDashboard.css';
 import { Bell, Home, User, HelpCircle, LogOut } from 'lucide-react';
 import axios from 'axios';
-
+import icon from './doctor_icon.png'
+import logo from './Choice_logo.png'
+import pic from './pic.png'
 const CompletedMeetings = () => {
   const navigate = useNavigate();
   const [date, setDate] = useState(new Date());
@@ -79,33 +81,46 @@ const CompletedMeetings = () => {
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center', 
-          marginBottom: '30px' 
+          marginBottom: '30px',
+          marginRight:'20px' 
         }}>
+          <img 
+          src={icon} 
+          alt="Doctor Icon" 
+          style={{ 
+          width: '80px', 
+          height: '80px', 
+          marginRight: '20px', 
+          borderRadius: '50%' // Optional, for circular icons
+    }} 
+  />
           <i className="fa fa-user-circle" style={{ 
             marginRight: '10px', 
             fontSize: '24px' 
           }}></i>
           <span style={{ 
             fontWeight: 'bold', 
-            fontSize: '20px' 
+            fontSize: '30px', 
+            position:'relative',
+            left:'-20px'
           }}>Doctor</span>
         </div>
         
         <div className="sidebar-menu">
           <button onClick={() => navigate('/dashboard')} className="sidebar-item">
             <Home className="sidebar-icon" />
-            <span>Home</span>
-          </button>
+            <span style={{ fontSize: '20px',fontWeight: 'bold'}}>Home</span>
+            </button>
 
           <button onClick={() => navigate('/profile')} className="sidebar-item">
             <User className="sidebar-icon" />
-            <span>Profile</span>
-          </button>
+            <span style={{ fontSize: '20px',fontWeight:'bold' }}>Profile</span>
+            </button>
 
           <button onClick={() => navigate('/support')} className="sidebar-item">
             <HelpCircle className="sidebar-icon" />
-            <span>Support</span>
-          </button>
+            <span style={{ fontSize: '20px' ,fontWeight:'bold'}}>Support</span>
+            </button>
         </div>
 
         <button 
@@ -116,52 +131,102 @@ const CompletedMeetings = () => {
           className="sidebar-item logout-button"
         >
           <LogOut className="sidebar-icon" />
-          <span>Log Out</span>
-        </button>
+          <span style={{ fontSize: '20px',fontWeight: 'bold'}}>LogOut</span>
+          </button>
       </div>
 
       {/* Main Content */}
       <div className="main-content">
-        {/* Header */}
-        <div className="header">
-          <div className="header-left">
-            {/* <img src="/home/harsv69/Desktop/dsi/dsi-project-portal/frontend/public/Choice_Foundation.png" alt="Choice Foundation" className="logo" /> */}
-            <h2 className="header-title">Choice Foundation</h2>
-          </div>
-          <div className="header-right">
-            <button className="notification-button">
-              <Bell />
-            </button>
-            <div className="user-info">
-              <span className="greeting">Hi there,</span>
-              <span className="username">{userName}</span>
-              {/* <img src="/api/placeholder/40/40" alt="Profile" className="profile-image" /> */}
-            </div>
-          </div>
-        </div>
+        {/* Main Content */}
+<div className="main-content">
+  {/* Header */}
+  <div 
+    className="header" 
+    style={{
+      display: "flex", 
+      alignItems: "center", 
+      justifyContent: "space-between", 
+      padding: "10px 20px", 
+      borderBottom: "1px solid #ccc",
+      height:'130px'
+    }}
+  >
+    {/* Logo Section */}
+    <div className="header-left" style={{ display: "flex", alignItems: "center" }}>
+      <img 
+        src={logo} 
+        alt="Choice Foundation" 
+        style={{ 
+          width: "400px", 
+          height: "80px", 
+          marginRight: "10px" 
+        }} 
+      />
+      {/* <h2 className="header-title" style={{ margin: 0 }}>Choice Foundation</h2> */}
+    </div>
+
+    {/* Center Title */}
+    <div 
+      className="header-center" 
+      style={{ 
+        textAlign: "center", 
+        flex: 1 
+      }}
+    >
+      <h2 style={{ margin: 0 ,color:'black',fontFamily:'-moz-initial',fontSize:'30px'}}>Dashboard - Doctor</h2>
+    </div>
+
+    {/* Right Section */}
+    <div 
+      className="header-right" 
+      style={{ 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "flex-end" 
+      }}
+    >
+      <img 
+        src={pic} 
+        alt="Profile" 
+        style={{ 
+          width: "50px", 
+          height: "50px", 
+          borderRadius: "50%", 
+          objectFit: "cover",
+          position:'relative',
+          right:"10px"
+           
+        }} 
+      />
+        <span style={{ marginRight: "10px" ,color:'black',fontWeight:'bold'}}>Hi there,</span>
+        <span style={{ marginRight: "10px", fontWeight: "bold",color:'black' }}>{userName}</span>
+    </div>
+  </div>
+</div>
+
 
         <div className="dashboard-content">
-          <h1 className="page-title">Dashboard - Doctor</h1>
+          {/* <h1 className="page-title">Dashboard - Doctor</h1> */}
 
           {/* Cards */}
           <div className="dashboard-cards">
           <div className="dashboard-card" onClick={() => navigate('/completed-meetings', { state: { camps: ongoingCamps } })}>
-              <h2>Completed Meetings</h2>
-              <p>List of camps the doctor has visited and successfully completed patient diagnoses</p>
-              <button>View</button>
+              <h2 style={{fontSize:'30px'}}>Completed Meetings</h2>
+              <p style={{fontSize:'23px'}}>List of camps the doctor has visited and successfully completed patient diagnoses</p>
+              <button style={{fontSize:'20px',fontWeight:'bold'}}>View</button>
             </div>
 
             <div className="dashboard-card" onClick={() => navigate('/scheduled-meetings', { state: { camps: completedCamps } })}>
-              <h2>Scheduled Meetings</h2>
-              <p>List of camps where the doctor needs to visit for patient diagnosis</p>
-              <button>View</button>
+              <h2 style={{fontSize:'30px'}}>Scheduled Meetings</h2>
+              <p style={{fontSize:'23px'}}>List of camps where the doctor needs to visit for patient diagnosis</p>
+              <button style={{fontSize:'20px',fontWeight:'bold'}}>View</button>
             </div>
 
             <div className="dashboard-card" onClick={() => navigate('/unscheduled-meetings', { state: { camps: upcomingCamps } })}>
             {/* <h2>Unscheduled Meetings</h2> */}
-              <h2>Unscheduled Meetings</h2>
-              <p>List of camps pending scheduling for the doctor's visit to diagnose patients</p>
-              <button>View</button>
+              <h2 style={{fontSize:'30px'}}>Unscheduled Meetings</h2>
+              <p style={{fontSize:'23px'}}>List of camps pending scheduling for the doctor's visit to diagnose patients</p>
+              <button style={{fontSize:'20px',fontWeight:'bold'}}>View</button>
             </div>
           </div>
 
@@ -260,7 +325,9 @@ const CompletedMeetings = () => {
           flex-direction: column;
           color: white;
         }
-
+        .header{
+        background: white;
+        }
         .sidebar-header {
           margin-bottom: 48px;
         }
@@ -296,8 +363,9 @@ const CompletedMeetings = () => {
         }
 
         .sidebar-icon {
-          width: 20px;
-          height: 20px;
+          width: 40px;
+          height: 40px;
+          font: 20px;
         }
 
         .logout-button {
@@ -309,38 +377,6 @@ const CompletedMeetings = () => {
           flex: 1;
           overflow-y: auto;
         }
-
-        /* Header Styles */
-        .header {
-          background: white;
-          padding: 16px 32px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .header-left {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-        }
-
-        .logo {
-          height: 48px;
-        }
-
-        .header-title {
-          font-size: 24px;
-          font-weight: bold;
-        }
-
-        .header-right {
-          display: flex;
-          align-items: center;
-          gap: 24px;
-        }
-
         .notification-button {
           padding: 8px;
           border-radius: 50%;
@@ -389,11 +425,12 @@ const CompletedMeetings = () => {
 
         .dashboard-card {
           background: white;
-          border-radius: 8px;
+          border-radius: 20px;
           padding: 24px;
           position: relative;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-          height: 170px;
+          height: 230px;
+          width: 470px;
           display: flex;
           flex-direction: column;
         }
@@ -425,10 +462,12 @@ const CompletedMeetings = () => {
           background: #3060ff;
           color: white;
           border: none;
-          border-radius: 4px;
+          border-radius: 20px;
           padding: 8px 24px;
           cursor: pointer;
           align-self: center;
+          height : 50px;
+          width : 150px;
         }
 
         .bottom-section {
@@ -442,6 +481,8 @@ const CompletedMeetings = () => {
           border-radius: 8px;
           padding: 24px;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+          width:400px;
+          height:400px
         }
 
         .chart-title {
@@ -455,7 +496,7 @@ const CompletedMeetings = () => {
         }
 
         .chart-legend {
-          position: absolute;
+          position: relative;
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
