@@ -6,6 +6,8 @@ import AddDoctor from './components/AddDoctor';
 import AddStudent from './components/AddStudent';
 import ScheduleCamp from './components/ScheduleCamp';
 import DashboardNGO from './components/DashboardNGO';
+import DoctorDashboard from './components/DoctorDashboard';
+import TherapistDashboard from './components/TherapistDashboard'
 import VolunteerDashboard from './components/VolunteerDashboard'; // Import Volunteer Dashboard
 import UpcomingCamps from './components/Volunteer/UpcomingCamps';
 import CompletedCamps from './components/Volunteer/CompletedCamps';
@@ -22,7 +24,11 @@ import ProfilePage from './components/ProfilePage';
 import SuportPage from './components/HelpDeskPage'
 import EditProfile from './components/EditProfile'
 import './components/auth.css';
-
+import CompletedMeetings from './components/Doctor/CompletedMeetings';
+import ScheduledMeetings from './components/Doctor/ScheduledMeetings';
+import UnscheduledMeetings from './components/Doctor/UnscheduledMeetings';
+import AllPatients from './components/Therapist/CompletedCamps';
+import LandingPage from './components/LandingPage';
 function App() {
   const [role, setRole] = useState(() => localStorage.getItem('role') || null);
 
@@ -37,7 +43,12 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" />} />
+      <Route path="/landing-page" element={<LandingPage/>} />
+      <Route path="/all-patients" element={<AllPatients/>} />
+        <Route path="/completed-meetings" element={<CompletedMeetings/>} />
+        <Route path="/scheduled-meetings" element={<ScheduledMeetings/>} />
+        <Route path="/unscheduled-meetings" element={<UnscheduledMeetings/>} />
+        <Route path="/" element={<Navigate to="/landing-page" />} />
         <Route path="/register" element={<Register />} />
         <Route path="/upcoming-camps" element={<UpcomingCamps />} />
         <Route path="/completed-camps" element={<CompletedCamps />} />
@@ -53,25 +64,22 @@ function App() {
         <Route path="/support" element={<SuportPage />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/editprofile" element={<EditProfile />} />
+        <Route path="/adddoctor" element={<AddDoctor />} />
         {/* Conditional Routing Based on Role */}
         {/* Conditional Routing Based on Role */}
         <Route path="/dashboard" element={
-          role === 'Doctor' ? <AddDoctor /> :
-          role === 'NGO Worker' ? <DashboardNGO /> :
-          role === 'Volunteer' ? <VolunteerDashboard /> : // Render Volunteer Dashboard for Volunteers
-          role === 'Therapist' ? <ScheduleCamp /> :
-          <Navigate to="/login" />
+          role === 'Doctor' ? <DoctorDashboard /> :
+            role === 'NGO Worker' ? <DashboardNGO /> :
+              role === 'Volunteer' ? <VolunteerDashboard /> : // Render Volunteer Dashboard for Volunteers
+                role === 'Therapist' ? <TherapistDashboard /> :
+                  <Navigate to="/login" />
         } />
 
         {/* Additional Routes */}
         <Route path="/add-student" element={<AddStudent />} />
         <Route path="/schedule-camp" element={<ScheduleCamp />} />
       </Routes>
-
-      {/* Logout Button for Convenience */}
-      {/* {role && <Logout setRole={setRole} />} Only show Logout if a role is set */}
     </Router>
   );
 }
-
 export default App;

@@ -85,19 +85,13 @@
   gap: 600px;
 
 }
-h2 {
+.h2 {
   margin-left: 0px;
   color:#333333;
 }
-.react-calendar {
-  width: 100%;
-  max-width: 400px;
-  align-items: center;
-  margin-left: 550px;
-  background-color: #fff;
-  border: 1px solid #dcdcdc;
-  border-radius: 8px;
-  font-family: Arial, sans-serif;
-  padding: 10px;
-  border: 2px solid yellow;
+.calendar-container1{
+
+  
+  margin-left:300px;
 }
+

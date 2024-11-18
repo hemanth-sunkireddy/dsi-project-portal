@@ -1,47 +1,63 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
-const CompletedCamps = () => {
-  const location = useLocation();
+const CompletedMeetings = () => {
   const navigate = useNavigate();
   const user_name = localStorage.getItem('name');
-  const [filteredCamps, setFilteredCamps] = useState([]);
+  const [filteredMeetings, setFilteredMeetings] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [filters, setFilters] = useState({
     startDate: '',
     endDate: '',
   });
-  const { camps } = location.state || { camps: [] };
+  const [meetings, setMeetings] = useState([]);
+  const fetchMeetings = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        console.error('No token found');
+        return;
+      }
+      const response = await axios.get('/api/auth/meetings');
+      const doctorMeetings = response.data.filter(meeting => meeting.doctor === user_name);
+      setMeetings(doctorMeetings); 
+      console.log(doctorMeetings);
+    } catch (error) {
+      console.error('Error fetching camps:', error);
+    }
+  };
+  
+  // Fetch camps when the component mounts
+  useEffect(() => {
+    fetchMeetings();
+  }, [user_name]);
 
-  // Filter camps based on volunteer's involvement, search term, and date range
-  const filterCamps = () => {
-    let filtered = camps.filter(
-      (camp) =>
-        (camp.volunteer === user_name || camp.doctor === user_name) &&
-        (camp.campID.includes(searchTerm) ||
-          camp.schoolName.toLowerCase().includes(searchTerm.toLowerCase()))
+  const filterMeetings = () => {
+    let filtered = meetings.filter(
+      (meeting) =>
+        (meeting.doctor === user_name ) && (meeting.status === "scheduled")
     );
 
-    // If From Date is selected, filter by startDate
     if (filters.startDate) {
       filtered = filtered.filter(
-        (camp) => new Date(camp.dateTime) >= new Date(filters.startDate)
+        (meeting) => new Date(meeting.dateTime) >= new Date(filters.startDate)
       );
     }
 
-    // If To Date is selected, filter by endDate
+    // Filter by endDate if selected
     if (filters.endDate) {
       filtered = filtered.filter(
-        (camp) => new Date(camp.dateTime) <= new Date(filters.endDate)
+        (meeting) => new Date(meeting.dateTime) <= new Date(filters.endDate)
       );
     }
 
-    setFilteredCamps(filtered);
+    setFilteredMeetings(filtered);
   };
 
-  const handleRowClick = (campID) => {
-    localStorage.setItem('camp-id', campID);
-    navigate(`/camp-details`);
+  const handleRowClick = (meetingID) => {
+    localStorage.setItem('meeting-id', meetingID);
+    navigate(`/meeting-details`);
   };
 
   const handleClearDates = () => {
@@ -52,10 +68,10 @@ const CompletedCamps = () => {
   };
 
   useEffect(() => {
-    if (camps.length > 0) {
-      filterCamps();
+    if (meetings.length > 0) {
+      filterMeetings();
     }
-  }, [camps, searchTerm, filters]);
+  }, [meetings, filters]);
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#fff' }}>
@@ -71,9 +87,20 @@ const CompletedCamps = () => {
           boxSizing: 'border-box',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', marginBottom: '30px' }}>
-          <i className="fa fa-user-circle" style={{ marginRight: '10px', fontSize: '24px' }}></i>
-          <span style={{ fontWeight: 'bold', fontSize: '20px' }}>Volunteer</span>
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          marginBottom: '30px' 
+        }}>
+          <i className="fa fa-user-circle" style={{ 
+            marginRight: '10px', 
+            fontSize: '24px' 
+          }}></i>
+          <span style={{ 
+            fontWeight: 'bold', 
+            fontSize: '20px' 
+          }}>Doctor</span>
         </div>
         <div
           style={{ marginBottom: '20px', cursor: 'pointer' }}
@@ -131,20 +158,19 @@ const CompletedCamps = () => {
           </div>
         </header>
 
-        <h2 style={{ color: 'black', marginBottom: '20px' }}>Completed Camps</h2>
+        <h2 style={{ color: 'black', marginBottom: '20px' }}>Completed Meetings</h2>
 
         {/* Search Bar and Date Range Filters */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
-            marginBottom: '20px',
           }}
         >
           {/* Search Bar */}
           <input
             type="text"
-            placeholder="Search by Camp ID or School Name"
+            placeholder="Search by Meeting ID or Topic"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{
@@ -156,91 +182,71 @@ const CompletedCamps = () => {
             }}
           />
 
-          {/* From Date Filter */}
-          <input
-            type="date"
-            value={filters.startDate}
-            onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-            style={{
-              padding: '10px',
-              marginLeft: '15px',
-              width: '120px',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-            }}
-          />
-
-          {/* To Date Filter */}
-          <input
-            type="date"
-            value={filters.endDate}
-            onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-            style={{
-              padding: '10px',
-              marginLeft: '15px',
-              width: '120px',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-            }}
-          />
-
-          {/* Clear Dates Button */}
-          <button
-            onClick={handleClearDates}
-            style={{
-              padding: '10px 20px',
-              marginLeft: '15px',
-              backgroundColor: '#dc3545',
-              color: 'white',
-              border: 'none',
-              borderRadius: '4px',
-              cursor: 'pointer',
-            }}
-          >
-            Clear Dates
-          </button>
+          {/* Date Filters
+          <div style={{ marginLeft: '20px', display: 'flex', gap: '20px' }}>
+            <input
+              type="date"
+              value={filters.startDate}
+              onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+              style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
+            />
+            <input
+              type="date"
+              value={filters.endDate}
+              onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+              style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
+            />
+            <button
+              onClick={handleClearDates}
+              style={{
+                padding: '10px 20px',
+                backgroundColor: '#dc3545',
+                color: 'white',
+                border: 'none',
+                borderRadius: '4px',
+                cursor: 'pointer',
+              }}
+            >
+              Clear Dates
+            </button>
+          </div> */}
         </div>
 
         {/* Table */}
         <div style={{ textAlign: 'center' }}>
-          {filteredCamps.length > 0 ? (
+          {filteredMeetings.length > 0 ? (
             <table
-              className="camps-table"
+              className="meetings-table"
               style={{
                 color: 'black',
                 width: '100%',
                 borderCollapse: 'collapse',
-                marginBottom: '20px',
-                textAlign: 'center',
+                marginTop: '20px',
               }}
             >
               <thead>
                 <tr style={{ backgroundColor: '#e9ecef' }}>
-                  <th>Camp ID</th>
-                  <th>School Name</th>
-                  <th>Location</th>
-                  <th>Date</th>
-                  <th>Students Registered</th>
-                  <th>+ve Result after screening</th>
+                  <th>Meeting ID</th>
+                  <th>Camp Id</th>
+                  <th>DatetTime</th>
+                  <th>Total Students to be Examined</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredCamps.map((camp) => (
+                {filteredMeetings.map((meeting) => (
                   <tr
-                    key={camp.campID}
+                    key={meeting.meetingID}
                     style={{
                       backgroundColor: '#f9f9fc',
                       color: 'black',
                     }}
-                    onClick={() => handleRowClick(camp.campID)}
+                    onClick={() => handleRowClick(meeting.meetingID)}
                   >
-                    <td>{camp.campID}</td>
-                    <td>{camp.schoolName}</td>
-                    <td>{camp.location}</td>
-                    <td>{new Date(camp.dateTime).toLocaleDateString()}</td>
-                    <td>{camp.studentsRegistered}</td>
-                    <td>{camp.studentsPositive}</td>
+                    <td>{meeting.meetID}</td>
+                    <td>{meeting.campID}</td>
+                    <td>{new Date(meeting.dateTime).toLocaleDateString()}</td>
+                    <td>{"to be implemented"}</td>
                     <td>
                       <button
                         style={{
@@ -251,9 +257,9 @@ const CompletedCamps = () => {
                           cursor: 'pointer',
                           borderRadius: '4px',
                         }}
-                        onClick={() => handleRowClick(camp.campID)}
+                        onClick={() => handleRowClick(meeting.meetingID)}
                       >
-                        Go to Camp
+                        View Details
                       </button>
                     </td>
                   </tr>
@@ -261,7 +267,7 @@ const CompletedCamps = () => {
               </tbody>
             </table>
           ) : (
-            <p style={{ color: 'black' }}>No completed camps available.</p>
+            <p style={{ color: 'black' }}>No completed meetings available.</p>
           )}
         </div>
       </div>
@@ -269,4 +275,4 @@ const CompletedCamps = () => {
   );
 };
 
-export default CompletedCamps;
+export default CompletedMeetings;

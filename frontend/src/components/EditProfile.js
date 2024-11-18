@@ -1,15 +1,15 @@
-// EditProfile.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './EditProfile.css';
-
+import Profilepic from './Choice_logo.png'
 function EditProfile() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    role: ''
+    role: '',
+    phone: '' // Add new field for phone
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -17,6 +17,7 @@ function EditProfile() {
 
   // Get user info from localStorage
   const userName = localStorage.getItem('name');
+  const role = localStorage.getItem('role'); // Retrieve role from localStorage
 
   // Fetch current user data
   useEffect(() => {
@@ -27,7 +28,8 @@ function EditProfile() {
         setFormData({
           name: userData.name || '',
           email: userData.email || '',
-          role: userData.role || ''
+          role: userData.role || '',
+          phone: userData.phone || '' // Initialize phone field
         });
         setLoading(false);
       } catch (error) {
@@ -42,7 +44,7 @@ function EditProfile() {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prevState => ({
+    setFormData((prevState) => ({
       ...prevState,
       [name]: value
     }));
@@ -56,7 +58,7 @@ function EditProfile() {
 
     try {
       const response = await axios.put(`/api/auth/updateprofile/${userName}`, formData);
-      
+
       if (response.data.success) {
         setUpdateMessage('Profile updated successfully!');
         // Update localStorage if name has changed
@@ -82,67 +84,75 @@ function EditProfile() {
 
   return (
     <div className="page-container">
-      <nav className="navbar">
-        <div className="nav-content">
-          <div className="nav-logo">Edit Profile</div>
-          <div className="nav-links">
-            <button onClick={() => navigate('/profile')} className="nav-link">
-              Back to Profile
-            </button>
+      <div className="edit-profile-card">
+      <img
+          src={Profilepic} 
+          alt="Profile"
+          className="profile-image"
+        />
+        <h2>Edit Profile Information</h2>
+
+        {error && <div className="error-message">{error}</div>}
+        {updateMessage && <div className="success-message">{updateMessage}</div>}
+
+        <form onSubmit={handleSubmit} className="edit-form">
+          <div className="form-group">
+
+            <label htmlFor="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="Enter your name"
+            />
           </div>
-        </div>
-      </nav>
 
-      <div className="edit-profile-container">
-        <div className="edit-profile-card">
-          <h2>Edit Profile Information</h2>
-          
-          {error && <div className="error-message">{error}</div>}
-          {updateMessage && <div className="success-message">{updateMessage}</div>}
+          <div className="form-group">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="Enter your email"
+            />
+          </div>
 
-          <form onSubmit={handleSubmit} className="edit-form">
+          <div className="form-group">
+            <label htmlFor="role">Role</label>
+            <input
+              type="text"
+              id="role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              placeholder="Enter your role"
+              readOnly
+            />
+          </div>
+
+          {/* Conditionally render additional fields based on the role */}
+          {formData.role === 'Doctor'||formData.role === 'Volunteer' && (
             <div className="form-group">
-              <label htmlFor="name">Name</label>
+              <label htmlFor="phone">Phone</label>
               <input
                 type="text"
-                id="name"
-                name="name"
-                value={formData.name}
+                id="phone"
+                name="phone"
+                value={formData.phone}
                 onChange={handleChange}
-                placeholder="Enter your name"
+                placeholder="Enter your phone number"
               />
             </div>
+          )}
 
-            <div className="form-group">
-              <label htmlFor="email">Email</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Enter your email"
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="role">Role</label>
-              <input
-                type="text"
-                id="role"
-                name="role"
-                value={formData.role}
-                onChange={handleChange}
-                placeholder="Enter your role"
-                readOnly
-              />
-            </div>
-
-            <button type="submit" className="submit-button" disabled={loading}>
-              {loading ? 'Updating...' : 'Update Profile'}
-            </button>
-          </form>
-        </div>
+          <button type="submit" className="submit-button" disabled={loading}>
+            {loading ? 'Updating...' : 'Update Profile'}
+          </button>
+        </form>
       </div>
     </div>
   );
