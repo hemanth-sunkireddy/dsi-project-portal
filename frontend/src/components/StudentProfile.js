@@ -146,7 +146,7 @@ const StudentDetails = () => {
         <td style={styles.tableCell}>{screening.screeningId}</td>
         <td style={styles.tableCell}>{new Date(screening.dateTime).toLocaleDateString()}</td>
         <td style={styles.tableCell}>{new Date(screening.dateTime).toLocaleTimeString()}</td>
-        <td style={styles.tableCell}>{screening.volunteer}</td>
+        <td style={styles.tableCell}>{screening.volunteerName}</td>
         <td style={styles.tableCell}>{screening.diagnosis}</td>
         <td style={styles.tableCell}>
           <button

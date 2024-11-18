@@ -84,9 +84,16 @@ const screeningSchema = new mongoose.Schema({
     screeningId: { type: String, required: true, unique: true },
     studentId: String,
     campId: String,
-    volunteer: String,
+    volunteerId: String,
+    volunteerName: String,
+    doctorId: String,
+    doctorName: String,
     date: Date,
-    report: Array,
+    report: Object,
+    doctorFeedback: {
+        type: String,
+        default: "",  
+      },
     diagnosis: String
 });
 
