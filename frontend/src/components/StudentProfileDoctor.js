@@ -2,13 +2,19 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const StudentDetails = () => {
+const StudentDetailsDoctor = () => {
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [screenings, setScreenings] = useState([]);
   const studentID = localStorage.getItem("student-id");
   const [filteredStudents, setFilteredStudents] = useState([]);
   const [filteredScreenings, setFilteredScreenings] = useState([]);
+
+  const [showModal, setShowModal] = useState(false);
+  const [currentScreeningId, setCurrentScreeningId] = useState(null);
+  const [feedback, setFeedback] = useState("");
+  const [diagnosisResult, setDiagnosisResult] = useState("");
+
 
   useEffect(() => {
     const fetchStudents = async () => {
@@ -60,6 +66,36 @@ const StudentDetails = () => {
     navigate(`/report/${reportId}`);
   };
 
+  const handleAddFeedback = (screeningId) => {
+    setCurrentScreeningId(screeningId);
+    setShowModal(true);
+  };
+  
+  const handleSaveFeedback = async () => {
+    try {
+      const updatedScreening = {
+        screeningId: currentScreeningId,
+        diagnosis: diagnosisResult,
+        doctorFeedback: feedback,
+      };
+  
+      await axios.post(`/api/auth/updateScreeningStatus`, updatedScreening);
+  
+      const updatedScreenings = screenings.map((screening) =>
+        screening.screeningId === currentScreeningId
+          ? { ...screening, ...updatedScreening }
+          : screening
+      );
+      setScreenings(updatedScreenings);
+  
+      setShowModal(false);
+      alert("Feedback saved successfully!");
+    } catch (error) {
+      console.error("Error saving feedback:", error);
+      alert("Failed to save feedback.");
+    }
+  };
+  
   return (
     <div style={styles.container}>
       {/* Header Section */}
@@ -125,6 +161,49 @@ const StudentDetails = () => {
           </div>
         </div>
 
+        {showModal && (
+  <div style={modalStyles.overlay}>
+    <div style={modalStyles.modal}>
+      <h3 style={modalStyles.header}>Provide Feedback</h3>
+      <label style={modalStyles.label}>
+        Diagnosis Result:
+        <select
+          value={diagnosisResult}
+          onChange={(e) => setDiagnosisResult(e.target.value)}
+          style={modalStyles.select}
+        >
+          <option value="">Select</option>
+          <option value="Positive">Positive</option>
+          <option value="Negative">Negative</option>
+        </select>
+      </label>
+      <label style={modalStyles.label}>
+        Feedback:
+        <textarea
+          value={feedback}
+          onChange={(e) => setFeedback(e.target.value)}
+          style={modalStyles.textarea}
+        />
+      </label>
+      <div style={modalStyles.buttonContainer}>
+        <button
+          onClick={handleSaveFeedback}
+          style={modalStyles.saveButton}
+        >
+          Save
+        </button>
+        <button
+          onClick={() => setShowModal(false)}
+          style={modalStyles.cancelButton}
+        >
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
+
           {/* Screening History Section */}
         <div style={styles.screeningHistoryBox}>
           <div style={styles.sectionTitle}>Screening History</div>
@@ -135,6 +214,7 @@ const StudentDetails = () => {
                 <th>Date</th>
                 <th>Time</th>
                 <th>Volunteer</th>
+                <th>Feedback</th>
                 <th>Diagnosis</th>
                 <th>Report</th>
               </tr>
@@ -147,6 +227,14 @@ const StudentDetails = () => {
         <td style={styles.tableCell}>{new Date(screening.date).toLocaleDateString()}</td>
         <td style={styles.tableCell}>{new Date(screening.date).toLocaleTimeString()}</td>
         <td style={styles.tableCell}>{screening.volunteerName}</td>
+        <td style={styles.tableCell}>
+          <button
+            onClick={() => handleAddFeedback(screening.screeningId)}
+            style={styles.viewButton}
+          >
+            Add Feedback
+          </button>
+        </td>
         <td style={styles.tableCell}>{screening.diagnosis}</td>
         <td style={styles.tableCell}>
           <button
@@ -172,6 +260,8 @@ const StudentDetails = () => {
         </div>
       </div>
     </div>
+
+  
   );
 };
 
@@ -343,4 +433,91 @@ const styles = {
   },
 };
 
-export default StudentDetails;
+const modalStyles = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.7)", // Darker overlay for better focus
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000, // Ensure it stays above other elements
+  },
+  modal: {
+    backgroundColor: "#fff",
+    padding: "30px",
+    borderRadius: "12px",
+    width: "400px",
+    boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.2)",
+    textAlign: "center",
+    position: "relative",
+  },
+  header: {
+    fontSize: "20px",
+    fontWeight: "bold",
+    marginBottom: "20px",
+    color: "#333",
+  },
+  label: {
+    display: "block",
+    fontSize: "14px",
+    fontWeight: "bold",
+    color: "#555",
+    marginBottom: "8px",
+    textAlign: "left",
+  },
+  select: {
+    width: "100%",
+    padding: "10px",
+    borderRadius: "6px",
+    border: "1px solid #ccc",
+    fontSize: "14px",
+    marginBottom: "20px",
+  },
+  textarea: {
+    width: "100%",
+    height: "80px",
+    padding: "10px",
+    borderRadius: "6px",
+    border: "1px solid #ccc",
+    fontSize: "14px",
+    resize: "none",
+    marginBottom: "20px",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: "20px",
+  },
+  saveButton: {
+    backgroundColor: "#28a745",
+    color: "#fff",
+    border: "none",
+    padding: "10px 20px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontSize: "14px",
+    fontWeight: "bold",
+    transition: "background-color 0.3s",
+  },
+  cancelButton: {
+    backgroundColor: "#dc3545",
+    color: "#fff",
+    border: "none",
+    padding: "10px 20px",
+    borderRadius: "6px",
+    cursor: "pointer",
+    fontSize: "14px",
+    fontWeight: "bold",
+    transition: "background-color 0.3s",
+  },
+  buttonHover: {
+    backgroundColor: "#0056b3",
+  },
+};
+
+
+export default StudentDetailsDoctor;

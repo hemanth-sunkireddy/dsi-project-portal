@@ -34,7 +34,7 @@ import AllPatients from './components/Therapist/CompletedCamps';
 import LandingPage from './components/LandingPage';
 import Meetings_inprogress from './components/Doctor/InProgressMeetings';
 import ViewStudentsDoctor from './components/Doctor/StudentsList';
-
+import StudentDetailsDoctor from './components/StudentProfileDoctor';
 function App() {
   const [role, setRole] = useState(() => localStorage.getItem('role') || null);
 
@@ -69,6 +69,7 @@ function App() {
         <Route path="/patients-list" element={<ViewStudents />} />
         <Route path='/meetings-students-list' element={<ViewStudentsDoctor />} />
         <Route path="/student-profile" element={<StudentProfile />} />
+        <Route path='/student-profile-doctor' element={<StudentDetailsDoctor />} />
         <Route path="/conduct-screening" element={<ConductScreening />} />
         <Route path="/completed-camps-staff" element={<StaffCompletedCamps />} />
         <Route path="/upcoming-camps-staff" element={<StaffUpcomingCamps />} />

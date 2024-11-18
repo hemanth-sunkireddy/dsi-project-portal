@@ -380,4 +380,32 @@ router.get('/meetings', async (req, res) => {
   }
 });
 
+// Update camp Status by Volunteer
+router.post('/updateScreeningStatus', async (req, res) => {
+  try {
+    const reqScreening = new Screening(req.body);
+   
+    const ScreeningId_request = reqScreening.screeningId;
+    const ScreeningDiagnosis = reqScreening.diagnosis;
+    const ScreeningDoctorFeedback = reqScreening.doctorFeedback;
+    const screening = await Screening.findOne({ screeningId: ScreeningId_request });
+    if (!screening) {
+      // If the camp is not found, send an error response
+      return res.status(404).json({ message: 'Screening not found' });
+    }
+    
+    screening.diagnosis = ScreeningDiagnosis;
+    screening.doctorFeedback = ScreeningDoctorFeedback;
+    const campID = screening.campId;
+    const camp = await Camp.findOne({ campID: campID });
+    camp.studentsFollowedUp += 1;
+    await camp.save();
+    await screening.save();
+    res.status(201).json({ message: 'Screening Status Updated successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error });
+  }
+});
+
 module.exports = router;
