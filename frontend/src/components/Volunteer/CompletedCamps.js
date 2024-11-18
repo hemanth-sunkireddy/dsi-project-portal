@@ -138,6 +138,7 @@ const CompletedCamps = () => {
           style={{
             display: 'flex',
             alignItems: 'center',
+            marginBottom: '20px',
           }}
         >
           {/* Search Bar */}
@@ -156,45 +157,39 @@ const CompletedCamps = () => {
           />
 
           {/* From Date Filter */}
-          {/* <div style={{ width: '130px' }}>
-            <input
-              id="toDate"
-              type="date"
-              value={filters.endDate}
-              onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-              style={{
-                padding: '10px',
-                marginLeft: '30px',
-                width: '100%',
-                borderRadius: '4px',
-                border: '1px solid #ccc',
-              }}
-            />
-          </div> */}
+          <input
+            type="date"
+            value={filters.startDate}
+            onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+            style={{
+              padding: '10px',
+              marginLeft: '15px',
+              width: '120px',
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+            }}
+          />
 
           {/* To Date Filter */}
-          {/* <div style={{ width: '130px' }}>
-            <input
-              id="toDate"
-              type="date"
-              value={filters.endDate}
-              onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-              style={{
-                padding: '10px',
-                marginLeft: '60px',
-                width: '100%',
-                borderRadius: '4px',
-                border: '1px solid #ccc',
-              }}
-            />
-          </div> */}
+          <input
+            type="date"
+            value={filters.endDate}
+            onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+            style={{
+              padding: '10px',
+              marginLeft: '15px',
+              width: '120px',
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+            }}
+          />
 
           {/* Clear Dates Button */}
-          {/* <button
+          <button
             onClick={handleClearDates}
             style={{
               padding: '10px 20px',
-              marginLeft: '100px',
+              marginLeft: '15px',
               backgroundColor: '#dc3545',
               color: 'white',
               border: 'none',
@@ -203,7 +198,7 @@ const CompletedCamps = () => {
             }}
           >
             Clear Dates
-          </button> */}
+          </button>
         </div>
 
         {/* Table */}

@@ -6,25 +6,56 @@ const UpcomingCamps = () => {
   const navigate = useNavigate();
   const user_name = localStorage.getItem('name');
   const [filteredCamps, setFilteredCamps] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filters, setFilters] = useState({
+    startDate: '',
+    endDate: '',
+  });
   const { camps } = location.state || { camps: [] };
 
+  // Filter camps based on volunteer's involvement, search term, and date range
   const filterCamps = () => {
-    const filtered = camps.filter(
-      (camp) => camp.volunteer === user_name
+    let filtered = camps.filter(
+      (camp) =>
+        camp.volunteer === user_name &&
+        (camp.campID.includes(searchTerm) ||
+          camp.schoolName.toLowerCase().includes(searchTerm.toLowerCase()))
     );
+
+    // If From Date is selected, filter by startDate
+    if (filters.startDate) {
+      filtered = filtered.filter(
+        (camp) => new Date(camp.dateTime) >= new Date(filters.startDate)
+      );
+    }
+
+    // If To Date is selected, filter by endDate
+    if (filters.endDate) {
+      filtered = filtered.filter(
+        (camp) => new Date(camp.dateTime) <= new Date(filters.endDate)
+      );
+    }
+
     setFilteredCamps(filtered);
+  };
+
+  const handleRowClick = (campID) => {
+    localStorage.setItem('camp-id', campID);
+    navigate(`/camp-details`);
+  };
+
+  const handleClearDates = () => {
+    setFilters({
+      startDate: '',
+      endDate: '',
+    });
   };
 
   useEffect(() => {
     if (camps.length > 0) {
       filterCamps();
     }
-  }, [camps]);
-
-  const handleRowClick = (campID) => {
-    localStorage.setItem('camp-id', campID);
-    navigate(`/camp-details`);
-  };
+  }, [camps, searchTerm, filters]);
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#fff' }}>
@@ -101,6 +132,74 @@ const UpcomingCamps = () => {
         </header>
 
         <h2 style={{ color: 'black', marginBottom: '20px' }}>Upcoming Camps</h2>
+
+        {/* Search Bar and Date Range Filters */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            marginBottom: '20px',
+          }}
+        >
+          {/* Search Bar */}
+          <input
+            type="text"
+            placeholder="Search by Camp ID or School Name"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              padding: '10px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              width: '100%',
+              maxWidth: '300px',
+            }}
+          />
+
+          {/* From Date Filter */}
+          <input
+            type="date"
+            value={filters.startDate}
+            onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+            style={{
+              padding: '10px',
+              marginLeft: '15px',
+              width: '120px',
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+            }}
+          />
+
+          {/* To Date Filter */}
+          <input
+            type="date"
+            value={filters.endDate}
+            onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+            style={{
+              padding: '10px',
+              marginLeft: '15px',
+              width: '120px',
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+            }}
+          />
+
+          {/* Clear Dates Button */}
+          <button
+            onClick={handleClearDates}
+            style={{
+              padding: '10px 20px',
+              marginLeft: '15px',
+              backgroundColor: '#dc3545',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+            }}
+          >
+            Clear Dates
+          </button>
+        </div>
 
         {/* Table */}
         <div style={{ textAlign: 'center' }}>

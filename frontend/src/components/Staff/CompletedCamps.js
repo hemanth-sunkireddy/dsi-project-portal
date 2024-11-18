@@ -6,34 +6,55 @@ const StaffCompletedCamps = () => {
   const navigate = useNavigate();
   const { camps } = location.state || { camps: [] };
 
-  // State to store filtered camps and search query
+  // State to store filtered camps, search query, and date range filters
   const [searchQuery, setSearchQuery] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [filteredCamps, setFilteredCamps] = useState(camps);
 
-  // Function to filter camps based on search query (by Camp ID, School Name, or Location)
+  // Function to filter camps based on search query and date range
   const filterCamps = () => {
-    if (!searchQuery) {
-      setFilteredCamps(camps); // If no search query, show all camps
-    } else {
+    let filtered = camps;
+
+    // Apply search query filter
+    if (searchQuery) {
       const lowercasedQuery = searchQuery.toLowerCase();
-      const filtered = camps.filter(
+      filtered = filtered.filter(
         (camp) =>
           camp.campID.toString().toLowerCase().includes(lowercasedQuery) ||
           camp.schoolName.toLowerCase().includes(lowercasedQuery) ||
           camp.location.toLowerCase().includes(lowercasedQuery)
       );
-      setFilteredCamps(filtered);
     }
+
+    // Apply date range filter
+    if (startDate && endDate) {
+      filtered = filtered.filter((camp) => {
+        const campDate = new Date(camp.dateTime);
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        return campDate >= start && campDate <= end;
+      });
+    }
+
+    setFilteredCamps(filtered);
   };
 
-  // Run the filter whenever the search query changes
+  // Run the filter whenever the search query or date range changes
   useEffect(() => {
     filterCamps();
-  }, [searchQuery, camps]);
+  }, [searchQuery, startDate, endDate, camps]);
 
+  // Handle row click for navigating to camp details
   const handleRowClick = (campID) => {
     localStorage.setItem('camp-id', campID);
     navigate(`/camp-details-staff`);
+  };
+
+  // Reset date filters
+  const clearDateFilters = () => {
+    setStartDate('');
+    setEndDate('');
   };
 
   return (
@@ -105,8 +126,8 @@ const StaffCompletedCamps = () => {
 
         <h2 style={{ color: 'black', marginBottom: '20px' }}>Completed Camps</h2>
 
-        {/* Search Bar */}
-        <div style={{ marginBottom: '20px' }}>
+        {/* Search Bar and Date Filters */}
+        <div style={{ marginBottom: '20px', display: 'flex', gap: '15px', alignItems: 'center' }}>
           <input
             type="text"
             placeholder="Search by Camp ID, School Name, or Location"
@@ -115,12 +136,49 @@ const StaffCompletedCamps = () => {
             style={{
               padding: '10px',
               width: '100%',
-              maxWidth: '400px',
+              maxWidth: '300px',
               borderRadius: '4px',
               border: '1px solid #ccc',
               fontSize: '16px',
             }}
           />
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => setStartDate(e.target.value)}
+            style={{
+              padding: '10px',
+              width: '150px',
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+              fontSize: '16px',
+            }}
+          />
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+            style={{
+              padding: '10px',
+              width: '150px',
+              borderRadius: '4px',
+              border: '1px solid #ccc',
+              fontSize: '16px',
+            }}
+          />
+          <button
+            onClick={clearDateFilters}
+            style={{
+              backgroundColor: '#d9534f', // Red background
+              color: 'white',
+              border: 'none',
+              padding: '10px 20px',
+              cursor: 'pointer',
+              borderRadius: '4px',
+            }}
+          >
+            Clear Dates
+          </button>
         </div>
 
         {/* Table */}
@@ -170,13 +228,13 @@ const StaffCompletedCamps = () => {
                     <td>
                       <button
                         style={{
-                          backgroundColor: '#007bff', // Blue background
+                          backgroundColor: '#007bff',
                           color: 'white',
                           border: 'none',
-                          padding: '10px 30px', // Padding to make the button wider
+                          padding: '10px 30px',
                           cursor: 'pointer',
                           borderRadius: '4px',
-                          whiteSpace: 'nowrap', // Ensures the text stays on a single line
+                          whiteSpace: 'nowrap',
                         }}
                         onClick={() => handleRowClick(camp.campID)}
                       >
