@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const CampDetails = () => {
+const MeetingDetailsScheduled = () => {
   const navigate = useNavigate();
   const [meetings, setMeetings] = useState([]);
   const [camps, setCamps] = useState([]);
   const [meetStatus, setMeetingStatus] = useState('');
   const meetID = localStorage.getItem('meet-id');
+  console.log(meetID,"HEEM");
   const [filteredMeetings, setFilteredMeetings] = useState([]);
   const [filteredCamps, setFilteredCamps] = useState([]);
 
@@ -63,7 +64,7 @@ const CampDetails = () => {
   // };
 
   const handleViewStudentsClick = () => {
-    navigate(`/meetings/students-list`);
+    navigate(`/meetings-students-list`);
   };
 
   const handleHomeClick = () => {
@@ -96,7 +97,7 @@ const CampDetails = () => {
         <div style={styles.header}>
           <h2 style={styles.sectionTitle}>Meeting Information</h2>
           <div style={styles.headerButtons}>
-            <div style={styles.dropdownContainer}>
+            {/* <div style={styles.dropdownContainer}>
               <select
                 value={meetStatus}
                 onChange={handleMeetingStatusChange}
@@ -105,7 +106,7 @@ const CampDetails = () => {
                 <option value="inprogress" style={{fontWeight: 'bolder'}}>In Progress</option>
                 <option value="completed">Completed</option>
               </select>
-            </div>
+            </div> */}
             <button style={styles.button} onClick={handleViewStudentsClick}>
               View Students
             </button>
@@ -305,4 +306,4 @@ const styles = {
   },
 };
 
-export default CampDetails;
+export default MeetingDetailsScheduled;

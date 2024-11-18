@@ -56,8 +56,8 @@ const CompletedMeetings = () => {
   };
 
   const handleRowClick = (meetingID) => {
-    localStorage.setItem('meeting-id', meetingID);
-    navigate(`/meeting-details`);
+    localStorage.setItem('meet-id', meetingID);
+    navigate(`/meeting-details-scheduled`);
   };
 
   const handleClearDates = () => {
@@ -228,7 +228,7 @@ const CompletedMeetings = () => {
                 <tr style={{ backgroundColor: '#e9ecef' }}>
                   <th>Meeting ID</th>
                   <th>Camp Id</th>
-                  <th>DatetTime</th>
+                  <th>DateTime</th>
                   <th>Total Students to be Examined</th>
                   <th>Action</th>
                 </tr>
@@ -236,12 +236,12 @@ const CompletedMeetings = () => {
               <tbody>
                 {filteredMeetings.map((meeting) => (
                   <tr
-                    key={meeting.meetingID}
+                    key={meeting.meetID}
                     style={{
                       backgroundColor: '#f9f9fc',
                       color: 'black',
                     }}
-                    onClick={() => handleRowClick(meeting.meetingID)}
+                    onClick={() => handleRowClick(meeting.meetID)}
                   >
                     <td>{meeting.meetID}</td>
                     <td>{meeting.campID}</td>
@@ -257,7 +257,7 @@ const CompletedMeetings = () => {
                           cursor: 'pointer',
                           borderRadius: '4px',
                         }}
-                        onClick={() => handleRowClick(meeting.meetingID)}
+                        onClick={() => handleRowClick(meeting.meetID)}
                       >
                         View Details
                       </button>
