@@ -565,6 +565,71 @@ const CompletedMeetings = () => {
         .cancel-button:hover {
           background-color: #FF2A2A;  /* Darker red on hover */
         }
+        
+        /* Dashboard cards styling */
+.dashboard-cards {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.dashboard-card {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: left;
+  height: 170px;
+  width: 250px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.dashboard-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 10px;
+  background-color: #b3a4ff;
+  border-radius: 8px 0 0 8px;
+}
+
+.dashboard-card h2 {
+  color: #333333;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  padding-left: 10px;
+}
+
+.dashboard-card p {
+
+  font-size: 14px;
+  padding-left: 10px;
+}
+
+.dashboard-card button {
+  background-color: #3060ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+  width: 100px;
+  align-self: center;
+}
+.adjust {
+  display: flex;
+  flex:row;
+  gap: 600px;
+
+}
 
 
 
