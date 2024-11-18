@@ -148,9 +148,9 @@ const CompletedMeetings = () => {
 
             <div className="dashboard-card" onClick={() => navigate('/in-progress-meetings', { state: { camps: upcomingCamps } })}>
             {/* <h2>Unscheduled Meetings</h2> */}
-              <h2 style={{fontSize:'30px'}}>Meetings In-Progress</h2>
-              <p style={{fontSize:'23px'}}>List of Meetings in progress where the doctor is currently visiting to diagnose patients</p>
-              <button style={{fontSize:'20px',fontWeight:'bold'}}>View</button>
+              <h2 >Meetings In-Progress</h2>
+              <p >List of Meetings in progress where the doctor is currently visiting to diagnose patients</p>
+              <button >View</button>
             </div>
           </div>
 
