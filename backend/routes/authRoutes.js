@@ -101,6 +101,14 @@ router.get('/screenings', async (req, res) => {
     res.json({ message: 'Failed to fetch Screenings', error });
   }
 });
+router.get('/screenings', async (req, res) => { 
+  try {
+    const screenings = await Screening.find(); 
+    res.status(200).json(screenings);
+  } catch (error) {
+    res.json({ message: 'Failed to fetch Screenings', error });
+  }
+});
 router.get('/profiledata/:name', async (req, res) => {
   const { name } = req.params;
   console.log(name)
