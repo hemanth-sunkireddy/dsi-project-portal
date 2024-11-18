@@ -60,10 +60,6 @@ const StudentDetails = () => {
     navigate(`/report/${reportId}`);
   };
 
-  const handleAddFeedback = (screeningId) => {
-    
-  };
-
   return (
     <div style={styles.container}>
       {/* Header Section */}
@@ -139,7 +135,6 @@ const StudentDetails = () => {
                 <th>Date</th>
                 <th>Time</th>
                 <th>Volunteer</th>
-                <th>Feedback</th>
                 <th>Diagnosis</th>
                 <th>Report</th>
               </tr>
@@ -152,14 +147,6 @@ const StudentDetails = () => {
         <td style={styles.tableCell}>{new Date(screening.date).toLocaleDateString()}</td>
         <td style={styles.tableCell}>{new Date(screening.date).toLocaleTimeString()}</td>
         <td style={styles.tableCell}>{screening.volunteerName}</td>
-        <td style={styles.tableCell}>
-          <button
-            onClick={() => handleAddFeedback(screening.screeningId)}
-            style={styles.viewButton}
-          >
-            Add Feedback
-          </button>
-        </td>
         <td style={styles.tableCell}>{screening.diagnosis}</td>
         <td style={styles.tableCell}>
           <button
