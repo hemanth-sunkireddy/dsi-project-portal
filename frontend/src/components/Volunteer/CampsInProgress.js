@@ -50,7 +50,7 @@ const CampsInProgress = () => {
     console.log(campDate.toDateString());
     console.log(today.toDateString());
     // Check if the camp date is today
-    if (campDate.toDateString() === today.toDateString()) {
+    if (campDate.toDateString() <= today.toDateString()) {
       try {
         const response = await axios.post('/api/auth/updateCampInProgress', {
           campID: campID
