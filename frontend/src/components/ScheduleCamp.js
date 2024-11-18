@@ -1,82 +1,10 @@
-// import React from 'react';
-// import './styles.css';
-
-// const ScheduleCamp = () => {
-//   return (
-//     <div className="form-container">
-//       <div className="form-box">
-//         <h1 className="form-heading">Schedule New Camp</h1>
-//         <form>
-//           <div className="form-group">
-//             <label>School Name</label>
-//             <div className="input-icon-group">
-//               <span className="icon">👥</span>
-//               <input type="text" placeholder="Enter school name" />
-//             </div>
-//           </div>
-          
-//           <div className="form-group">
-//             <label>Location</label>
-//             <div className="input-icon-group">
-//               <span className="icon">📍</span>
-//               <input type="text" placeholder="Enter location" />
-//             </div>
-//           </div>
-
-//           <div className="form-group">
-//             <label>Date and Time</label>
-//             <div className="input-icon-group">
-//               <span className="icon">📅</span>
-//               <input type="datetime-local" />
-//             </div>
-//           </div>
-
-//           <div className="form-group">
-//             <label>Volunteer</label>
-//             <div className="input-icon-group">
-//               <span className="icon">🧑‍🤝‍🧑</span>
-//               <input type="text" placeholder='Enter Volunteer Name'/>
-//             </div>
-//           </div>
-
-//           <div className="form-group">
-//             <label>Doctor</label>
-//             <div className="input-icon-group">
-//               <span className="icon">👩‍⚕️</span>
-//               <input type="text" placeholder='Enter Doctor Name'/>
-//             </div>
-//           </div>
-
-//           <div className="form-group">
-//             <label>Contact</label>
-//             <div className="input-icon-group">
-//               <span className="icon">👤</span>
-//               <input type="tel" placeholder="Enter contact number" />
-//             </div>
-//           </div>
-
-//           <div className="form-group">
-//             <label>Further Details</label>
-//             <div className="input-icon-group">
-//               <span className="icon">ℹ️</span>
-//               <textarea placeholder="Enter further details"></textarea>
-//             </div>
-//           </div>
-
-//           <button type="submit" className="submit-button">Schedule</button>
-//         </form>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default ScheduleCamp;
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import './styles.css';
 
 const ScheduleCamp = () => {
+  const navigate = useNavigate();
   const [camp, setCamp] = useState({
     schoolName: '',
     location: '',
@@ -87,6 +15,27 @@ const ScheduleCamp = () => {
     furtherDetails: '',
   });
 
+  const [users, setUsers] = useState([]);
+  const [volunteers, setVolunteers] = useState([]);
+  const [doctors, setDoctors] = useState([]);
+
+  // Fetch all users and filter by role
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('/api/auth/users');
+        setUsers(response.data);
+        console.log(response.data);
+        setVolunteers(response.data.filter(user => user.role === 'Volunteer'));
+        setDoctors(response.data.filter(user => user.role === 'Doctor'));
+      } catch (error) {
+        console.error('Error fetching users:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   const handleChange = (e) => {
     setCamp({ ...camp, [e.target.name]: e.target.value });
   };
@@ -96,6 +45,7 @@ const ScheduleCamp = () => {
     try {
       await axios.post('/api/auth/scheduleCamp', camp);
       alert('Camp scheduled successfully');
+      navigate('/dashboard'); // Redirect to dashboard after successful submission
     } catch (error) {
       alert('Error scheduling camp');
     }
@@ -118,14 +68,33 @@ const ScheduleCamp = () => {
             <label>Date and Time</label>
             <input type="datetime-local" name="dateTime" onChange={handleChange} required />
           </div>
+
+          {/* Volunteer Dropdown */}
           <div className="form-group">
             <label>Volunteer</label>
-            <input type="text" name="volunteer" placeholder="🧑‍🤝‍🧑 Enter Volunteer Name" onChange={handleChange} required />
+            <select name="volunteer" onChange={handleChange} required>
+              <option value="">Select Volunteer</option>
+              {volunteers.map((volunteer) => (
+                <option key={volunteer.id} value={volunteer.name}>
+                  {volunteer.name}
+                </option>
+              ))}
+            </select>
           </div>
+
+          {/* Doctor Dropdown */}
           <div className="form-group">
             <label>Doctor</label>
-            <input type="text" name="doctor" placeholder="👩‍⚕️ Enter Doctor Name" onChange={handleChange} required />
+            <select name="doctor" onChange={handleChange} required>
+              <option value="">Select Doctor</option>
+              {doctors.map((doctor) => (
+                <option key={doctor.id} value={doctor.name}>
+                  {doctor.name}
+                </option>
+              ))}
+            </select>
           </div>
+
           <div className="form-group">
             <label>Contact</label>
             <input type="tel" name="contact" placeholder="👤 Enter contact number" onChange={handleChange} required />
@@ -137,6 +106,7 @@ const ScheduleCamp = () => {
           <button type="submit" className="submit-button">Schedule</button>
         </form>
       </div>
+
     </div>
   );
 };

@@ -12,6 +12,7 @@ const CompletedMeetings = () => {
     endDate: '',
   });
   const [meetings, setMeetings] = useState([]);
+  
   const fetchMeetings = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -24,11 +25,11 @@ const CompletedMeetings = () => {
       setMeetings(doctorMeetings); 
       console.log(doctorMeetings);
     } catch (error) {
-      console.error('Error fetching camps:', error);
+      console.error('Error fetching meetings:', error);
     }
   };
-  
-  // Fetch camps when the component mounts
+
+  // Fetch meetings when the component mounts
   useEffect(() => {
     fetchMeetings();
   }, [user_name]);
@@ -36,8 +37,15 @@ const CompletedMeetings = () => {
   const filterMeetings = () => {
     let filtered = meetings.filter(
       (meeting) =>
-        (meeting.doctor === user_name ) && (meeting.status === "completed")
+        meeting.doctor === user_name && meeting.status === "completed"
     );
+
+    // Filter by search term (meeting ID)
+    if (searchTerm) {
+      filtered = filtered.filter(meeting =>
+        meeting.meetID.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
 
     // Filter by startDate if selected
     if (filters.startDate) {
@@ -72,7 +80,7 @@ const CompletedMeetings = () => {
     if (meetings.length > 0) {
       filterMeetings();
     }
-  }, [meetings, filters]);
+  }, [meetings, filters, searchTerm]);
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#fff' }}>
@@ -166,12 +174,13 @@ const CompletedMeetings = () => {
           style={{
             display: 'flex',
             alignItems: 'center',
+            marginBottom: '20px',
           }}
         >
           {/* Search Bar */}
           <input
             type="text"
-            placeholder="Search by Meeting ID or Topic"
+            placeholder="Search by Meeting ID"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{
@@ -180,44 +189,43 @@ const CompletedMeetings = () => {
               borderRadius: '4px',
               width: '100%',
               maxWidth: '300px',
+              marginRight: '20px',
             }}
           />
 
-          {/* Date Filters
-          <div style={{ marginLeft: '20px', display: 'flex', gap: '20px' }}>
-            <input
-              type="date"
-              value={filters.startDate}
-              onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-              style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-            />
-            <input
-              type="date"
-              value={filters.endDate}
-              onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-              style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-            />
-            <button
-              onClick={handleClearDates}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: '#dc3545',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              }}
-            >
-              Clear Dates
-            </button>
-          </div> */}
+          {/* Date Filters */}
+          <input
+            type="date"
+            value={filters.startDate}
+            onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+            style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', marginRight: '10px' }}
+          />
+          <input
+            type="date"
+            value={filters.endDate}
+            onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+            style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', marginRight: '20px' }}
+          />
+
+          <button
+            onClick={handleClearDates}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#dc3545',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+            }}
+          >
+            Clear Dates
+          </button>
         </div>
 
         {/* Table */}
         <div style={{ textAlign: 'center' }}>
           {filteredMeetings.length > 0 ? (
             <table
-              className="meetings-table"
               style={{
                 color: 'black',
                 width: '100%',
@@ -229,7 +237,7 @@ const CompletedMeetings = () => {
                 <tr style={{ backgroundColor: '#e9ecef' }}>
                   <th>Meeting ID</th>
                   <th>Camp Id</th>
-                  <th>DatetTime</th>
+                  <th>DateTime</th>
                   <th>Students Diagnosed +ve</th>
                   <th>Action</th>
                 </tr>

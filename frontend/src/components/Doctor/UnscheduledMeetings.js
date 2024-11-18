@@ -21,8 +21,7 @@ const UnscheduledMeetings = () => {
       }
       const response = await axios.get('/api/auth/camps');
       const volunteerCamps = response.data.filter(camp => camp.doctor === user_name);
-      setCamps(volunteerCamps); // Update the state with fetched camps
-      console.log(volunteerCamps);
+      setCamps(volunteerCamps); 
     } catch (error) {
       console.error('Error fetching camps:', error);
     }
@@ -35,14 +34,12 @@ const UnscheduledMeetings = () => {
   
   // Update `unscheduledCamps` whenever `camps` changes
   useEffect(() => {
-    console.log('yam', camps.length);
     const filtered = camps.filter((camp) => camp.status === 'completed' && camp.doctor === user_name);
     setUnscheduledCamps(filtered);
   }, [camps]); 
   
 
   const handleScheduleClick = (camp) => {
-    console.log(camp.campID);
     setSelectedCampID(camp.campID);
     setIsModalOpen(true);
   };

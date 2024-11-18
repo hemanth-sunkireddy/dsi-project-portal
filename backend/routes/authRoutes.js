@@ -116,6 +116,16 @@ router.get('/students', async (req, res) => {
     res.json({ message: 'Failed to fetch Students', error });
   }
 });
+
+router.get('/users', async (req, res) => { 
+  try {
+    const users = await User.find(); 
+    res.status(200).json(users);
+  } catch (error) {
+    res.json({ message: 'Failed to fetch Users', error });
+  }
+});
+
 router.get('/profiledata/:name', async (req, res) => {
   const { name } = req.params;
   console.log(name)
