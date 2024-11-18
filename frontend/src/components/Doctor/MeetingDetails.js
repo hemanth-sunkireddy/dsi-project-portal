@@ -29,6 +29,7 @@ const MeetingDetails = () => {
     localStorage.setItem('camp-id', filtered[0]?.campID);
     const filtered2 = camps.filter((camp) => camp.campID === filtered[0]?.campID);
     setFilteredCamps(filtered2);
+    // console.log(filteredCamps.location);
     setMeetingStatus(filtered[0]?.status || ''); 
   };
 
@@ -57,7 +58,7 @@ const MeetingDetails = () => {
     if (meetings.length > 0) {
       filterMeetings();
     }
-  }, [meetings]);
+  }, [meetings, camps]);
 
   // const handleAddStudentClick = () => {
   //   navigate(`/add-student`);

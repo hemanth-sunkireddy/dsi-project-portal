@@ -29,7 +29,7 @@ const ViewscreeningsDoctor = () => {
 
   // Display only the screenings associated with the selected camp and apply the filters
   const filterscreenings = () => {
-    let filtered = screenings.filter((screening) => screening.campId === SelectedCamp);
+    let filtered = screenings.filter((screening) => screening.campId === SelectedCamp && screening.diagnosis != "Screened Negative");
 
     // Apply search filter
     if (searchTerm) {
