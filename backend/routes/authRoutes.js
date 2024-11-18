@@ -126,6 +126,20 @@ router.get('/users', async (req, res) => {
   }
 });
 
+router.get('/profiledatad/:name', async (req, res) => {
+  const { name } = req.params;
+  console.log(name)
+  const document = await Doctor.findOne({ name });
+  console.log(document)
+  res.json({ document });
+});
+router.get('/profiledatav/:name', async (req, res) => {
+  const { name } = req.params;
+  console.log(name)
+  const document = await Volunteer.findOne({ name });
+  console.log(document)
+  res.json({ document });
+});
 router.get('/profiledata/:name', async (req, res) => {
   const { name } = req.params;
   console.log(name)
