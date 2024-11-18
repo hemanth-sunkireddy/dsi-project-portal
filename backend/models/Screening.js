@@ -62,9 +62,10 @@ const screeningSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  report: {
-    type: String,
-    required: false,
+  report: { 
+    diagnosis: { type: String, required: true },
+    dateTime: { type: Date, required: true },
+    additionalDetails: { type: Array, default: [] },
   },
   time: {
     type: Date,
