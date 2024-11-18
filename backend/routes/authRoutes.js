@@ -162,25 +162,108 @@ router.get('/profiledata/:name', async (req, res) => {
   console.log(document)
   res.json({ document });
 });
-router.put('/updateprofile/:name', async (req, res) => {
-  try {
-    const { name } = req.params;
-    const updates = req.body;
 
-    const result = await User.findOneAndUpdate(
-      { name: name },
+// Update Profile Data (for Doctors)
+router.put('/updateprofiled/:name', async (req, res) => {
+  const { name } = req.params;
+  const updates = {};
+  console.log("req")
+  console.log(req)
+  if (req.body.name) updates.name = req.body.name;
+  if (req.body.email) updates.email = req.body.email;
+  if (req.body.phoneNumber) {
+    const isValidPhoneNumber = (phoneNumber) => {
+      const phoneRegex = /^[0-9]{10}$/; // Example: 10-digit numeric phone number
+      return phoneRegex.test(phoneNumber);
+    };
+
+    if (!isValidPhoneNumber(req.body.phoneNumber)) {
+      return res.status(400).json({ message: 'Invalid phone number format' });
+    }
+
+    const existingUser = await User.findOne({ phoneNumber: req.body.phoneNumber });
+    if (existingUser && existingUser.name !== name) {
+      return res.status(400).json({ message: 'Phone number already in use' });
+    }
+
+    updates.phoneNumber = req.body.phoneNumber;
+  }
+  if (req.body.gender) updates.gender = req.body.gender;
+  if (req.body.address) updates.address = req.body.address;
+  if (req.body.pastExperiences) updates.pastExperiences = req.body.pastExperiences;
+
+  try {
+    const updatedDoctor = await Doctor.findOneAndUpdate(
+      { name },
       { $set: updates },
       { new: true }
     );
 
-    if (!result) {
-      return res.status(404).json({ success: false, message: 'User not found' });
+    if (updatedDoctor) {
+      res.json({ success: true, message: 'Profile updated successfully', document: updatedDoctor });
+    } else {
+      res.status(404).json({ message: 'Doctor not found' });
     }
-
-    res.json({ success: true, message: 'Profile updated successfully', user: result });
   } catch (error) {
-    console.error('Error updating profile:', error);
-    res.status(500).json({ success: false, message: 'Error updating profile' });
+    res.status(500).json({ message: 'Error updating profile', error });
+  }
+});
+
+// router.put('/updateprofiled/:name', async (req, res) => {
+//   const { name } = req.params;
+//   const updates = {};
+//   console.log(req)
+//   // Add fields to updates only if they are provided
+//   if (req.body.name) updates.name = req.body.name;
+//   if (req.body.email) updates.email = req.body.email;
+//   if (req.body.phoneNumber) updates.phoneNumber = req.body.phoneNumber;
+//   if (req.body.gender) updates.gender = req.body.gender;
+//   if (req.body.address) updates.address = req.body.address;
+//   if (req.body.pastExperiences) updates.pastExperiences = req.body.pastExperiences;
+
+//   try {
+//     const updatedDoctor = await Doctor.findOneAndUpdate(
+//       { name },
+//       { $set: updates },
+//       { new: true } // Return the updated document
+//     );
+
+//     if (updatedDoctor) {
+//       res.json({ success: true, message: 'Profile updated successfully', document: updatedDoctor });
+//     } else {
+//       res.status(404).json({ message: 'Doctor not found' });
+//     }
+//   } catch (error) {
+//     res.status(500).json({ message: 'Error updating profile', error });
+//   }
+// });
+
+// Update Profile Data (for Volunteers)
+router.put('/updateprofilev/:name', async (req, res) => {
+  const { name } = req.params;
+  const updates = {};
+
+  if (req.body.name) updates.name = req.body.name;
+  if (req.body.email) updates.email = req.body.email;
+  if (req.body.phoneNumber) updates.phoneNumber = req.body.phoneNumber;
+  if (req.body.gender) updates.gender = req.body.gender;
+  if (req.body.address) updates.address = req.body.address;
+  if (req.body.pastExperiences) updates.pastExperiences = req.body.pastExperiences;
+
+  try {
+    const updatedVolunteer = await Volunteer.findOneAndUpdate(
+      { name },
+      { $set: updates },
+      { new: true }
+    );
+
+    if (updatedVolunteer) {
+      res.json({ success: true, message: 'Profile updated successfully', document: updatedVolunteer });
+    } else {
+      res.status(404).json({ message: 'Volunteer not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error updating profile', error });
   }
 });
 

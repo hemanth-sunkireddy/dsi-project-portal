@@ -13,8 +13,7 @@
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Stronger shadow */
   padding: 3rem;
-  max-width: 400px;
-  width: 100%;
+  width: 500px;
   text-align: left;
 }
 
@@ -31,14 +30,13 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  max-width: 600px;
+  width: 500px;
 }
 
 .form-group {
   display: flex;
-  max-width: 50px;
   flex-direction: column;
- 
+  width: 70px;
 }
 
 .form-group label {
@@ -54,7 +52,7 @@
   border-radius: 5px;
   font-size: 0.9rem;
   transition: border-color 0.2s;
-  max-width: 400px;
+  width: 460px;
 }
 .profile-image {
  height: 110px;
