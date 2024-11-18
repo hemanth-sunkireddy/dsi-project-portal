@@ -8,7 +8,7 @@ const auth = require('../middleware/authMiddleware');
 const User = require('../models/User')
 const Meeting = require('../models/Meeting')
 const router = express.Router();
-const { Screening } = require('../models/Screening');
+const Screening = require('../models/Screening');
 const { addScreening, updateScreening } = require('../controllers/screeningcontroller'); // Adjust the path
 const { ChatbotInteraction, ChatbotSettings } = require('../models/Chatbot');
 const { addInitialPreset, getSettingsByTestId, createChatbotInteraction, updateChatbotInteraction } = require('../controllers/Chatbotcontroller'); // Adjust the path
@@ -119,6 +119,17 @@ router.get('/students', async (req, res) => {
   } catch (error) {
     res.json({ message: 'Failed to fetch Students', error });
   }
+});
+
+router.get('/screenings', async (req, res) => { 
+  try {
+    const screenings = await Screening.find(); 
+    res.status(200).json(screenings);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message:  error });
+  }
+  // res.status(200);
 });
 
 router.get('/users', async (req, res) => {
