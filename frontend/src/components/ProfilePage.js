@@ -267,6 +267,10 @@ function ProfilePage() {
               <span>{profileData.phoneNumber}</span>
             </div>
             <div className="profile-field">
+              <label>Qualifications</label>
+              <span>{profileData.qualifications}</span>
+            </div>
+            <div className="profile-field">
               <label>Gender</label>
               <span>{profileData.gender}</span>
             </div>
