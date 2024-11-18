@@ -132,13 +132,13 @@ const CompletedMeetings = () => {
 
           {/* Cards */}
           <div className="dashboard-cards-1">
-          <div className="dashboard-card-1" onClick={() => navigate('/all-patients', { state: { camps: ongoingCamps } })}>
+          <div className="dashboard-card" onClick={() => navigate('/all-patients', { state: { camps: ongoingCamps } })}>
               <h2>All Patients</h2>
               <p>List Of Patients that have been examined by the therapist as well as the screening bot</p>
               <button>View</button>
             </div>
 
-            <div className="dashboard-card-1" onClick={() => navigate('/conduct-screening', { state: { camps: completedCamps } })}>
+            <div className="dashboard-card" onClick={() => navigate('/conduct-screening', { state: { camps: completedCamps } })}>
               <h2>Screening Chatbot</h2>
               <p>PreScreening tool to examine the patient.</p>
               <button>View</button>
@@ -402,7 +402,7 @@ const CompletedMeetings = () => {
           margin-bottom: auto;
         }
 
-        .dashboard-card button-1 {
+        .dashboard-card-1 button-1 {
           background: #3060ff;
           color: white;
           border: none;

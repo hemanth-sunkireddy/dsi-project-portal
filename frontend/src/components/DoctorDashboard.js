@@ -134,13 +134,13 @@ const CompletedMeetings = () => {
 
           {/* Cards */}
           <div className="dashboard-cards-1">
-            <div className="dashboard-card-1" onClick={() => navigate('/completed-meetings', { state: { camps: ongoingCamps } })}>
+            <div className="dashboard-card" onClick={() => navigate('/completed-meetings', { state: { camps: ongoingCamps } })}>
               <h2>Completed Meetings</h2>
               <p>List of camps the doctor has visited and successfully completed patient diagnoses</p>
               <button>View</button>
             </div>
 
-            <div className="dashboard-card-1" onClick={() => navigate('/scheduled-meetings', { state: { camps: completedCamps } })}>
+            <div className="dashboard-card" onClick={() => navigate('/scheduled-meetings', { state: { camps: completedCamps } })}>
               <h2>Scheduled Meetings</h2>
               <p>List of camps where the doctor needs to visit for patient diagnosis</p>
               <button>View</button>
