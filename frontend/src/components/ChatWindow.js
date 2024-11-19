@@ -62,6 +62,7 @@ const ChatWindow = () => {
   const [chatbotSettings, setChatbotSettings] = useState(null);
   const [responses, setResponses] = useState([]);
   const [uploadMessage, setUploadMessage] = useState(null);
+  const [currentTestId, setCurrentTestId] = useState('test1');
   const navigate = useNavigate();
 
   // Retrieve stored IDs
@@ -70,6 +71,31 @@ const ChatWindow = () => {
   const campId = localStorage.getItem('camp-id');
   const doctorId = localStorage.getItem('doctor-id');
   const volunteerName = localStorage.getItem('volunteer');
+
+  const fetchChatbotSettings = async (testId) => {
+    try {
+      // Fetch chatbot settings for the selected test
+      const settingsResponse = await axios.get(`/api/auth/chatbotSettings/${testId}`);
+      setChatbotSettings(settingsResponse.data);
+      
+      // Reset states
+      setMessages([]);
+      setCurrentPromptIndex(0);
+      setResponses([]);
+      setUploadMessage(null);
+
+      // Display first prompt
+      if (settingsResponse.data.prompts.length > 0) {
+        setMessages([{
+          text: settingsResponse.data.prompts[0].promptText,
+          isUser: false
+        }]);
+      }
+    } catch (error) {
+      console.error('Error fetching chatbot settings:', error);
+    }
+  };
+
 
   // Fetch only chatbot settings on component mount
   useEffect(() => {
@@ -146,6 +172,16 @@ const ChatWindow = () => {
   //     console.error('Error handling send:', error);
   //   }
   // };
+
+  useEffect(() => {
+    fetchChatbotSettings(currentTestId);
+  }, [currentTestId]);
+
+  // Handle test selection
+  const handleTestSelect = (testId) => {
+    setCurrentTestId(testId);
+    setSidebarOpen(false);
+  };
 
   const handleFileUpload = async (file) => {
     // Clear previous upload messages
@@ -333,16 +369,48 @@ const ChatWindow = () => {
     setSidebarOpen(false);
   };
 
+  // return (
+  //   <ChatContainer>
+  //     <Sidebar
+  //       isOpen={isSidebarOpen}
+  //       onParticipantInfoClick={handleParticipantInfoClick}
+  //     />
+  //     <ChatContent>
+  //       <Header>
+  //         <MenuButton onClick={toggleSidebar}>☰</MenuButton>
+  //         Assessment Chat
+  //       </Header>
+        
+  //       {/* Add upload message display */}
+  //       {uploadMessage && (
+  //         uploadMessage.type === 'error' ? (
+  //           <ErrorMessage>{uploadMessage.text}</ErrorMessage>
+  //         ) : (
+  //           <SuccessMessage>{uploadMessage.text}</SuccessMessage>
+  //         )
+  //       )}
+
+  //       <MessageList messages={messages} />
+  //       <ChatInput
+  //         onSend={handleSend}
+  //         onFileUpload={handleFileUpload}
+  //         sidebarWidth={isSidebarOpen ? '250px' : '0px'}
+  //         mediaType={chatbotSettings?.prompts[currentPromptIndex]?.requiredMediaType}
+  //       />
+  //     </ChatContent>
+  //   </ChatContainer>
+  // );
   return (
     <ChatContainer>
       <Sidebar
         isOpen={isSidebarOpen}
         onParticipantInfoClick={handleParticipantInfoClick}
+        onTestSelect={handleTestSelect}
       />
       <ChatContent>
         <Header>
           <MenuButton onClick={toggleSidebar}>☰</MenuButton>
-          Assessment Chat
+          {currentTestId.toUpperCase()} Assessment Chat
         </Header>
         
         {/* Add upload message display */}
@@ -364,27 +432,7 @@ const ChatWindow = () => {
       </ChatContent>
     </ChatContainer>
   );
-  // return (
-  //   <ChatContainer>
-  //     <Sidebar
-  //       isOpen={isSidebarOpen}
-  //       onParticipantInfoClick={handleParticipantInfoClick}
-  //     />
-  //     <ChatContent>
-  //       <Header>
-  //         <MenuButton onClick={toggleSidebar}>☰</MenuButton>
-  //         Assessment Chat
-  //       </Header>
-  //       <MessageList messages={messages} />
-  //       <ChatInput
-  //         onSend={handleSend}
-  //         onFileUpload={handleFileUpload}
-  //         sidebarWidth={isSidebarOpen ? '250px' : '0px'}
-  //         mediaType={chatbotSettings?.prompts[currentPromptIndex]?.requiredMediaType}
-  //       />
-  //     </ChatContent>
-  //   </ChatContainer>
-  // );
+
 };
 
 export default ChatWindow;

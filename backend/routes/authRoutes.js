@@ -149,6 +149,99 @@ router.get('/chatbotSettings/:testId', getSettingsByTestId);
 router.post('/createChatbotInteraction', createChatbotInteraction);
 router.put('/updateChatbotInteraction/:id', updateChatbotInteraction);
 
+router.get('/getChatbotSettings', async (req, res) => {
+  try {
+    // Fetch all active chatbot settings, sorted by creation date
+    const chatbotSettings = await ChatbotSettings.find({ isActive: true })
+      .select('testId name description')
+      .sort({ createdAt: -1 });
+
+    // If no settings found, return appropriate message
+    if (chatbotSettings.length === 0) {
+      return res.status(404).json({ 
+        message: 'No active chatbot settings found',
+        settings: [] 
+      });
+    }
+
+    res.status(200).json({
+      message: 'Chatbot settings retrieved successfully',
+      settings: chatbotSettings
+    });
+  } catch (error) {
+    console.error('Error fetching chatbot settings:', error);
+    res.status(500).json({ 
+      error: 'Server error while retrieving chatbot settings',
+      details: error.message 
+    });
+  }
+});
+
+module.exports = router;
+router.post('/addChatbotSettings', async (req, res) => {
+  try {
+    // Get the next testId
+    console.log(req.body);
+    const lastTest = await ChatbotSettings.findOne().sort({ createdAt: -1 });
+    const nextTestNumber = lastTest ? 
+      parseInt(lastTest.testId.replace('test', '')) + 1 : 
+      1;
+    const testId = `test${nextTestNumber}`;
+
+    // Validate input
+    const { 
+      name, 
+      description, 
+      prompts = [], 
+      isActive = true,
+      createdBy = 'system' 
+    } = req.body;
+
+    // Validate required fields
+    if (!name) {
+      return res.status(400).json({ 
+        error: 'Test name is required' 
+      });
+    }
+
+    // Prepare prompts with default values
+    const formattedPrompts = prompts.map((prompt, index) => ({
+      order: prompt.order || index + 1,
+      category: prompt.category || '',
+      promptText: prompt.promptText || '',
+      requiredMediaType: prompt.requiredMediaType || 'text',
+      expectedResponseType: prompt.expectedResponseType || 'text',
+      isRequired: prompt.isRequired !== undefined ? prompt.isRequired : true,
+      timeout: prompt.timeout || 60
+    }));
+
+    // Create new chatbot screening preset
+    const newChatbotScreening = new ChatbotSettings({
+      testId,
+      name,
+      description,
+      isActive,
+      prompts: formattedPrompts,
+      createdBy
+    });
+
+    // Save to database
+    const savedScreening = await newChatbotScreening.save();
+
+    res.status(201).json({
+      message: `New screening ${testId} added successfully`,
+      screening: savedScreening
+    });
+  } catch (error) {
+    console.error('Error adding chatbot screening:', error);
+    res.status(500).json({ 
+      error: 'Server error while adding chatbot screening',
+      details: error.message 
+    });
+  }
+});
+
+
 // Update Meeting Status
 router.post('/update_meeting_status', async (req, res) => {
   const { meetID, status } = req.body;
