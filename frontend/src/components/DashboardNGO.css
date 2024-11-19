@@ -1,328 +1,180 @@
+/* DashboardNGO.css */
+
+/* General styles for the dashboard */
 .dashboard-container {
-    padding: 20px;
-    background-color: #f3f4f6;
-    font-family: Arial, sans-serif;
-  }
-    
-  .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #ffffff;
-    padding: 15px 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-    
-  .dashboard-header h1 {
-    color: #5c52cc;
-    margin: 0;
-  }
-    
-  .logout-button {
-    padding: 8px 16px;
-    background-color: #5c52cc;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-    
-  .dashboard-content {
-    display: flex;
-    gap: 20px;
-    margin-top: 20px;
-  }
-    
-  .dashboard-cards {
-    flex: 1;
-    display: flex;
-    gap: 20px;
-    justify-content: space-around;
-  }
-    
-  .dashboard-card {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 200px;
-  }
-    
-  .dashboard-card h2 {
-    color: #5c52cc;
-  }
-    
-  .analytics-section {
-    
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-
-  .analytics-chart {
-    display: flex;
-    margin-left: 100px;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    max-width: 300px; /* Adjust as needed */
-    margin-top: 10px;
-  }
-  
-    
-  .analytics-chart h2 {
-    color: #5c52cc;
-    size: 100px;
-
-  }
-  
-  .calendar-container {
-   
-    padding: 20px;
-    position: relative;
-    border-radius: 8px;
-    margin-left: auto; /* Shifts the calendar to the right */
-    margin-right: 200px; 
-    text-align: center;
-    box-sizing: 100px;
-    
-  }
-  .calendar-container h3{
-    color: #5c52cc;
-
-  }
-  .calendar-container p{
-    color: #5c52cc;
-
-  }
-  .react-calendar {
-    width: 100%;
-    max-width: 400px;
-    align-items: center;
-    margin-right: 200xpx;
-    background-color: #fff;
-    border: 1px solid #dcdcdc;
-    border-radius: 8px;
-    font-family: Arial, sans-serif;
-    padding: 10px;
-    border: 2px solid yellow;
-  }
-    
-  .react-calendar__tile {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    padding: 10px;
-    text-align: center;
-    margin-right:200px ;
-    cursor: pointer;
-    
-  }
-
-  
-/* .completed-camp { background-color: #f5a623; color: white; }
-.upcoming-camp { background-color: #ffd700; color: black; }
-.selected-date-info { margin-top: 10px; font-size: 14px; color: #5c52cc; } */
-
-.highlighted-date {
-  background-color: rgba(255, 0, 0, 0.3);
-  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  gap: 20px;
 }
 
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f4f4f4;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-header h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.dashboard-header button {
+  padding: 8px 16px;
+  margin-left: 10px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.dashboard-header button.logout-button {
+  background-color: #f44336;
+}
+
+.dashboard-header button:hover {
+  background-color: #1976D2;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Cards section */
+.dashboard-cards {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap; /* Ensures cards wrap to the next line if space is limited */
+}
+
+.dashboard-card {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  flex: 1 1 calc(25% - 20px); /* Ensure 4 cards in a row, with space between */
+  min-width: 250px;
+  box-sizing: border-box;
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.dashboard-card p {
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.dashboard-card button {
+  padding: 10px 20px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.dashboard-card button:hover {
+  background-color: #1976D2;
+}
+
+/* Analytics section */
+.analytics-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Calendar section */
+.calendar-container {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.calendar-container h3 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.selected-date-info {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #555;
+}
+
+/* Popup overlay styles */
 .popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.popup-box {
-  background: white;
-  padding: 20px;
+.popup-content {
+  background-color: white;
+  padding: 30px;
   border-radius: 8px;
-  width: 300px;
-  text-align: center;
+  max-width: 80%;
+  overflow-y: auto;
 }
 
-.popup-buttons { margin-top: 10px; }
-.add-button, .close-button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.add-button { background-color: #5c52cc; color: white; }
-.close-button { background-color: #cccccc; color: black; margin-left: 10px; }
-.camps-list-container {
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.popup-content h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
 }
 
 .camps-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
 }
 
-.camps-table th, .camps-table td {
+.camps-table th,
+.camps-table td {
   padding: 10px;
   border: 1px solid #ddd;
   text-align: left;
 }
 
 .camps-table th {
-  background-color: #5c52cc;
-  color: white;
+  background-color: #f4f4f4;
 }
 
-.camps-table tr:nth-child(even) {
-  background-color: #f3f4f6;
-}
-
-/* DashboardNGO.css */
-
-/* Highlight dates with scheduled camps */
-.highlighted-date {
-  background-color: red;
-  color: white;
-  border-radius: 50%;
-}
-
-/* Popup overlay */
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
-
-/* Popup content */
-.popup-content {
-  background: white;
-  color: black;
-  padding: 20px;
-  border-radius: 8px;
-  width: 80%;
-  max-width: 600px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.popup-content h3 {
-  margin-top: 0;
-}
-
-/* Table inside the popup */
-.camps-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-.camps-table th, .camps-table td {
-  padding: 8px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
-.camps-table th {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.camps-table tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-/* Close button */
-.popup-content button {
-  margin-top: 15px;
-  padding: 8px 16px;
-  background-color: #4CAF50;
-  color: black;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.popup-content button:hover {
-  background-color: #45a049;
-}
-
-/* Popup overlay */
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 10;
-}
-
-.popup-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 80%;
-  max-width: 600px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.popup-content h3 {
-  margin-top: 0;
-}
-
-.camps-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-}
-
-.camps-table th, .camps-table td {
-  padding: 8px;
-  border: 1px solid #ddd;
-  text-align: left;
-}
-
-.camps-table th {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.close-button, .add-camp-button {
-  margin-top: 15px;
-  padding: 8px 16px;
-  background-color: #4CAF50;
+.add-camp-button,
+.close-button {
+  padding: 10px 20px;
+  background-color: #2196F3;
   color: white;
   border: none;
-  border-radius: 4px;
   cursor: pointer;
-  margin-right: 8px;
+  border-radius: 4px;
+  margin-right: 10px;
 }
 
-.close-button:hover, .add-camp-button:hover {
-  background-color: #45a049;
+.add-camp-button:hover,
+.close-button:hover {
+  background-color: #1976D2;
 }

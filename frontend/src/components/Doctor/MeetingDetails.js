@@ -108,7 +108,7 @@ const MeetingDetails = () => {
                   <option value="in_progress" style={{ fontWeight: 'bolder' }}>
                     In Progress
                   </option>
-                  <option value="completed">Completed</option>
+                  <option value="completed">Mark Completed</option>
                 </select>
               </div>
             )}

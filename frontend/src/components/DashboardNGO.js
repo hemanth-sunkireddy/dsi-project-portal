@@ -77,6 +77,9 @@ const DashboardNGO = () => {
         <h1>Dashboard - NGO Staff</h1>
         <button onClick={() => navigate('/profile')} >Profile</button>
         <button onClick={() => navigate('/support')}>Support</button>
+        <button onClick={() => navigate('/addvolunteer')}>Add Volunteer</button>
+        <button onClick={() => navigate('/adddoctor')}>Add Doctor</button>
+
         <button onClick={handleLogout} className="logout-button">Logout</button>
       </header>
 
@@ -101,6 +104,12 @@ const DashboardNGO = () => {
             <p style={{color: 'black'}}>List of Camps scheduled for the future.</p>
             <p><strong>Total:</strong> {upcomingCamps.length}</p>
             <button onClick={() => navigate('/upcoming-camps-staff', { state: { camps: upcomingCamps } })}>View</button>
+          </div>
+          <div className="dashboard-card">
+            <h2>Schedule Meeting</h2>
+            <p style={{color: 'black'}}>Schedule a Meeting for Doctor.</p>
+            {/* <p><strong>Total:</strong> {upcomingCamps.length}</p> */}
+            <button onClick={() => navigate('/unscheduled-meetings')}>View</button>
           </div>
         </div>
 

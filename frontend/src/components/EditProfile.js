@@ -205,6 +205,7 @@ function EditProfile() {
                   value={formData.pastExperiences}
                   onChange={handleChange}
                   placeholder="Enter your past experiences"
+                  style={{width:'400px'}}
                 />
               </div>
             </>
