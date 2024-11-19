@@ -9,16 +9,52 @@
 
 // module.exports = mongoose.model('User', userSchema);
 
+// const mongoose = require('mongoose');
+
+// const userSchema = new mongoose.Schema({
+//   name: { type: String, required: true },
+//   phone: { type: String, required: true, unique: true},
+//   gender: { type: String },
+//   address: { type: String },
+//   email: { type: String, unique: false, sparse: true }, // Mark `email` as non-unique and sparse
+//   role: { type: String, required: true, enum: ['Admin','NGO Worker', 'Doctor'] },
+//   isApproved: { type: Boolean, default: false }, // Admin approval
+// });
+
+// module.exports = mongoose.model('User', userSchema);
+
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
-  phone: { type: String, required: true, unique: true },
-  gender: { type: String },
+  phone: { 
+    type: String, 
+    required: true, 
+    unique: true,
+    validate: {
+      validator: function(v) {
+        // Validate phone number format (e.g., +919XXXXXXXXX for India)
+        return /^\+\d{10,15}$/.test(v); // Allows phone numbers with a '+' prefix and 10-15 digits
+      },
+      message: props => `${props.value} is not a valid phone number!`
+    },
+  },
+  gender: { 
+    type: String, 
+    enum: ['Male', 'Female', 'Other', 'Prefer not to say'], 
+    default: 'Prefer not to say',
+  },
   address: { type: String },
-  email: { type: String, unique: false, sparse: true }, // Mark `email` as non-unique and sparse
-  role: { type: String, required: true, enum: ['Admin','NGO Worker', 'Doctor'] },
-  isApproved: { type: Boolean, default: false }, // Admin approval
+  role: { 
+    type: String, 
+    required: true, 
+    enum: ['Admin', 'NGO Worker', 'Doctor'], 
+  },
+  isApproved: { 
+    type: Boolean, 
+    default: false, 
+  }, // Admin approval
+  createdAt: { type: Date, default: Date.now }, // Timestamp for user creation
 });
 
 module.exports = mongoose.model('User', userSchema);

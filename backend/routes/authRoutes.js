@@ -1,6 +1,6 @@
 const express = require('express');
 // const { register, login, getUserDetails } = require('../controllers/authController');
-const { sendOTP, loginWithOTP, verifyOtp, register, approveDoctor, getUserDetails, assignAdmin } = require('../controllers/authController');
+const { sendOTP, loginWithOTP, verifyOTP, register, approveDoctor, getUserDetails, assignAdmin } = require('../controllers/authController');
 
 const Doctor = require('../models/Doctor');
 const Student = require('../models/Student');
@@ -17,10 +17,10 @@ const router = express.Router();
 // router.post('/register', register);
 // router.post('/login', login);
 router.get('/user', auth, getUserDetails);
-router.post('/sendOTP', sendOTP); // Endpoint to send OTP
+router.post('/send-otp', sendOTP); // Endpoint to send OTP
 router.post('/loginWithOTP', loginWithOTP); // Endpoint to log in with OTP
 // router.post('/sendOtp', sendOtp);
-router.post('/verifyOtp', verifyOtp);
+router.post('/verify-otp', verifyOTP);
 router.post('/register', register);
 router.put('/approveDoctor/:id', auth, approveDoctor);
 
