@@ -62,8 +62,8 @@ const StudentDetailsDoctor = () => {
     navigate(`/conduct-screening`);
   };
 
-  const handleViewReport = (reportId) => {
-    localStorage.setItem('report-id', reportId);
+  const handleViewReport = (screeningId) => {
+    localStorage.setItem('screening-id', screeningId);
     navigate(`/reportview`);
   };
 
@@ -239,7 +239,7 @@ const StudentDetailsDoctor = () => {
         <td style={styles.tableCell}>{screening.diagnosis}</td>
         <td style={styles.tableCell}>
           <button
-            onClick={() => handleViewReport(screening.reportId)}
+            onClick={() => handleViewReport(screening.screeningId)}
             style={styles.viewButton}
           >
             View Report
