@@ -1,4 +1,3 @@
-// src/components/Sidebar.js
 import React from 'react';
 import styled from 'styled-components';
 
@@ -28,14 +27,14 @@ const SidebarItem = styled.div`
   }
 `;
 
-const Sidebar = ({ isOpen, onParticipantInfoClick }) => (
+const Sidebar = ({ isOpen, onParticipantInfoClick, onTestSelect }) => (
   <SidebarContainer isOpen={isOpen}>
     <div>
       <SidebarHeader>Menu</SidebarHeader>
-      <SidebarItem>Home</SidebarItem>
-      <SidebarItem onClick={onParticipantInfoClick}>
-        Participant Info
-      </SidebarItem>
+      <SidebarItem onClick={onParticipantInfoClick}>Participant Info</SidebarItem>
+      <SidebarItem onClick={() => onTestSelect('test1')}>Test 1</SidebarItem>
+      <SidebarItem onClick={() => onTestSelect('test2')}>Test 2</SidebarItem>
+      <SidebarItem onClick={() => onTestSelect('test3')}>Test 3</SidebarItem>
       <SidebarItem>Help</SidebarItem>
     </div>
   </SidebarContainer>
