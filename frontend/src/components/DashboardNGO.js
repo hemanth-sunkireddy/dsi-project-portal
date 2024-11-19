@@ -4,7 +4,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './DashboardNGO.css';
 import axios from 'axios';
-import { Pie } from 'react-chartjs-2';
+// import { Pie } from 'react-chartjs-2';
 
 const DashboardNGO = () => {
   const navigate = useNavigate();
@@ -106,11 +106,11 @@ const DashboardNGO = () => {
 
         <div className="analytics-section">
           
-          <div className="analytics-chart">
+          {/* <div className="analytics-chart">
             <h2>Analytics</h2> 
             <Pie data={pieData} />
             <p>Distribution of Scheduled, Completed, and Upcoming Camps</p>
-          </div>
+          </div> */}
 
           <div className="calendar-container">
             <h3>Schedule and View Camps</h3>

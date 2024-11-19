@@ -63,7 +63,8 @@ const StudentDetailsDoctor = () => {
   };
 
   const handleViewReport = (reportId) => {
-    navigate(`/report/${reportId}`);
+    localStorage.setItem('report-id', reportId);
+    navigate(`/reportview`);
   };
 
   const handleAddFeedback = (screeningId) => {

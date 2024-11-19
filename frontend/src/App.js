@@ -35,6 +35,7 @@ import LandingPage from './components/LandingPage';
 import Meetings_inprogress from './components/Doctor/InProgressMeetings';
 import ViewStudentsDoctor from './components/Doctor/StudentsList';
 import StudentDetailsDoctor from './components/StudentProfileDoctor';
+import AddVolunteer from './components/AddVolunteer';
 import ReportView from './components/report';
 function App() {
   const [role, setRole] = useState(() => localStorage.getItem('role') || null);
@@ -78,6 +79,7 @@ function App() {
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/editprofile" element={<EditProfile />} />
         <Route path="/adddoctor" element={<AddDoctor />} />
+        <Route path="/addvolunteer" element={<AddVolunteer />} />
         <Route path="/reportview" element={<ReportView />} />
         {/* Conditional Routing Based on Role */}
         {/* Conditional Routing Based on Role */}

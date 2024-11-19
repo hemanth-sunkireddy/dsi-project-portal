@@ -57,7 +57,8 @@ const StudentDetails = () => {
   };
 
   const handleViewReport = (reportId) => {
-    navigate(`/report/${reportId}`);
+    localStorage.setItem('report-id', reportId);
+    navigate(`/reportview`);
   };
 
   return (
