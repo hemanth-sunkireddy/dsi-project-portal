@@ -101,14 +101,7 @@ router.get('/screenings', async (req, res) => {
     res.json({ message: 'Failed to fetch Screenings', error });
   }
 });
-router.get('/screenings', async (req, res) => { 
-  try {
-    const screenings = await Screening.find(); 
-    res.status(200).json(screenings);
-  } catch (error) {
-    res.json({ message: 'Failed to fetch Screenings', error });
-  }
-});
+
 router.get('/profiledata/:name', async (req, res) => {
   const { name } = req.params;
   console.log(name)
@@ -354,6 +347,36 @@ router.get('/profiledata/:name', async (req, res) => {
   console.log(name)
   const document = await User.findOne({ name });
   console.log(document)
+  res.json({ document });
+});
+
+// router.get('/Reportdata/:screeningId', async (req, res) => {
+//   const { screeningId } = req.params;
+//   console.log(screeningId)
+//   const document = await Screening.findOne({ screeningId });
+//   console.log(document)
+//   res.json({ document });
+// });
+router.get('/Reportdata/:screeningId', async (req, res) => {
+  const { screeningId } = req.params;
+  console.log('Fetching document for screeningId:', screeningId);
+  const document = await Screening.findOne({ screeningId });
+  if (!document) {
+    console.error(`No document found with screeningId: ${screeningId}`);
+    return res.status(404).json({ error: 'Document not found' });
+  }
+  console.log('Fetched document:', document);
+  res.json({ document });
+});
+router.get('/ReportdataS/:studentId', async (req, res) => {
+  const { studentId } = req.params;
+  console.log('Fetching document for studentId:', studentId);
+  const document = await Student.findOne({ studentId });
+  if (!document) {
+    console.error(`No document found with screeningId: ${studentId}`);
+    return res.status(404).json({ error: 'Document not found' });
+  }
+  console.log('Fetched document:', document);
   res.json({ document });
 });
 
