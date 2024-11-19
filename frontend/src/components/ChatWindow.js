@@ -311,6 +311,7 @@ const ChatWindow = () => {
         Date: new Date().toISOString(),
         doctorFeedback: "",
         report: report, // Add the report object here
+        diagnosis: report.diagnosis,
       });
   
       // Handle successful screening creation
