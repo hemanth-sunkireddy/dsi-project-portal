@@ -17,10 +17,11 @@ const router = express.Router();
 // router.post('/register', register);
 // router.post('/login', login);
 router.get('/user', auth, getUserDetails);
-router.post('/send-otp', sendOTP); // Endpoint to send OTP
+router.post('/sendOTP', sendOTP); // Endpoint to send OTP
 router.post('/loginWithOTP', loginWithOTP); // Endpoint to log in with OTP
 // router.post('/sendOtp', sendOtp);
-router.post('/verify-otp', verifyOTP);
+// router.post('/verify-otp', verifyOTP);
+router.post("/verifyOTP", verifyOTP);
 router.post('/register', register);
 router.put('/approveDoctor/:id', auth, approveDoctor);
 

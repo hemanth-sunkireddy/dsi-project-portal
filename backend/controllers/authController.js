@@ -76,81 +76,257 @@ const OTP_EXPIRY_TIME = 5 * 60 * 1000; // 5 minutes
 const otpStore = {};
 
 
-
-
-// Send OTP
+// // Send OTP to a phone number
 // exports.sendOTP = async (req, res) => {
 //   const { phone } = req.body;
 
 //   try {
-//     // Generate a 6-digit OTP
-//     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+//     // Generate a Firebase Authentication Session
+//     const link = await admin.auth().createCustomToken(phone);
+//     console.log(`Custom token for phone ${phone}:`, link);
 
-//     // Save OTP in the database with expiry
-//     await Otp.deleteMany({ phone }); // Remove old OTPs
-//     const newOtp = new Otp({ phone, otp });
-//     await newOtp.save();
-
-//     // Send OTP via the utility function
-//     sendOtpToPhone(phone, otp);
-
-//     res.status(200).json({ message: 'OTP sent successfully' });
+//     // Normally, you would integrate an SMS service like Twilio here.
+//     // For now, simulate SMS by returning the "token" (OTP equivalent).
+//     res.status(200).json({
+//       message: 'OTP sent successfully',
+//       otp: link, // This is the custom token to simulate OTP
+//     });
 //   } catch (error) {
 //     console.error('Error sending OTP:', error);
 //     res.status(500).json({ message: 'Failed to send OTP' });
 //   }
 // };
 
-// Send OTP to a phone number
+// // Send OTP via Firebase
+// exports.sendOTP = async (req, res) => {
+//   const { phone } = req.body;
+
+//   try {
+//     // Generate a mock OTP for demo purposes (or use Firebase Admin for sending SMS)
+//     const otp = otpGenerator.generate(6, {
+//       upperCaseAlphabets: false,
+//       specialChars: false,
+//       lowerCaseAlphabets: false, // Exclude lowercase letters
+//       digits: true, // Include digits only
+//     });
+
+//     console.log(`Generated OTP for ${phone}: ${otp}`);
+
+//     // Save OTP to the database with expiry for future verification
+//     const otpRecord = new Otp({
+//       phone,
+//       otp,
+//       createdAt: Date.now(),
+//     });
+//     await otpRecord.save();
+
+//     // Send the OTP (if integrated with a real SMS service)
+//     res.status(200).json({ message: 'OTP sent successfully', otp }); // Do not send OTP in production
+//   } catch (error) {
+//     console.error('Error sending OTP:', error);
+//     res.status(500).json({ message: 'Failed to send OTP' });
+//   }
+// };
+
+// // exports.verifyOTP = async (req, res) => {
+// //   const { phone, otp } = req.body;
+
+// //   try {
+// //     // Find the OTP record for this phone number
+// //     const otpRecord = await Otp.findOne({ phone, otp });
+
+// //     if (!otpRecord) {
+// //       return res.status(400).json({ message: 'Invalid or expired OTP' });
+// //     }
+
+// //     // If valid, create Firebase Auth user or retrieve existing user
+// //     const user = await admin.auth().getUserByPhoneNumber(phone).catch(async () => {
+// //       // If the user does not exist, create a new one
+// //       return admin.auth().createUser({
+// //         phoneNumber: phone,
+// //       });
+// //     });
+
+// //     // Generate a Firebase ID token for the user
+// //     const token = await admin.auth().createCustomToken(user.uid);
+
+// //     // Delete OTP after successful verification
+// //     await Otp.deleteMany({ phone });
+
+// //     res.status(200).json({ message: 'OTP verified successfully', token });
+// //   } catch (error) {
+// //     console.error('Error verifying OTP:', error);
+// //     res.status(500).json({ message: 'Failed to verify OTP' });
+// //   }
+// // };
+
+// exports.verifyOTP = async (req, res) => {
+//   const { phone, otp } = req.body;
+
+//   console.log(`Received phone: ${phone}, OTP: ${otp}`); // Log incoming data
+
+//   try {
+//     // Find the OTP record for this phone number
+//     const otpRecord = await Otp.findOne({ phone, otp });
+
+//     if (!otpRecord) {
+//       console.log('Invalid or expired OTP'); // Log the failure reason
+//       return res.status(400).json({ message: 'Invalid or expired OTP' });
+//     }
+
+//     console.log('OTP verified successfully'); // Log successful verification
+
+//     // Create a Firebase user or get an existing one
+//     const user = await admin.auth().getUserByPhoneNumber(phone).catch(async () => {
+//       return admin.auth().createUser({ phoneNumber: phone });
+//     });
+
+//     // Generate a Firebase custom token
+//     const token = await admin.auth().createCustomToken(user.uid);
+
+//     // Delete OTP after successful verification
+//     await Otp.deleteMany({ phone });
+
+//     res.status(200).json({ message: 'OTP verified successfully', token });
+//   } catch (error) {
+//     console.error('Error verifying OTP:', error);
+//     res.status(500).json({ message: 'Failed to verify OTP' });
+//   }
+// };
+
+// exports.sendOTP = async (req, res) => {
+//   const { phone } = req.body;
+
+//   try {
+//     // Generate a 6-digit numeric OTP
+//     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+//     console.log(`Generated OTP for ${phone}: ${otp}`);
+
+//     // Save OTP in the database
+//     const otpRecord = new Otp({ phone, otp, createdAt: Date.now() });
+//     await otpRecord.save();
+
+//     res.status(200).json({ message: "OTP sent successfully." });
+//   } catch (error) {
+//     console.error("Error sending OTP:", error);
+//     res.status(500).json({ message: "Failed to send OTP." });
+//   }
+// };
+
+// exports.verifyOTP = async (req, res) => {
+//   const { phone, otp } = req.body;
+
+//   try {
+//     // Find the OTP record
+//     const otpRecord = await Otp.findOne({ phone, otp });
+
+//     if (!otpRecord) {
+//       return res.status(400).json({ message: "Invalid or expired OTP" });
+//     }
+
+//     // Delete the OTP after successful verification
+//     await Otp.deleteMany({ phone });
+
+//     // Retrieve user role
+//     const user = await User.findOne({ phone });
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     // Generate a mock token (use JWT or Firebase token in production)
+//     const token = `mock-token-${phone}`;
+//     res.status(200).json({ token, role: user.role });
+//   } catch (error) {
+//     console.error("Error verifying OTP:", error);
+//     res.status(500).json({ message: "Failed to verify OTP." });
+//   }
+// };
+
+
 exports.sendOTP = async (req, res) => {
   const { phone } = req.body;
 
   try {
-    // Generate a Firebase Authentication Session
-    const link = await admin.auth().createCustomToken(phone);
-    console.log(`Custom token for phone ${phone}:`, link);
+    const otp = Math.floor(100000 + Math.random() * 900000).toString(); // Generate 6-digit OTP
+    console.log(`Generated OTP for ${phone}: ${otp}`);
 
-    // Normally, you would integrate an SMS service like Twilio here.
-    // For now, simulate SMS by returning the "token" (OTP equivalent).
-    res.status(200).json({
-      message: 'OTP sent successfully',
-      otp: link, // This is the custom token to simulate OTP
-    });
+    await Otp.findOneAndUpdate(
+      { phone },
+      { phone, otp, createdAt: new Date() },
+      { upsert: true } // Create or update the OTP record
+    );
+
+    res.status(200).json({ message: "OTP sent successfully." });
   } catch (error) {
-    console.error('Error sending OTP:', error);
-    res.status(500).json({ message: 'Failed to send OTP' });
+    console.error("Error sending OTP:", error);
+    res.status(500).json({ message: "Failed to send OTP." });
   }
 };
 
-// Verify OTP and log the user in
 exports.verifyOTP = async (req, res) => {
   const { phone, otp } = req.body;
 
   try {
-    // Simulate OTP verification
-    const decodedToken = await admin.auth().verifyIdToken(otp);
-    console.log('Decoded Token:', decodedToken);
+    const otpRecord = await Otp.findOne({ phone, otp });
 
-    // Check if user exists
-    let user = await User.findOne({ phone });
-    if (!user) {
-      // Create a new user if none exists
-      user = new User({ phone, role: 'User', isApproved: true });
-      await user.save();
+    if (!otpRecord) {
+      return res.status(400).json({ message: "Invalid or expired OTP." });
     }
 
-    // Generate a custom JWT for the user
-    const token = admin.auth().createCustomToken(user._id.toString());
+    // Check if OTP is older than 5 minutes
+    const now = new Date();
+    if (now - otpRecord.createdAt > 5 * 60 * 1000) {
+      return res.status(400).json({ message: "OTP has expired." });
+    }
+
+    await Otp.deleteMany({ phone }); // Clean up OTPs for this phone
+
+    const user = await User.findOne({ phone });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+
     res.status(200).json({
-      message: 'Login successful',
-      token, // Return the JWT
+      token: `mock-token-${phone}`,
       role: user.role,
+      isApproved: user.isApproved,
     });
   } catch (error) {
-    console.error('Error verifying OTP:', error);
-    res.status(500).json({ message: 'Invalid OTP or session expired' });
+    console.error("Error verifying OTP:", error);
+    res.status(500).json({ message: "Failed to verify OTP." });
   }
 };
+
+// // Verify OTP and log the user in
+// exports.verifyOTP = async (req, res) => {
+//   const { phone, otp } = req.body;
+
+//   try {
+//     // Simulate OTP verification
+//     const decodedToken = await admin.auth().verifyIdToken(otp);
+//     console.log('Decoded Token:', decodedToken);
+
+//     // Check if user exists
+//     let user = await User.findOne({ phone });
+//     if (!user) {
+//       // Create a new user if none exists
+//       user = new User({ phone, role: 'User', isApproved: true });
+//       await user.save();
+//     }
+
+//     // Generate a custom JWT for the user
+//     const token = admin.auth().createCustomToken(user._id.toString());
+//     res.status(200).json({
+//       message: 'Login successful',
+//       token, // Return the JWT
+//       role: user.role,
+//     });
+//   } catch (error) {
+//     console.error('Error verifying OTP:', error);
+//     res.status(500).json({ message: 'Invalid OTP or session expired' });
+//   }
+// };
 
 // // Verify OTP and log in
 // exports.loginWithOTP = async (req, res) => {
