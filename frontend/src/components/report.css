@@ -77,8 +77,8 @@
   border-radius: 8px;
   padding: 15px 20px;
   text-align: center;
-  width: 160px;
-  font-size: 24px;
+  width: 400px;
+  font-size: 17px;
   font-weight: bold;
   color: #6d28af;
 }
@@ -130,4 +130,22 @@
 
 .info {
   line-height: 1.8;
+}
+
+.download-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 20px 0;
+  transition: background-color 0.3s ease;
+  margin-left: 300px;
+  
+}
+
+.download-button:hover {
+  background-color: #0056b3;
 }
