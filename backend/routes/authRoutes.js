@@ -1,4 +1,5 @@
 const express = require('express');
+const adminRoutes = require('./adminRoutes'); // Import admin routes
 // const { register, login, getUserDetails } = require('../controllers/authController');
 const { sendOTP, loginWithOTP, verifyOTP, register, approveDoctor, getUserDetails, assignAdmin } = require('../controllers/authController');
 
@@ -13,6 +14,9 @@ const { auth, isAdmin } = require('../middleware/authMiddleware');
 const User = require('../models/User')
 const Meeting = require('../models/Meeting')
 const router = express.Router();
+
+// Admin routes
+router.use('/admin', adminRoutes)
 
 // router.post('/register', register);
 // router.post('/login', login);

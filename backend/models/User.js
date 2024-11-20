@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema({
   },
   address: { type: String },
   phone: { type: String, required: true, unique: true },
-  role: { type: String, enum: ["NGO Staff", "Doctor", "Therapist"], required: true },
+  role: { type: String, enum: ["Admin","NGO Worker", "Doctor", "Therapist","Volunteer"], required: true },
   isApproved: { type: Boolean, default: false }, // Default to not approved
 
   // role: { 
