@@ -1,10 +1,16 @@
 const express = require('express');
-const { register, login, getUserDetails } = require('../controllers/authController');
+const adminRoutes = require('./adminRoutes'); // Import admin routes
+// const { register, login, getUserDetails } = require('../controllers/authController');
+const { sendOTP, loginWithOTP, verifyOTP, register, approveDoctor, getUserDetails, assignAdmin } = require('../controllers/authController');
+
 const Doctor = require('../models/Doctor');
 const Student = require('../models/Student');
 const Volunteer = require('../models/Volunteer');
 const Camp = require('../models/Camp');
-const auth = require('../middleware/authMiddleware');
+const { auth, isAdmin } = require('../middleware/authMiddleware');
+
+// const auth = require('../middleware/authMiddleware');
+// const { isAdmin } = require('../middleware/authMiddleware');
 const User = require('../models/User')
 const Meeting = require('../models/Meeting')
 const router = express.Router();
@@ -13,9 +19,24 @@ const { addScreening, updateScreening } = require('../controllers/screeningcontr
 const { ChatbotInteraction, ChatbotSettings } = require('../models/Chatbot');
 const { addInitialPreset, getSettingsByTestId, createChatbotInteraction, updateChatbotInteraction } = require('../controllers/Chatbotcontroller'); // Adjust the path
 
-router.post('/register', register);
-router.post('/login', login);
+// Admin routes
+router.use('/admin', adminRoutes)
+
+// router.post('/register', register);
+// router.post('/login', login);
 router.get('/user', auth, getUserDetails);
+router.post('/sendOTP', sendOTP); // Endpoint to send OTP
+router.post('/loginWithOTP', loginWithOTP); // Endpoint to log in with OTP
+// router.post('/sendOtp', sendOtp);
+// router.post('/verify-otp', verifyOTP);
+router.post("/verifyOTP", verifyOTP);
+router.post('/register', register);
+router.put('/approveDoctor/:id', auth, approveDoctor);
+
+// Admin-specific routes
+// router.put('/approveDoctor/:id', auth, isAdmin, approveDoctor);
+router.put('/assignAdmin/:id', auth, isAdmin, assignAdmin);
+
 
 // Add Doctor
 router.post('/addDoctor', async (req, res) => {
