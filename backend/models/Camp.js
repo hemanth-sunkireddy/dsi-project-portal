@@ -21,12 +21,20 @@ const campSchema = new mongoose.Schema({
     default: 0, 
   },
 
-  studentsPositive: {
+  studentsScreenedPositive: {
+    type: Number,
+    default: 0,  
+  },
+  studentsDiagnosedPositive: {
     type: Number,
     default: 0,  
   },
 
   studentsScreened: {
+    type: Number,
+    default: 0,  
+  },
+  studentsFollowedUp: {
     type: Number,
     default: 0,  
   },

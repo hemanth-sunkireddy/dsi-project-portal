@@ -2,30 +2,34 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const ViewStudents = () => {
+const ViewscreeningsDoctor = () => {
   const navigate = useNavigate();
   const SelectedCamp = localStorage.getItem('camp-id');
+  console.log(SelectedCamp)
+  const [screenings, setScreenings] = useState([]);
   const [students, setStudents] = useState([]);
-  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [filteredstudents, setFilteredstudents] = useState([]);
   const [loading, setLoading] = useState(true); // Loading state
   const [searchTerm, setSearchTerm] = useState(''); // Search term state
   const [statusFilter, setStatusFilter] = useState(''); // Status filter state
 
-  // Fetching students from the server
-  const fetchStudents = async () => {
+  // Fetching screenings and students from the server
+  const fetchScreenings = async () => {
     try {
-      const response = await axios.get('/api/auth/students');
-      setStudents(response.data);
+      const response_screenings = await axios.get('/api/auth/screenings');
+      const response_students = await axios.get('/api/auth/students');
+      setScreenings(response_screenings.data);
+      setStudents(response_students.data);
       setLoading(false); // Set loading to false after fetching
     } catch (error) {
-      console.error('Error fetching students:', error);
+      console.error('Error fetching screenings:', error);
       setLoading(false); // Set loading to false even if there is an error
     }
   };
 
-  // Display only the students associated with the selected camp and apply the filters
-  const filterStudents = () => {
-    let filtered = students.filter((student) => student.campId === SelectedCamp);
+  // Display only the screenings associated with the selected camp and apply the filters
+  const filterscreenings = () => {
+    let filtered = screenings.filter((screening) => screening.campId === SelectedCamp && screening.diagnosis != "Screened Negative");
 
     // Apply search filter
     if (searchTerm) {
@@ -42,23 +46,29 @@ const ViewStudents = () => {
       filtered = filtered.filter((student) => student.status === statusFilter);
     }
 
-    setFilteredStudents(filtered);
+    // Now filter students to match the studentId from the filtered screenings
+    const filteredStudentIds = filtered.map((screening) => screening.studentId);
+    const filteredStudents = students.filter((student) =>
+      filteredStudentIds.includes(student.studentId)
+    );
+
+    setFilteredstudents(filteredStudents);
   };
 
   useEffect(() => {
-    fetchStudents();
+    fetchScreenings();
   }, []);
 
   useEffect(() => {
-    if (students.length > 0) {
-      filterStudents();
+    if (screenings.length > 0) {
+      filterscreenings();
     }
-  }, [students, searchTerm, statusFilter]);
+  }, [screenings, searchTerm, statusFilter]);
 
   // Handling row click to navigate to student profile
   const handleRowClick = (studentId) => {
     localStorage.setItem('student-id', studentId);
-    navigate(`/student-profile`);
+    navigate(`/student-profile-doctor`);
   };
 
   return (
@@ -134,7 +144,7 @@ const ViewStudents = () => {
             }}
           />
           
-          <select
+          {/* <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             style={{
@@ -149,13 +159,13 @@ const ViewStudents = () => {
             <option value="screened">Screened</option>
             <option value="follow-up-completed">Follow Up Completed</option>
             <option value="final-report-generated">Final Report Generated</option>
-          </select>
+          </select> */}
         </div>
 
         {/* Loading State */}
         {loading ? (
-          <p>Loading students...</p>
-        ) : filteredStudents.length > 0 ? (
+          <p>Loading screenings...</p>
+        ) : filteredstudents.length > 0 ? (
           <table
             className="camps-table"
             style={{
@@ -174,7 +184,7 @@ const ViewStudents = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredStudents.map((student) => (
+              {filteredstudents.map((student) => (
                 <tr
                   key={student.studentId}
                   style={{
@@ -216,11 +226,11 @@ const ViewStudents = () => {
             </tbody>
           </table>
         ) : (
-          <p>No students</p>
+          <p>No screenings</p>
         )}
       </div>
     </div>
   );
 };
 
-export default ViewStudents;
+export default ViewscreeningsDoctor;

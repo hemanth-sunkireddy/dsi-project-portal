@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const CampsInProgress = () => {
   const navigate = useNavigate();
@@ -18,6 +19,10 @@ const CampsInProgress = () => {
     const filtered = camps.filter((camp) => {
       const campStartDate = new Date(camp.startDate); // Assuming each camp has a startDate field
       const campEndDate = new Date(camp.endDate); // Assuming each camp has an endDate field
+      const campDate = new Date(camp.dateTime); // The camp date for checking "upcoming"
+
+      const inProgress = camp.status === "inprogress";
+      const isUpcoming = camp.status === "upcoming" && campDate <= new Date(); // Check if camp is upcoming and the date is today or before
 
       const isWithinDateRange =
         (!startDate || campStartDate >= new Date(startDate)) &&
@@ -25,7 +30,11 @@ const CampsInProgress = () => {
 
       return (
         camp.volunteer === user_name &&
-        (!searchTerm || camp.campID.includes(searchTerm)) &&
+        (inProgress || isUpcoming) && // Filter by either "inprogress" or "upcoming"
+        (!searchTerm ||
+          camp.campID.includes(searchTerm) ||
+          camp.schoolName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          camp.location.toLowerCase().includes(searchTerm.toLowerCase())) &&
         isWithinDateRange
       );
     });
@@ -33,11 +42,40 @@ const CampsInProgress = () => {
     setFilteredCamps(filtered);
   };
 
+
+  // Function to trigger the POST request if camp status is 'upcoming' and date is today
+  const updateCampInProgress = async (campID) => {
+    const today = new Date();
+    const campDate = new Date(camps.find(camp => camp.campID === campID)?.dateTime);
+    console.log(campDate.toDateString());
+    console.log(today.toDateString());
+    // Check if the camp date is today
+    if (campDate.toDateString() <= today.toDateString()) {
+      try {
+        const response = await axios.post('/api/auth/updateCampInProgress', {
+          campID: campID
+        });
+        console.log('Camp status updated successfully');
+      } catch (error) {
+        console.error('Error updating camp status:', error);
+      }
+    }
+  };
+
   useEffect(() => {
     if (camps.length > 0) {
       filterCamps();
     }
   }, [camps, searchTerm, startDate, endDate]);
+
+  useEffect(() => {
+    // Loop through the filtered camps and trigger the update for those scheduled for today
+    filteredCamps.forEach((camp) => {
+      if (camp.status === 'upcoming') {
+        updateCampInProgress(camp.campID);
+      }
+    });
+  }, [filteredCamps]); // Trigger when filteredCamps is updated
 
   const handleRowClick = (campID) => {
     localStorage.setItem('camp-id', campID);
@@ -149,7 +187,7 @@ const CampsInProgress = () => {
           <div style={{ display: 'flex', flex: 1, alignItems: 'center' }}>
             <input
               type="text"
-              placeholder="Search by camp ID"
+              placeholder="Search by camp ID, school name, or location"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{
@@ -217,10 +255,11 @@ const CampsInProgress = () => {
               }}
             >
               <thead style={{ backgroundColor: '#50ac54' }}>
-                <tr style={{ color: 'black', height: 30 }}>
+                <tr style={{ color: 'white', height: 30 }}>
                   <th>Camp ID</th>
                   <th>School Name</th>
                   <th>Location</th>
+                  <th>Date</th>
                   <th>Students Registered</th>
                   <th>Students Screened</th>
                   <th>Action</th>
@@ -239,6 +278,7 @@ const CampsInProgress = () => {
                     <td>{camp.campID}</td>
                     <td>{camp.schoolName}</td>
                     <td>{camp.location}</td>
+                    <td>{new Date(camp.dateTime).toLocaleDateString()}</td>
                     <td>{camp.studentsRegistered}</td>
                     <td>{camp.studentsScreened}</td>
                     <td>
@@ -262,7 +302,7 @@ const CampsInProgress = () => {
             </table>
 
             {/* Pagination */}
-            <div style={{ textAlign: 'center' }}>
+            {/* <div style={{ textAlign: 'center' }}>
               {Array.from({ length: totalPages }, (_, index) => (
                 <button
                   key={index}
@@ -280,7 +320,7 @@ const CampsInProgress = () => {
                   {index + 1}
                 </button>
               ))}
-            </div>
+            </div> */}
           </>
         )}
       </div>

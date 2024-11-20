@@ -203,7 +203,7 @@ const StaffCompletedCamps = () => {
                   <th>Volunteer</th>
                   <th>Doctor</th>
                   <th>Students Registered</th>
-                  <th>+ve Result after screening</th>
+                  <th>Students +ve after Follow-Up </th>
                   <th>Action</th>
                 </tr>
               </thead>
@@ -224,7 +224,7 @@ const StaffCompletedCamps = () => {
                     <td>{camp.volunteer}</td>
                     <td>{camp.doctor}</td>
                     <td>{camp.studentsRegistered}</td>
-                    <td>{camp.studentsPositive}</td>
+                    <td>{camp.studentsDiagnosedPositive}</td>
                     <td>
                       <button
                         style={{

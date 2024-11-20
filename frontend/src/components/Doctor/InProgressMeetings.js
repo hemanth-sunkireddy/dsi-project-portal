@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-const CompletedMeetings = () => {
+const Meetings_inprogress = () => {
   const navigate = useNavigate();
   const user_name = localStorage.getItem('name');
   const [camps, setCamps] = useState([]);
@@ -12,7 +11,9 @@ const CompletedMeetings = () => {
     startDate: '',
     endDate: '',
   });
+
   const [meetings, setMeetings] = useState([]);
+  
   const fetchMeetings = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -22,16 +23,37 @@ const CompletedMeetings = () => {
       }
       const response = await axios.get('/api/auth/meetings');
       const doctorMeetings = response.data.filter(meeting => meeting.doctor === user_name);
-      setMeetings(doctorMeetings); 
+      const filteredMeetings = [];
+      for (const meeting of doctorMeetings) {
+        if (meeting.status === "in_progress") {
+          // Add directly to filtered camps if already in progress
+          filteredMeetings.push(meeting);
+        } else if (meeting.status === "scheduled") {
+          const meetingDate = new Date(meeting.dateTime); // Convert dateTime to a Date object
+          const now = new Date(); // Current date and time
+  
+          // Check if the upcoming camp's dateTime has passed
+          if (meetingDate < now) {
+            // Update the camp status to "in_progress"
+            const data = {
+              meetID: meeting.meetID,
+              status: 'in_progress',
+            };
+            await axios.post('/api/auth/update_meeting_status', data);
+          
+            meeting.status = "in_progress";
+            filteredMeetings.push(meeting);
+          }
+        }
+      }
+      setMeetings(filteredMeetings); 
       const response2 = await axios.get('/api/auth/camps');
-      setCamps(response2.data); 
-      console.log(doctorMeetings);
+      setCamps(response2.data);
     } catch (error) {
-      console.error('Error fetching camps:', error);
+      console.error('Error fetching meetings:', error);
     }
   };
-  
-  // Fetch camps when the component mounts
+
   useEffect(() => {
     fetchMeetings();
   }, [user_name]);
@@ -39,9 +61,17 @@ const CompletedMeetings = () => {
   const filterMeetings = () => {
     let filtered = meetings.filter(
       (meeting) =>
-        (meeting.doctor === user_name ) && (meeting.status === "scheduled")
+        meeting.doctor === user_name && meeting.status === "in_progress"
     );
 
+    // Filter by search term (meeting ID)
+    if (searchTerm) {
+      filtered = filtered.filter(meeting =>
+        meeting.meetID.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Filter by startDate if selected
     if (filters.startDate) {
       filtered = filtered.filter(
         (meeting) => new Date(meeting.dateTime) >= new Date(filters.startDate)
@@ -74,7 +104,9 @@ const CompletedMeetings = () => {
     if (meetings.length > 0) {
       filterMeetings();
     }
-  }, [meetings, filters]);
+  }, [meetings, filters, searchTerm]);
+
+  
 
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#fff' }}>
@@ -161,19 +193,20 @@ const CompletedMeetings = () => {
           </div>
         </header>
 
-        <h2 style={{ color: 'black', marginBottom: '20px' }}>Scheduled Meetings</h2>
+        <h2 style={{ color: 'black', marginBottom: '20px' }}>Meetings In-Progress</h2>
 
         {/* Search Bar and Date Range Filters */}
         <div
           style={{
             display: 'flex',
             alignItems: 'center',
+            marginBottom: '20px',
           }}
         >
           {/* Search Bar */}
           <input
             type="text"
-            placeholder="Search by Meeting ID or Topic"
+            placeholder="Search by Meeting ID"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{
@@ -182,44 +215,43 @@ const CompletedMeetings = () => {
               borderRadius: '4px',
               width: '100%',
               maxWidth: '300px',
+              marginRight: '20px',
             }}
           />
 
-          {/* Date Filters
-          <div style={{ marginLeft: '20px', display: 'flex', gap: '20px' }}>
-            <input
-              type="date"
-              value={filters.startDate}
-              onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-              style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-            />
-            <input
-              type="date"
-              value={filters.endDate}
-              onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-              style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-            />
-            <button
-              onClick={handleClearDates}
-              style={{
-                padding: '10px 20px',
-                backgroundColor: '#dc3545',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-              }}
-            >
-              Clear Dates
-            </button>
-          </div> */}
+          {/* Date Filters */}
+          <input
+            type="date"
+            value={filters.startDate}
+            onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+            style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', marginRight: '10px' }}
+          />
+          <input
+            type="date"
+            value={filters.endDate}
+            onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+            style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc', marginRight: '20px' }}
+          />
+
+          <button
+            onClick={handleClearDates}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#dc3545',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer',
+            }}
+          >
+            Clear Dates
+          </button>
         </div>
 
         {/* Table */}
         <div style={{ textAlign: 'center' }}>
           {filteredMeetings.length > 0 ? (
             <table
-              className="meetings-table"
               style={{
                 color: 'black',
                 width: '100%',
@@ -232,12 +264,13 @@ const CompletedMeetings = () => {
                   <th>Meeting ID</th>
                   <th>Camp Id</th>
                   <th>DateTime</th>
-                  <th>Total Students to be Examined</th>
+                  <th>Total Students to be examined</th>
+                  <th>Total Students Examined</th>
                   <th>Action</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredMeetings.map((meeting) => {
+              {filteredMeetings.map((meeting) => {
                   // Find the camp corresponding to the current meeting's campID
                   const camp = camps.find((c) => c.campID === meeting.campID);
 
@@ -254,6 +287,7 @@ const CompletedMeetings = () => {
                       <td>{meeting.campID}</td>
                       <td>{new Date(meeting.dateTime).toLocaleDateString()}</td>
                       <td>{camp ? camp.studentsScreenedPositive : 'N/A'}</td>
+                      <td>{camp ? camp.studentsFollowedUp : 'N/A'}</td>
                       <td>
                         <button
                           style={{
@@ -275,7 +309,7 @@ const CompletedMeetings = () => {
               </tbody>
             </table>
           ) : (
-            <p style={{ color: 'black' }}>No meetings Scheduled</p>
+            <p style={{ color: 'black' }}>No Meetings In-Progress</p>
           )}
         </div>
       </div>
@@ -283,4 +317,4 @@ const CompletedMeetings = () => {
   );
 };
 
-export default CompletedMeetings;
+export default Meetings_inprogress;

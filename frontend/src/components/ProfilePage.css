@@ -261,8 +261,8 @@
 }
 
 .profile-image-container {
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
   margin: 0 auto 1rem;
   border-radius: 50%;
   overflow: hidden;

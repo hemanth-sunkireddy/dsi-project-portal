@@ -2,62 +2,70 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const CampDetails = () => {
+const MeetingDetails = () => {
   const navigate = useNavigate();
+  const [meetings, setMeetings] = useState([]);
   const [camps, setCamps] = useState([]);
-  const [campStatus, setCampStatus] = useState('');
-  const campID = localStorage.getItem('camp-id');
+  const [meetStatus, setMeetingStatus] = useState('');
+  const meetID = localStorage.getItem('meet-id');
+  console.log(meetID,"HEEM");
+  const [filteredMeetings, setFilteredMeetings] = useState([]);
   const [filteredCamps, setFilteredCamps] = useState([]);
 
-  const fetchCamps = async () => {
+  const fetchMeetings = async () => {
     try {
-      const response = await axios.get('/api/auth/camps');
-      setCamps(response.data);
+      const response = await axios.get('/api/auth/Meetings');
+      setMeetings(response.data);
+      const response2 = await axios.get('/api/auth/camps');
+      setCamps(response2.data); 
     } catch (error) {
-      console.error('Error fetching camps:', error);
+      console.error('Error fetching Meetings:', error);
     }
   };
 
-  const filterCamps = () => {
-    const filtered = camps.filter((camp) => camp.campID === campID);
-    setFilteredCamps(filtered);
-    localStorage.setItem('volunteer', filtered[0]?.volunteer);
-    setCampStatus(filtered[0]?.status || ''); // Set initial status
+  const filterMeetings = () => {
+    const filtered = meetings.filter((meet) => meet.meetID === meetID);
+    setFilteredMeetings(filtered);
+    localStorage.setItem('camp-id', filtered[0]?.campID);
+    const filtered2 = camps.filter((camp) => camp.campID === filtered[0]?.campID);
+    setFilteredCamps(filtered2);
+    // console.log(filteredCamps.location);
+    setMeetingStatus(filtered[0]?.status || ''); 
   };
 
-  const handleCampStatusChange = async (e) => {
+  const handleMeetingStatusChange = async (e) => {
     const newStatus = e.target.value; // Get the updated value from the select input
-    setCampStatus(newStatus); // Update local state (this will trigger a re-render)
+    setMeetingStatus(newStatus); // Update local state (this will trigger a re-render)
 
     try {
-      const response = await axios.post('/api/auth/updateCampStatus', {
-        campID: campID,
+      const response = await axios.post('/api/auth/update_meeting_status', {
+        meetID: meetID,
         status: newStatus, // Send the updated status
       });
       if (response.status === 201) {
-        console.log('Camp status updated successfully');
+        console.log('Meeting status updated successfully');
       }
     } catch (error) {
-      console.error('Error updating camp status:', error);
+      console.error('Error updating Meeting status:', error);
     }
   };
 
   useEffect(() => {
-    fetchCamps();
+    fetchMeetings();
   }, []);
 
   useEffect(() => {
-    if (camps.length > 0) {
-      filterCamps();
+    if (meetings.length > 0) {
+      filterMeetings();
     }
-  }, [camps]);
+  }, [meetings, camps]);
 
-  const handleAddStudentClick = () => {
-    navigate(`/add-student`);
-  };
+  // const handleAddStudentClick = () => {
+  //   navigate(`/add-student`);
+  // };
 
   const handleViewStudentsClick = () => {
-    navigate(`/patients-list`);
+    navigate(`/meetings-students-list`);
   };
 
   const handleHomeClick = () => {
@@ -82,29 +90,30 @@ const CampDetails = () => {
 
       {/* Title Section */}
       <div style={styles.titleSection}>
-        <h1 style={styles.pageTitle}>Camp Details</h1>
+        <h1 style={styles.pageTitle}>Meeting Details</h1>
       </div>
 
       {/* Outer Container */}
       <div style={styles.outerBox}>
         <div style={styles.header}>
-          <h2 style={styles.sectionTitle}>Camp Information</h2>
+          <h2 style={styles.sectionTitle}>Meeting Information</h2>
           <div style={styles.headerButtons}>
-            <div style={styles.dropdownContainer}>
-              <select
-                value={campStatus}
-                onChange={handleCampStatusChange}
-                style={styles.dropdown}
-              >
-                <option value="inprogress" style={{fontWeight: 'bolder'}}>In Progress</option>
-                <option value="completed">Completed</option>
-              </select>
-            </div>
+            {meetStatus === "in_progress" && (
+              <div style={styles.dropdownContainer}>
+                <select
+                  value={meetStatus}
+                  onChange={handleMeetingStatusChange}
+                  style={styles.dropdown}
+                >
+                  <option value="in_progress" style={{ fontWeight: 'bolder' }}>
+                    In Progress
+                  </option>
+                  <option value="completed">Mark Completed</option>
+                </select>
+              </div>
+            )}
             <button style={styles.button} onClick={handleViewStudentsClick}>
               View Students
-            </button>
-            <button style={styles.button} onClick={handleAddStudentClick}>
-              Add Student
             </button>
           </div>
         </div>
@@ -115,26 +124,26 @@ const CampDetails = () => {
           <div style={styles.section}>
             <div style={styles.grid}>
               <div style={styles.gridItem}>
-                <strong>Camp ID:</strong> {filteredCamps[0]?.campID}
+                <strong>Camp ID:</strong> {filteredMeetings[0]?.campID}
               </div>
               <div style={styles.gridItem}>
                 <strong>School Name:</strong> {filteredCamps[0]?.schoolName}
               </div>
               <div style={styles.gridItem}>
-                <strong>Date of Screening:</strong>{' '}
-                {new Date(filteredCamps[0]?.dateTime).toLocaleDateString()}
+                <strong>Date of Meeting:</strong>{' '}
+                {new Date(filteredMeetings[0]?.dateTime).toLocaleDateString()}
               </div>
               <div style={styles.gridItem}>
                 <strong>Contact:</strong> {filteredCamps[0]?.contact}
               </div>
               <div style={styles.gridItem}>
-                <strong>Doctor Assigned:</strong> {filteredCamps[0]?.doctor}
+                <strong>Volunteer Assigned:</strong> {filteredCamps[0]?.volunteer}
               </div>
               <div style={styles.gridItem}>
                 <strong>Address:</strong> {filteredCamps[0]?.location}
               </div>
               <div style={styles.gridItem}>
-                <strong>Status:</strong> {campStatus} {/* Display the updated status */}
+                <strong>Status:</strong> {meetStatus} {/* Display the updated status */}
               </div>
             </div>
           </div>
@@ -144,18 +153,15 @@ const CampDetails = () => {
             <h3 style={styles.subSectionTitle}>Statistics</h3>
             <div style={styles.statisticsGrid}>
               <div style={styles.gridItem}>
-                <strong>Pre-Screened:</strong>{' '}
-                {filteredCamps[0]?.studentsScreened || 'N/A'}
+                <strong>Total Students To be Examined:</strong>{' '}
+                {filteredCamps[0]?.studentsScreenedPositive }
               </div>
               <div style={styles.gridItem}>
-                <strong>To Be Diagnosed:</strong>{' '}
-                {filteredCamps[0]?.studentsPositive || 'N/A'}
+                <strong>Total Students Examined:</strong>{' '}
+                {filteredCamps[0]?.studentsFollowedUp }
               </div>
               <div style={styles.gridItem}>
-                <strong>Scheduled for Diagnosis:</strong> 14
-              </div>
-              <div style={styles.gridItem}>
-                <strong>Tested Positive:</strong> 5
+                <strong>Students Diagnosed Positive:</strong> {filteredCamps[0]?.studentsDiagnosedPositive }
               </div>
             </div>
           </div>
@@ -305,4 +311,4 @@ const styles = {
   },
 };
 
-export default CampDetails;
+export default MeetingDetails;
