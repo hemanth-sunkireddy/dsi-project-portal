@@ -27,6 +27,12 @@ const CompletedMeetings = () => {
     }
   };
 
+  const ageData = [
+    { name: 'Completed', value: 50, color: '#60C6F0' },
+    { name: 'Upcoming', value: 10, color: '#FF7F50' },
+    { name: 'Scheduled Today', value: 30, color: '#90EE90' }
+  ];
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('role');
@@ -173,6 +179,34 @@ const CompletedMeetings = () => {
 
           <div className="bottom-section-1">
             {/* Calendar */}
+            <div className="analytics-container-1">
+              <h2 className="chart-title-1">Age distribution of Children Diagnosed</h2>
+              <div className="chart-container-1">
+                <PieChart width={400} height={300}>
+                  <Pie
+                    data={ageData}
+                    cx={200}
+                    cy={150}
+                    innerRadius={60}
+                    outerRadius={100}
+                    paddingAngle={5}
+                    dataKey="value"
+                  >
+                    {ageData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                </PieChart>
+                <div className="chart-legend-1">
+                  {ageData.map((entry, index) => (
+                    <div key={index} className="legend-item-1">
+                      <div className="legend-color-1" style={{ backgroundColor: entry.color }}></div>
+                      <span>{entry.name}: {entry.value}%</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
             <div className="calendar-container-1">
               <Calendar
                 onChange={setDate}
@@ -409,18 +443,18 @@ const CompletedMeetings = () => {
         }
 
         .bottom-section-1 {
-          // display: grid;
-          // grid-template-columns: 1fr 1fr;
+          display: grid;
+          grid-template-columns: 1fr 1fr;
           gap: 24px;
         }
 
         .analytics-container-1, .calendar-container-1 {
           background: white;
           border-radius: 8px;
-          margin-left: 35%;
-          margin-top: 10%;
-          margin-right: 35%;
-          padding: 30px;
+          // margin-left: 35%;
+          // margin-top: 10%;
+          // margin-right: 35%;
+          padding: 24px;
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
@@ -437,7 +471,7 @@ const CompletedMeetings = () => {
         .chart-legend-1 {
           position: absolute;
           top: 50%;
-          left: 50%;
+          left: 70%;
           transform: translate(-50%, -50%);
           text-align: center;
         }
