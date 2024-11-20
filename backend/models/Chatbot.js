@@ -172,7 +172,7 @@ chatbotSettingsSchema.pre('save', async function (next) {
         // Deactivate all other active presets
         await ChatbotSettings.updateMany(
             { isActive: true, _id: { $ne: this._id } }, // Exclude current document
-            { $set: { isActive: false } }
+            // { $set: { isActive: false } }
         );
     }
 
