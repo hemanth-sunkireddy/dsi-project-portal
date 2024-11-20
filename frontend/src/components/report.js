@@ -207,7 +207,7 @@ function PreScreeningReport() {
     <div className="container">
       <div className="header">
         <img src={logo} alt="Choice Foundation Logo" />
-        <h1 style={{color:'white'}}>PreScreening Report</h1>
+        <h1 style={{color:'white'}}>Report</h1>
       </div>
       <div className="main-content">
         <div className="profile">
