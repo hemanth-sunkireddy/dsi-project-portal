@@ -213,15 +213,15 @@ function PreScreeningReport() {
         <div className="profile">
           <img src={pic} alt="Profile Picture" />
           <div className="profile-info">
-            <h2>{ProfileData?.name}</h2>
+            <h2>{ProfileData.name}</h2>
             <p>Student ID: {studentId}</p>
             <p>Gender: {ProfileData.gender}</p>
           </div>
         </div>
         <div className="autism-score">
           <h2>Status of Autism</h2>
-          <p>From Chatbot: {ReportData?.report?.diagnosis}</p>
-          <p>From Doctor: {ReportData?.diagnosis}</p>
+          <p>From Chatbot: {ReportData.report.diagnosis}</p>
+          <p>From Doctor: {ReportData.diagnosis}</p>
         </div>
       </div>
       <div className="details">
@@ -230,8 +230,8 @@ function PreScreeningReport() {
             <p><strong>Volunteer Name:</strong> {ProfileData.volunteer}</p>
             <p><strong>Volunteer Id:</strong> {ReportData.volunteerId}</p>
             <p><strong>Camp Id:</strong> {ProfileData.campId}</p>
-            <p><strong>Contact Details:</strong> {ProfileData?.phoneNumber}</p>
-            <p><strong>Address:</strong> {ProfileData?.address}</p>
+            <p><strong>Contact Details:</strong> {ProfileData.phoneNumber}</p>
+            <p><strong>Address:</strong> {ProfileData.address}</p>
             <p><strong>Past Experiences:</strong> {ProfileData.pastHistory}</p>
             <p><strong>Screening Id:</strong> {ReportData.screeningId}</p>
             <p><strong>Screening Date:</strong> {new Date(ReportData.date).toLocaleDateString()}</p>
