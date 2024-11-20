@@ -168,13 +168,13 @@ chatbotSettingsSchema.pre('save', async function (next) {
     const ChatbotSettings = mongoose.model('ChatbotSettings');
     
     // If this document is being set as active
-    if (this.isActive) {
-        // Deactivate all other active presets
-        await ChatbotSettings.updateMany(
-            { isActive: true, _id: { $ne: this._id } }, // Exclude current document
-            // { $set: { isActive: false } }
-        );
-    }
+    // if (this.isActive) {
+    //     // Deactivate all other active presets
+    //     await ChatbotSettings.updateMany(
+    //         { isActive: true, _id: { $ne: this._id } }, // Exclude current document
+    //         // { $set: { isActive: false } }
+    //     );
+    // }
 
     next();
 });
