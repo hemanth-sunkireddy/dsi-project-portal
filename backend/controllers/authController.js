@@ -62,7 +62,7 @@
 
 
 
-const admin = require('../firebase'); // Firebase Admin SDK
+// const admin = require('../firebase'); // Firebase Admin SDK
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');

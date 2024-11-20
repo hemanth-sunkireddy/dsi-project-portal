@@ -3,7 +3,7 @@
 //     console.log(`Sending OTP ${otp} to phone number ${phone}`);
 //   };
   
-const admin = require('../firebase');
+// const admin = require('../firebase');
 // Import Firebase Admin
 
 exports.sendOtpToPhone = async (phone) => {
