@@ -76,7 +76,7 @@
 //       <div className="header">
 //         <img src={logo} alt="Choice Foundation Logo" />
 //         <h1>Choice Foundation</h1>
-//         <h2>Pre Screening Report</h2>
+//         <h2>Report</h2>
 //       </div>
 //       <div className="download">Download Report</div>
 //       <div className="main-content">
