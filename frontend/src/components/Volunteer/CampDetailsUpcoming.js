@@ -13,6 +13,8 @@ const CampDetailsUpComing = () => {
     try {
       const response = await axios.get('/api/auth/camps');
       setCamps(response.data);
+      console.log(response.data);
+      console.log(response);
     } catch (error) {
       console.error('Error fetching camps:', error);
     }

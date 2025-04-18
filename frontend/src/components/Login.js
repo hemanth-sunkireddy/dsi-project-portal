@@ -12,13 +12,15 @@ const Login = () => {
   const verifyUser = async () => {
     try {
       const response = await axios.post('http://localhost:4000/api/auth/login', { phone, otp });
-      const { token, role } = response.data;
+      const { token, role, name } = response.data;
       if(response.status != 200){
         setMessage('Users not found, please login again.');
         return ;
       }
+      console.log(name);
       localStorage.setItem('token', token);
       localStorage.setItem('role', role);
+      localStorage.setItem('name', name);
   
       switch (role) {
         case 'Admin':

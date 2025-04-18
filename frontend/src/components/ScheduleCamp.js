@@ -45,7 +45,7 @@ const ScheduleCamp = () => {
     try {
       await axios.post('/api/auth/scheduleCamp', camp);
       alert('Camp scheduled successfully');
-      navigate('/dashboard'); // Redirect to dashboard after successful submission
+      navigate('/ngo-dashboard'); // Redirect to dashboard after successful submission
     } catch (error) {
       alert('Error scheduling camp');
     }

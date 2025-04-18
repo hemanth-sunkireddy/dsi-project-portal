@@ -85,11 +85,11 @@ exports.login = async (req, res) => {
       });
   
       // Return token and role
-    res.status(200).json({ token, role: user.role, isApproved: user.isApproved });
 
     res.status(200).json({
       token: token,
       role: user.role, // Send user role for redirection
+      name: user.name,
     });
   } catch (error) {
     console.error('Error during login:', error);

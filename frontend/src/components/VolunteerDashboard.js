@@ -27,6 +27,8 @@ const CompletedMeetings = () => {
         return;
       }
       const response = await axios.get('/api/auth/camps');
+      console.log(response);
+      console.log(userName);
       const volunteerCamps = response.data.filter(camp => camp.volunteer === userName);
       setCamps(volunteerCamps);
       console.log(volunteerCamps);

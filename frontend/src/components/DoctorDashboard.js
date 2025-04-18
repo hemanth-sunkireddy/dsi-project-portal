@@ -14,7 +14,7 @@ const CompletedMeetings = () => {
   const [showPopup, setShowPopup] = useState(false);
   const today = new Date();
   const userName = localStorage.getItem('name') || 'Doctor';
-
+  console.log(userName);
   useEffect(() => {
     fetchCamps();
   }, []);

@@ -98,6 +98,7 @@ router.post('/scheduleCamp', async (req, res) => {
 router.get('/camps', async (req, res) => {
   try {
     const camps = await Camp.find();
+    console.log(camps);
     res.json(camps);
   } catch (error) {
     res.status(500).json({ message: 'Failed to fetch camps', error });
