@@ -1,7 +1,7 @@
 const express = require('express');
 const adminRoutes = require('./adminRoutes'); // Import admin routes
 // const { register, login, getUserDetails } = require('../controllers/authController');
-const { sendOTP, loginWithOTP, verifyOTP, register, approveDoctor, getUserDetails, assignAdmin } = require('../controllers/authController');
+const { sendOTP, loginWithOTP, verifyOTP, register, approveDoctor, getUserDetails, assignAdmin, login } = require('../controllers/authController');
 
 const Doctor = require('../models/Doctor');
 const Student = require('../models/Student');
@@ -23,10 +23,9 @@ const { addInitialPreset, getSettingsByTestId, createChatbotInteraction, updateC
 router.use('/admin', adminRoutes)
 
 // router.post('/register', register);
-// router.post('/login', login);
+router.post('/login', login);
 router.get('/user', auth, getUserDetails);
 router.post('/sendOTP', sendOTP); // Endpoint to send OTP
-router.post('/loginWithOTP', loginWithOTP); // Endpoint to log in with OTP
 // router.post('/sendOtp', sendOtp);
 // router.post('/verify-otp', verifyOTP);
 router.post("/verifyOTP", verifyOTP);
